@@ -1,0 +1,8 @@
+name: MobMadness
+version: ${project.version}
+main: com.github.klyser8.mobmadness.MobMadness
+api-version: 1.17
+authors: [ Klyser8 ]
+depend:
+  - ProtocolLib
+description: MobMadness is back, better than ever.

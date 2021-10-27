@@ -1,0 +1,73 @@
+package com.github.klyser8.mobmadness.game.items.consumables;
+
+import com.github.klyser8.mobmadness.MobMadness;
+import com.github.klyser8.mobmadness.game.items.ItemType;
+import com.github.klyser8.mobmadness.game.items.MadItem;
+import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.util.Sound;
+import org.bukkit.Particle;
+import org.bukkit.SoundCategory;
+import org.bukkit.World;
+import org.bukkit.entity.EnderPearl;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static me.mattstudios.mf.base.components.MfUtil.color;
+
+public class VoidOrb extends MadItem {
+
+    public static final int RADIUS = 2;
+
+    private final Sound popSound;
+    public VoidOrb(MobMadness plugin, int amount, GameData gameData) {
+        super(ItemType.VOID_ORB, new ItemStack(ItemType.VOID_ORB.getMaterial(), amount), plugin, gameData, true);
+        popSound = new Sound("entity.enderman.teleport", 2.0f, 0.5f);
+        setup();
+    }
+
+    protected void setup() {
+        setDisplayName(color("&aVoid Orb"));
+        setLore(Arrays.asList(
+                "&7Dematerializes mobs near the",
+                "&7landing location of this item.",
+                "&8--------------------------------",
+                "&8&oDematerialized mobs do not die,",
+                "&8&oinstead simply despawn.",
+                "&8&oDoes not work on bosses."
+        ));
+
+        setTags(true, false, true, false, false, null);
+    }
+
+    /**
+     * Despawns any mob near the landing location of the ender pearl.
+     * Works only on hostile mobs, not on players.
+     *
+     * @param pearl the EnderPearl entity related to the event
+     */
+    public void dematerialize(EnderPearl pearl) {
+        World world = pearl.getWorld();
+        List<LivingEntity> entities = new ArrayList<>();
+        //Particle effects & sound
+        popSound.play(pearl.getLocation(), SoundCategory.PLAYERS);
+        world.spawnParticle(Particle.FLASH, pearl.getLocation(), 5,
+                0, 0, 0, 0, null, true);
+        //Get entities near ender pearl
+        for (Entity entity : pearl.getNearbyEntities(RADIUS, RADIUS, RADIUS)) {
+            if (!(entity instanceof LivingEntity) || entity instanceof Player) continue;
+            entities.add((LivingEntity) entity);
+        }
+        //Despawn entities
+        for (LivingEntity entity : entities) {
+            entity.remove();
+            world.spawnParticle(Particle.REVERSE_PORTAL, entity.getLocation().add(0, 1, 0), 25,
+                    0.25, 0.50, 0.25, 0.25, null);
+        }
+    }
+}
