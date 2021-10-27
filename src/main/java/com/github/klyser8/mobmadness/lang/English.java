@@ -1,39 +1,80 @@
 package com.github.klyser8.mobmadness.lang;
 
+import com.github.klyser8.mobmadness.game.world.MapType;
+import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.util.ColorHelper;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Language class storing messages sent to players.
  */
 public enum English {
 
-    ERROR_MAP_TAKEN("&cThe map you have selected is already in use!"),
-    ERROR_NO_GAME("&cThere is no ongoing game in this map!"),
-    ERROR_CANNOT_DROP_ITEM("&cYou cannot drop this item!"),
-    ERROR_INVENTORY_FULL("&cYour inventory is full!"),
+    ERROR_MAP_TAKEN(Component.text("The map you have selected is already in use!").color(NamedTextColor.RED)),
+    ERROR_NO_GAME(Component.text("There is no ongoing game in this map!").color(NamedTextColor.RED)),
+    ERROR_CANNOT_DROP_ITEM(Component.text("You cannot drop this item!").color(NamedTextColor.RED)),
+    ERROR_INVENTORY_FULL(Component.text("Your inventory is full!").color(NamedTextColor.RED)),
 
-    STOPPED_ALL_GAMES("&6All games have been stopped."),
-    STOPPED_GAME("&f<game>&6 has been stopped."),
+    STOPPED_ALL_GAMES(Component.text("All games have been stopped.").color(NamedTextColor.GOLD)),
+    STOPPED_GAME(Component.text("<maptype> ").color(NamedTextColor.WHITE)
+            .append(Component.text(" has been stopped.").color(NamedTextColor.GOLD))),
 
-    SIXTY_SECONDS_MESSAGE("&eThe game will start in&f 60&e seconds!"),
-    THIRTY_SECONDS_MESSAGE("&eThe game will start in&f 30&e seconds!"),
-    TEN_SECONDS_MESSAGE("&6The game will start in&e 10&6 seconds!"),
-    COUNTDOWN_MESSAGE("&cThe game will start in&f <time>&c second(s)!"),
+    SIXTY_SECONDS_MESSAGE(Component.text("The game will start in ").color(NamedTextColor.YELLOW)
+            .append(Component.text("60 ").color(NamedTextColor.WHITE))
+            .append(Component.text("seconds!").color(NamedTextColor.YELLOW))),
+    THIRTY_SECONDS_MESSAGE(Component.text("The game will start in ").color(NamedTextColor.GOLD)
+            .append(Component.text("30 ").color(NamedTextColor.YELLOW))
+            .append(Component.text("seconds!").color(NamedTextColor.GOLD))),
+    TEN_SECONDS_MESSAGE(Component.text("The game will start in ").color(ColorHelper.ORANGE)
+            .append(Component.text("10 ").color(NamedTextColor.GOLD))
+            .append(Component.text("seconds!").color(ColorHelper.ORANGE))),
+    COUNTDOWN_MESSAGE(Component.text("The game will start in ").color(NamedTextColor.RED)
+            .append(Component.text("<time> ").color(ColorHelper.ORANGE))
+            .append(Component.text("second(s)!").color(NamedTextColor.RED))),
 
-    GAME_STARTED("&b&lTHE MADNESS HAS BEGUN!"),
-    GAME_OVER("&4lGAME OVER!&f <player> &c died after the &5Respawn Anchor&c's supply " +
-            "of &eAether's Berries &cran out."),
+    GAME_STARTED(Component.text("THE MADNESS HAS BEGUN!").color(ColorHelper.REAL_AQUA)
+            .decoration(TextDecoration.BOLD, true)),
+    GAME_OVER(Component.text("GAME OVER! ").color(NamedTextColor.DARK_RED).decoration(TextDecoration.BOLD, true)
+            .append(Component.text("<player> ").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false))
+            .append(Component.text("died after the ").color(NamedTextColor.RED))
+            .append(Component.text("Respawn Anchor ").color(ColorHelper.INDIGO))
+            .append(Component.text("'s supply of ").color(NamedTextColor.RED))
+            .append(Component.text("Aether's Berries ").color(ColorHelper.HONEYSACKLE))
+            .append(Component.text("ran out").color(NamedTextColor.RED))),
 
-    PLAYER_JOIN("&f<player>&a has joined the game."),
-    PLAYER_LEAVE("&f<player>&6 has left the game.");
+    PLAYER_JOIN(Component.text("<player> ").color(NamedTextColor.WHITE)
+            .append(Component.text("has joined the game").color(NamedTextColor.GREEN))),
+    PLAYER_LEAVE(Component.text("<player> ").color(NamedTextColor.WHITE)
+        .append(Component.text("has left the game").color(NamedTextColor.GOLD)));
 
-    private final String msg;
+    private final TextComponent comp;
 
-    English(String msg) {
-        this.msg = msg;
+    English(TextComponent comp) {
+        this.comp = comp;
     }
 
-    public String getMsg(Player player) {
-        return player == null ? msg : msg.replace("<player>", player.getName());
+    public TextComponent getComponent() {
+        return comp;
+    }
+
+    public TextComponent getComponent(Player player) {
+        return player == null ? comp : (TextComponent) comp.replaceText(TextReplacementConfig.builder().match("<player>")
+                .replacement(player.getName()).build()).asComponent();
+    }
+
+    public TextComponent getComponent(MapType type) {
+        return type == null ? comp : (TextComponent) comp.replaceText(TextReplacementConfig.builder().match("<maptype>")
+                .replacement(type.getName()).build()).asComponent();
+    }
+
+    public TextComponent getComponent(int time) {
+        return time == 0 ? comp : (TextComponent) comp.replaceText(TextReplacementConfig.builder().match("<time>")
+                .replacement(String.valueOf(time)).build()).asComponent();
     }
 }

@@ -50,6 +50,7 @@ public class Trider extends MadItem implements MadWeapon {
 
     public Trider(ItemType type, ItemStack item, MobMadness plugin, GameData gameData) {
         super(type, item, plugin, gameData, true);
+        setup();
         morphSound = new Sound("entity.glow_squid.squirt", 1, 1);
         tideBreakerSplashSound = new Sound("entity.axolotl.splash", 1, 0.5f);
         //Change sound pitch based on current weapon upgrade
@@ -57,7 +58,6 @@ public class Trider extends MadItem implements MadWeapon {
                 (float) (1.45f - getRangeMultiplier()) * 1.3f);
         fallOffWallSound = new Sound("item.trident.return", 1.0f, 1.5f);
         returnSound = new Sound("item.trident.riptide_1", 1.0f, 1.5f);
-        setup();
     }
 
     @Override
@@ -124,7 +124,9 @@ public class Trider extends MadItem implements MadWeapon {
                 if (trident.isDead()) {
                     cancel();
                 }
-                groundClock++;
+                if (trident.isInBlock()) {
+                    groundClock++;
+                }
             }
 
             /**
@@ -194,29 +196,39 @@ public class Trider extends MadItem implements MadWeapon {
         World world = rider.getWorld();
         Location landingLoc = trident.getLocation();
         rider.showPlayer(plugin, rider);
-        world.spawnParticle(Particle.GLOW, landingLoc, 100, 0.66, 0.66, 0.66);
-        world.spawnParticle(Particle.SCRAPE, landingLoc, 100, 0, 0, 0, 10);
-        world.spawnParticle(Particle.SCRAPE, landingLoc, 100,
-                0.25, 0.25, 0.25, 0.1);
-        world.spawnParticle(Particle.FIREWORKS_SPARK, landingLoc, 100,
-                0.25, 0.25, 0.25, 0.1);
+        world.spawnParticle(Particle.GLOW, landingLoc, (int) (40 * data.getUltTideBreakerRadius()),
+                (data.getUltTideBreakerRadius() / 5),
+                (data.getUltTideBreakerRadius() / 5),
+                (data.getUltTideBreakerRadius() / 5));
+        world.spawnParticle(Particle.SCRAPE, landingLoc, (int) (50 * data.getUltTideBreakerRadius()),
+                0, 0, 0, 10);
+        world.spawnParticle(Particle.SCRAPE, landingLoc, (int) (50 * data.getUltTideBreakerRadius()),
+                0.2 + (data.getUltTideBreakerRadius() / 5),
+                0.2 + (data.getUltTideBreakerRadius() / 5),
+                0.2 + (data.getUltTideBreakerRadius() / 5),
+                0.1);
+        world.spawnParticle(Particle.FIREWORKS_SPARK, landingLoc, (int) (50 * data.getUltTideBreakerRadius()),
+                0.2 + (data.getUltTideBreakerRadius() / 5),
+                0.2 + (data.getUltTideBreakerRadius() / 5),
+                0.2 + (data.getUltTideBreakerRadius() / 5),
+                0.1);
         tideBreakerSplashSound.play(landingLoc, SoundCategory.PLAYERS);
         tideBreakerExplodeSound.play(landingLoc, SoundCategory.PLAYERS);
         for (LivingEntity mob : landingLoc.getNearbyLivingEntities(data.getUltTideBreakerRadius(),
                 data.getUltTideBreakerRadius(), data.getUltTideBreakerRadius())) {
             if (gameData.getMobMap().containsKey(mob)) {
                 MadEntity madMob = gameData.getMobMap().get(mob);
-                double modDistance = mob.getEyeLocation().distance(landingLoc) / 3;
-                if (modDistance < 1) {
-                    modDistance = 1;
+                double modifiedDistance = mob.getEyeLocation().distance(landingLoc) / 3;
+                if (modifiedDistance < 1) {
+                    modifiedDistance = 1;
                 }
-                int dazzleDuration = (int) (data.getUltDazzleMaxDuration() / modDistance);
-                double damage = data.getRangedDamage() / (modDistance / 2);
+                int dazzleDuration = (int) (data.getUltDazzleMaxDuration() / modifiedDistance);
+                double damage = data.getRangedDamage() / modifiedDistance;
                 SoulState state = new Dazzled(plugin, gameData, SoulStateType.DAZZLED, madMob, dazzleDuration);
                 madMob.getCurrentSoulStates().put(state.getType(), state);
                 //avoid damaging the same entity twice.
                 if (hitEntity == null || !hitEntity.getUniqueId().equals(mob.getUniqueId())) {
-                    mob.damage(damage, rider);
+                    mob.damage(damage, trident);
                 }
             }
         }

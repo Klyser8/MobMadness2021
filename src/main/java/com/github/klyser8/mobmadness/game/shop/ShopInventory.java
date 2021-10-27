@@ -227,7 +227,7 @@ public class ShopInventory {
         if (item == null) return null;
         if (!player.getInventory().addItem(item).isEmpty()) {
             brokeSound.play(player.getLocation(), SoundCategory.MASTER, player);
-            player.sendMessage(color(English.ERROR_INVENTORY_FULL.getMsg(null)));
+            player.sendMessage(English.ERROR_INVENTORY_FULL.getComponent());
         }
         return item;
     }

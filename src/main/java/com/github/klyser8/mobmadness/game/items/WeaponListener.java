@@ -1,5 +1,6 @@
 package com.github.klyser8.mobmadness.game.items;
 
+import com.comphenix.protocol.events.ListenerPriority;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.equipment.shield.Shield;
 import com.github.klyser8.mobmadness.game.items.weapons.bow.Bow;
@@ -19,12 +20,10 @@ import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
@@ -242,7 +241,9 @@ public class WeaponListener implements Listener {
         if (isItemInvalid(gameData, item)) return;
         Profile profile = gameData.getPlayers().get(shooter);
         NBTItem nbt = new NBTItem(item);
-        if (!nbt.hasKey(MadItem.MM_ENUM_TAG)) return;
+        if (!nbt.hasKey(MadItem.MM_ENUM_TAG) ||
+                (trident.hasMetadata(Trider.RIPTIDING_TAG)
+                && trident.getMetadata(Trider.RIPTIDING_TAG).get(0).asBoolean())) return;
         event.setDamage(nbt.getDouble(Trider.RANGED_DMG_TAG));
         entity.setKiller(shooter);
     }

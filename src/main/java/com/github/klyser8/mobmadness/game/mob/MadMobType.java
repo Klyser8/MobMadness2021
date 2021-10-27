@@ -11,7 +11,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public enum MadMobType {
-    ZOMBIE(EntityType.ZOMBIE, 12, 2, 0.25, 1),
+    ZOMBIE(EntityType.ZOMBIE, 120, 2, 0.25, 1),
     SPIDER(EntityType.SPIDER, 10, 2, 0.27, 1),
     CREEPER(EntityType.CREEPER, 8, 10, 0.22, 2),
     SKELETON(EntityType.SKELETON, 6, 1, 0.2, 2);

@@ -1,6 +1,9 @@
 package com.github.klyser8.mobmadness.game.player;
 
 import com.github.klyser8.mobmadness.storage.GameData;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -54,9 +57,17 @@ public class ProfileRunnable extends BukkitRunnable {
         if (mob != null) {
             player.setCompassTarget(mob.getLocation());
             if (player.getInventory().getItemInMainHand().getType() == Material.COMPASS) {
-                player.sendActionBar(color("&eClosest monster:&r " + mob.getCustomName() + "&r - &eDistance:&r " +
-                        Math.round(player.getLocation().distance(mob.getLocation())) + " - &eHeight:&r " +
-                        Math.round(mob.getLocation().getBlockY() - player.getLocation().getBlockY())));
+                TextComponent mobName = (TextComponent) (mob.customName() == null ? mob.name() : mob.customName());
+                TextComponent component = Component.text("Closest Monster: ").color(NamedTextColor.YELLOW)
+                        .append(mobName)
+                        .append(Component.text(" - "))
+                        .append(Component.text("Distance: ").color(NamedTextColor.GOLD))
+                        .append(Component.text(Math.round(player.getLocation().distance(mob.getLocation()))))
+                        .append(Component.text(" - "))
+                        .append(Component.text("Height: ").color(NamedTextColor.GOLD))
+                        .append(Component.text(
+                                Math.round(mob.getLocation().getBlockY() - player.getLocation().getBlockY())));
+                player.sendActionBar(component);
             }
         }
     }

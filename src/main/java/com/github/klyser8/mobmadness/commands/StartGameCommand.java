@@ -32,7 +32,7 @@ public class StartGameCommand extends CommandBase {
             type = pickRandomMap();
         }
         if (type == null || plugin.getGameManager().getGames().containsKey(type)) {
-            sender.sendMessage(color(English.ERROR_MAP_TAKEN.getMsg(null)));
+            sender.sendMessage(English.ERROR_MAP_TAKEN.getComponent());
             return;
         }
         GameData gameData = plugin.getGameManager().createGame(type);

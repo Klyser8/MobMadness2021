@@ -33,15 +33,15 @@ public class StopGameCommand extends CommandBase {
             for (MapType mapType : toBeDeleted) {
                 gameManager.stopGame(mapType);
             }
-            sender.sendMessage(color(English.STOPPED_ALL_GAMES.getMsg(null)));
+            sender.sendMessage(English.STOPPED_ALL_GAMES.getComponent());
             return;
         }
         if (!gameManager.getGames().containsKey(type)) {           //If the game selected is not ongoing, throw an error
-            sender.sendMessage(color(English.ERROR_NO_GAME.getMsg(null)));
+            sender.sendMessage(English.ERROR_NO_GAME.getComponent());
             return;
         }
         gameManager.stopGame(type);
-        sender.sendMessage(color(English.STOPPED_GAME.getMsg(null).replace("<game>", type.getName())));
+        sender.sendMessage(English.STOPPED_GAME.getComponent(type));
     }
 
     @CompleteFor("stop")

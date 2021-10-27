@@ -11,6 +11,7 @@ import com.github.klyser8.mobmadness.lang.English;
 import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.util.MadUtils;
 import com.github.klyser8.mobmadness.util.Sound;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.*;
 import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.entity.LivingEntity;
@@ -21,7 +22,6 @@ import java.util.*;
 
 import static com.github.klyser8.mobmadness.util.MadUtils.pickSpawnArea;
 import static java.lang.Math.abs;
-import static me.mattstudios.mf.base.components.MfUtil.color;
 
 /**
  * Main game loop. This is where any loop or repeated action related to the game takes place.
@@ -38,10 +38,12 @@ public class GameRunnable extends BukkitRunnable {
     private final Sound notifySound = new Sound("block.note_block.hat", 0.5f, 2.0f);
     //Sound played at game start.
     private final Sound startSound = new Sound("block.respawn_anchor.set_spawn", 10.0f, 1.0f);
-    //Sound played once the respawn window has come to an end.
-    private final Sound respawnEndedSound = new Sound("entity.wither.shoot", 1.0f, 0.5f);
     //Sound played when a mob spawns.
-    private final Sound mobSpawnSound = new Sound("entity.zombie.infect", 1.5f, 1.0f);
+    private final Sound mobSpawnSound = new Sound("entity.zombie.infect", 5.0f, 1.0f);
+    //Sound played when the game's tier increases
+    private final Sound tierUpSound = new Sound("entity.wither.spawn", 10.0f, 1.0f);
+    //Sound played when the game's tier decreases
+    private final Sound tierDownSound = new Sound("entity.ghast.scream", 10.0f, 1.0f);
 
     //Current in-game time (in seconds)
     private int clock = -60 * TICK_INTERVAL;
@@ -61,24 +63,24 @@ public class GameRunnable extends BukkitRunnable {
     public void run() {
         switch (clock) {
             case -60 * TICK_INTERVAL:
-                sendMessage(gameData.getPlayers().keySet(), English.SIXTY_SECONDS_MESSAGE.getMsg(null), notifySound);
+                sendMessage(gameData.getPlayers().keySet(), English.SIXTY_SECONDS_MESSAGE.getComponent(), notifySound);
                 break;
             case -30 * TICK_INTERVAL:
-                sendMessage(gameData.getPlayers().keySet(), English.THIRTY_SECONDS_MESSAGE.getMsg(null), notifySound);
+                sendMessage(gameData.getPlayers().keySet(), English.THIRTY_SECONDS_MESSAGE.getComponent(), notifySound);
                 break;
             case -10 * TICK_INTERVAL:
-                sendMessage(gameData.getPlayers().keySet(), English.TEN_SECONDS_MESSAGE.getMsg(null), notifySound);
+                sendMessage(gameData.getPlayers().keySet(), English.TEN_SECONDS_MESSAGE.getComponent(), notifySound);
                 break;
             case -5 * TICK_INTERVAL:
             case -4 * TICK_INTERVAL:
             case -3 * TICK_INTERVAL:
             case -2 * TICK_INTERVAL:
             case -1 * TICK_INTERVAL:
-                sendMessage(gameData.getPlayers().keySet(), English.COUNTDOWN_MESSAGE.getMsg(null)
-                        .replace("<time>", String.valueOf(abs(clock / 20))), notifySound);
+                sendMessage(gameData.getPlayers().keySet(), English.COUNTDOWN_MESSAGE
+                        .getComponent(abs(clock / 20)), notifySound);
                 break;
             case 0:
-                sendMessage(gameData.getPlayers().keySet(), English.GAME_STARTED.getMsg(null), startSound);
+                sendMessage(gameData.getPlayers().keySet(), English.GAME_STARTED.getComponent(), startSound);
                 gameData.setMaxWeight(gameManager.calculateMaxWeight(
                         gameData.getGameMap().getMapSize(), Tier.I, gameData.getPlayers().size()));
                 break;
@@ -97,16 +99,30 @@ public class GameRunnable extends BukkitRunnable {
                 if (gameData.getAnchorCharges() > 0) {
                     playAnchorEffect();
                 }
+
                 break;
         }
         clock += TICK_INTERVAL;
     }
 
+    //TODO boss spawning sound: evoker prepare summon
+    private void checkTier() {
+        Tier calcTier = Tier.getTierUsingScore(gameData.calculateAvgScore());
+        if (gameData.getTier() == calcTier) return;
+
+        if (calcTier.getNumericTier() > gameData.getTier().getNumericTier()) {
+            tierUpSound.play(gameData.getRespawnAnchor().getLocation(), SoundCategory.NEUTRAL);
+        } else {
+            tierDownSound.play(gameData.getRespawnAnchor().getLocation(), SoundCategory.NEUTRAL);
+        }
+        gameData.setTier(calcTier);
+    }
+
     private void attemptMobSpawn() {
         if (gameData.getCurrentWeight() >= gameData.getMaxWeight()) {
             for (LivingEntity entity : gameData.getMobMap().keySet()) {
-                if (entity.getTicksLived() > MOB_AGE_CAP) {
-                    entity.damage(100000);
+                if (entity.getTicksLived() > MOB_AGE_CAP && entity.getKiller() == null) {
+                    entity.damage(100000, null);
                 }
             }
         }
@@ -114,7 +130,6 @@ public class GameRunnable extends BukkitRunnable {
         World world = gameData.getGameMap().getMapType().getSpawn().getWorld();
         int bound = random.nextInt(gameData.getBound());
         MadEntity entity = null;
-//        System.out.println(bound);
         if (bound > 2000) return;
         switch (gameData.getTier()) {
             case I:
@@ -140,8 +155,6 @@ public class GameRunnable extends BukkitRunnable {
                 break;
         }
         SpawnArea area = pickSpawnArea(gameData);
-//        System.out.println("Entity: " + entity);
-//        System.out.println("Area: " + area);
         if (area == null || entity == null) return;
         Location spawnLoc = MadUtils.pickRandomSpawnLocation(area.getCorner1(), area.getCorner2());
         if (spawnLoc == null) return;
@@ -155,7 +168,7 @@ public class GameRunnable extends BukkitRunnable {
             case CRYPTIC_CAVE:
                 bound = 12000;
         }
-        bound -= gameData.calculateScore();
+        bound -= gameData.calculateAvgScore();
         bound *= (1.1 - (gameData.getPlayers().size() / 10));
         gameData.setBound(bound);
     }
@@ -165,13 +178,13 @@ public class GameRunnable extends BukkitRunnable {
      * Colors the message automatically.
      *
      * @param set the set of players to send the msg to.
-     * @param msg the message to send.
+     * @param comp the message to send.
      * @param sound the sound effect to play to the players.
      */
-    private void sendMessage(Set<Player> set, String msg, Sound sound) {
+    private void sendMessage(Set<Player> set, TextComponent comp, Sound sound) {
         for (Player player : set) {
             sound.play(player.getLocation(), SoundCategory.MASTER, player);
-            player.sendMessage(color(msg));
+            player.sendMessage(comp);
         }
     }
 

@@ -10,7 +10,6 @@ import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.util.MadUtils;
 import com.github.klyser8.mobmadness.util.Sound;
 import de.tr7zw.nbtapi.NBTItem;
-import io.papermc.paper.event.block.BlockBreakBlockEvent;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.SoundCategory;
@@ -203,7 +202,7 @@ public class MiscListener implements Listener {
         NBTItem nbt = new NBTItem(item);
         if (!nbt.hasKey(MadItem.DROP_TAG)) return;
         if (nbt.getBoolean(MadItem.DROP_TAG)) return;
-        event.getPlayer().sendMessage(color(English.ERROR_CANNOT_DROP_ITEM.getMsg(null)));
+        event.getPlayer().sendMessage(English.ERROR_CANNOT_DROP_ITEM.getComponent());
         event.setCancelled(true);
     }
 

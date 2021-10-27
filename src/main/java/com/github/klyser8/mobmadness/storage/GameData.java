@@ -83,7 +83,12 @@ public class GameData {
         lowHPTeam.color(NamedTextColor.RED);
     }
 
-    public int calculateScore() {
+    /**
+     * Calculates what the average score of the game is.
+     *
+     * @return the average score calculated
+     */
+    public int calculateAvgScore() {
         int score = 0;
         for (Player player : playerMap.keySet()) {
             score += player.getLevel();

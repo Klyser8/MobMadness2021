@@ -55,7 +55,6 @@ public class RandomListener implements Listener {
             if (!(entity instanceof LivingEntity)) continue;
             LivingEntity mob = (LivingEntity) entity;
             if (mob.getAttribute(Attribute.GENERIC_ARMOR) == null) continue;
-            System.out.println(mob.getAttribute(Attribute.GENERIC_ARMOR).getValue() + ": " + type.toString());
         }
     }*/
 

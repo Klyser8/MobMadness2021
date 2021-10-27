@@ -94,7 +94,9 @@ public class MadUtils {
         //Loops all entities in the current game
         for (MadEntity madEntity : gameData.getMobMap().values()) {
             //A value needs to be assigned to entity to avoid NPE.
-            if (entity == null || loc.distance(madEntity.getMob().getLocation()) < loc.distance(entity.getLocation())) {
+            if (entity == null ||
+                    (loc.distance(madEntity.getMob().getLocation()) < loc.distance(entity.getLocation())
+                    && !entity.isDead())) {
                 entity = madEntity.getMob();
             }
         }
@@ -431,45 +433,6 @@ public class MadUtils {
             }
         }
         return null;
-    }
-
-    public static void displayMobHpBar(MobMadness plugin, MadEntity madEntity, Player player, double dmg) {
-        LivingEntity entity = madEntity.getMob();
-        //The entity's current hp (Rounded up)
-        int currentHP = (int) Math.ceil(entity.getHealth() - dmg);
-        if (currentHP < 0) {
-            currentHP = 0;
-        }
-        //The entity's max hp
-        int maxHP = (int) Math.ceil(entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-        //The entity's missing hp. lastDMG is also subtracted to allow for damage display.
-        if (dmg > entity.getHealth()) {
-            dmg = entity.getHealth();
-        }
-        int missingHP;
-        if (entity.getHealth() == 0) {
-            missingHP = maxHP;
-        } else {
-            missingHP = (int) Math.ceil(maxHP - currentHP - dmg);
-        }
-        String hpSymbol = "|";
-        String hpBar = entity.getCustomName() + "&r - &4[&c";
-        hpBar += StringUtils.repeat(hpSymbol, currentHP) + "&f";
-        hpBar += StringUtils.repeat(hpSymbol, (int) Math.floor(dmg)) + "&8";
-        hpBar += StringUtils.repeat(hpSymbol, missingHP) + "&4]";
-        player.sendActionBar(color(hpBar));
-
-        if (!entity.isDead()) {
-            //Copy into effectively final variable to allow for use in scheduler
-            double finalDmg = dmg;
-            int finalCurrentHP = currentHP;
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                String finalHpBar = entity.getCustomName() + "&r - &4[&c";
-                finalHpBar += StringUtils.repeat(hpSymbol, finalCurrentHP) + "&8";
-                finalHpBar += StringUtils.repeat(hpSymbol, missingHP + (int) Math.floor(finalDmg)) + "&4]";
-                player.sendActionBar(color(finalHpBar));
-            }, 10);
-        }
     }
 
     /**

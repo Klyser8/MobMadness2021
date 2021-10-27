@@ -59,7 +59,6 @@ public final class MobMadness extends JavaPlugin {
                 PacketType.Play.Server.ENTITY_EQUIPMENT) {
             @Override
             public void onPacketSending(PacketEvent event) {
-                System.out.println("Entity equipment?");
                 Player player = event.getPlayer();
 //                }
             }
