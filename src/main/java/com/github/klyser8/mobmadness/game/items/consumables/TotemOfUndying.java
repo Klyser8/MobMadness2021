@@ -4,6 +4,8 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.storage.GameData;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -18,7 +20,6 @@ public class TotemOfUndying extends MadItem {
     }
 
     protected void setup() {
-        setDisplayName(color("&aTotem of Undying"));
         setLore(Arrays.asList(
                 "&7Allows the holder to withstand",
                 "&7fatal damage once.",

@@ -4,6 +4,8 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.util.ColorHelper;
+import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
@@ -21,7 +23,6 @@ public class IronNugget extends MadItem {
 
     protected void setup() {
         Map<String, String> tags = new HashMap<>();
-        setDisplayName(color("&9Iron Nugget"));
         setLore(Collections.singletonList(
                 "&8&oMain game currency."
         ));

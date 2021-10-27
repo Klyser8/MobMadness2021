@@ -4,6 +4,8 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.storage.GameData;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
@@ -22,7 +24,6 @@ public class ChorusFruit extends MadItem {
     }
 
     protected void setup() {
-        setDisplayName(color("&aChorus Fruit"));
         setLore(Arrays.asList(
                 "&7Teleports the user to the map's",
                 "&7spawn point upon consumption."

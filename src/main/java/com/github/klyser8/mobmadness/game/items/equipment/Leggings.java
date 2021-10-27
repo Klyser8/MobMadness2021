@@ -1,9 +1,13 @@
 package com.github.klyser8.mobmadness.game.items.equipment;
 
 import com.github.klyser8.mobmadness.MobMadness;
+import com.github.klyser8.mobmadness.game.Tier;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.storage.GameData;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -20,7 +24,6 @@ public class Leggings extends MadItem {
 
     protected void setup() {
         Map<String, String> tags = new HashMap<>();
-        setDisplayName(color(type.getName()));
 
         setTags(true, true, true, false, false, tags);
     }

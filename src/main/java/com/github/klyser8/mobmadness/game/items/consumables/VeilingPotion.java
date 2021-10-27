@@ -7,6 +7,8 @@ import com.github.klyser8.mobmadness.game.player.Profile;
 import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.util.ItemGlow;
 import com.github.klyser8.mobmadness.util.Sound;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -35,7 +37,6 @@ public class VeilingPotion extends MadItem {
     }
 
     protected void setup() {
-        setDisplayName(color("&aVeiling Potion"));
         setLore(Arrays.asList(
                 "&7Generates&f " + RUNIC_HEART_AMOUNT / 2 + "&6 \u2764&7 upon",
                 "&7consumption."

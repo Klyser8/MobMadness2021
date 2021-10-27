@@ -5,6 +5,7 @@ import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.util.Sound;
 import de.tr7zw.nbtapi.NBTItem;
 import me.mattstudios.mf.base.components.MfUtil;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.SoundCategory;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -84,6 +85,7 @@ public abstract class MadItem {
             nbt.getItem().addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         }
         nbt.setString(MM_ENUM_TAG, type.toString());
+        setDisplayName(type.getComp().color(type.getColor()));
     }
 
     /**
@@ -134,11 +136,11 @@ public abstract class MadItem {
     /**
      * Changes the display name of the item to the provided string
      *
-     * @param name the new display name
+     * @param comp text component containing the item's display name
      */
-    public void setDisplayName(String name) {
+    public void setDisplayName(TextComponent comp) {
         ItemMeta meta = nbt.getItem().getItemMeta();
-        meta.setDisplayName(name);
+        meta.displayName(comp);
         nbt.getItem().setItemMeta(meta);
     }
 

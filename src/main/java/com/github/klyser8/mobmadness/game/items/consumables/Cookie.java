@@ -5,6 +5,8 @@ import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.util.Sound;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.SoundCategory;
@@ -31,7 +33,6 @@ public class Cookie extends MadItem {
     }
 
     protected void setup() {
-        setDisplayName(color("&aCookie"));
         setLore(Arrays.asList(
                 "&7Instantly restores&f 0.5&c \u2764",
                 "&7upon consumption."

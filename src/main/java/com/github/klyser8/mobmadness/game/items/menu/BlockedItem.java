@@ -22,7 +22,6 @@ public class BlockedItem extends MadItem {
 
     @Override
     public void setup() {
-        setDisplayName(color("&4&uUnavailable"));
         setTags(false, false, true,
                 false, false, null);
     }

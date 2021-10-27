@@ -59,7 +59,6 @@ public class Railgun extends MadItem implements MadWeapon {
     protected void setup() {
         createData(this);
 
-        setDisplayName(color(type.getName()));
         createLore();
         setTags(false, false, true,
                 false, true, null);

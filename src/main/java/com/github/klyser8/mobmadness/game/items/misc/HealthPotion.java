@@ -5,6 +5,8 @@ import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.game.items.consumables.MadPotion;
 import com.github.klyser8.mobmadness.storage.GameData;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Color;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -26,7 +28,6 @@ public class HealthPotion extends MadItem implements MadPotion {
     @Override
     protected void setup() {
         createPotionMeta();
-        setDisplayName(color("&aHealth Potion"));
         setLore(Arrays.asList(
                 "&7Heals you and nearby allies",
                 "&7by up to &f2 &c\u2764",

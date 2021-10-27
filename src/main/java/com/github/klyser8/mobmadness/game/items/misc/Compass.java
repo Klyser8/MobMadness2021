@@ -4,6 +4,9 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.util.ColorHelper;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -23,7 +26,6 @@ public class Compass extends MadItem {
 
     protected void setup() {
         Map<String, String> tags = new HashMap<>();
-        setDisplayName(color("&bMob Tracker || Shop"));
         setLore(Arrays.asList(
                 "&3Mob Tracker:&7 Shows the location",
                 "&7of the closest enemy when held.",

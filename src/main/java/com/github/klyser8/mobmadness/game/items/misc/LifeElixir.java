@@ -4,7 +4,9 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.util.ColorHelper;
 import com.github.klyser8.mobmadness.util.Sound;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
@@ -38,7 +40,6 @@ public class LifeElixir extends MadItem {
     }
 
     protected void setup() {
-        setDisplayName(color("&aLife Elixir"));
         setLore(Arrays.asList(
                 "&7Increases your maximum health",
                 "&7by&f 1&c \u2764",

@@ -24,6 +24,9 @@ import com.github.klyser8.mobmadness.lang.English;
 import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.util.Sound;
 import de.tr7zw.nbtapi.NBTItem;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.SoundCategory;
@@ -151,8 +154,11 @@ public class ShopInventory {
         random = new Random();
         consumables = new HashMap<>();
         Tier tier = gameData.getTier();
-        String invName = tier.getColorCode() + "Tier &l" + tier.getTierString() + " &r" + tier.getColorCode() + "shop";
-        shop = Bukkit.createInventory(null, 54, color(invName));
+        TextComponent invComp = Component.text("Tier ").color(tier.getTierColor())
+                .append(tier.getTierComp().decoration(TextDecoration.BOLD, true)
+                .append(Component.text(" shop").color(tier.getTierColor())
+                        .decoration(TextDecoration.BOLD, false)));
+        shop = Bukkit.createInventory(null, 54, invComp);
         blankItem = new BlankItem(plugin, gameData);
         brokeSound = new Sound("entity.item.break", 0.5f, 2.0f);
         purchaseSound = new Sound("block.note_block.pling", 0.5f, 2.0f);

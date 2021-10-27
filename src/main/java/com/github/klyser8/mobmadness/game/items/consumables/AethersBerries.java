@@ -4,7 +4,9 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.util.ColorHelper;
 import com.github.klyser8.mobmadness.util.Sound;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -26,7 +28,6 @@ public class AethersBerries extends MadItem {
     }
 
     protected void setup() {
-        setDisplayName(color("&aAether's Berries"));
         setLore(Arrays.asList(
                 "&7Can be used to partially",
                 "&7charge the &5Respawn Anchor.",

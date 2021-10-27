@@ -12,11 +12,13 @@ public class ColorHelper implements TextColor {
     private static final int INDIGO_VALUE = 0xae93cf;
     private static final int FUCHSIA_VALUE = 0xd10870;
     private static final int ORANGE_VALUE = 0xff7700;
-    private static final int LIME_VALUE = 0xfbff00;
+    private static final int LIME_VALUE = 0xc8ff00;
     private static final int REAL_AQUA_VALUE = 0x00ffc3;
     private static final int BROWN_VALUE = 0x754400;
     private static final int LIGHT_GRAY_VALUE = 0xc9c9c9;
     private static final int HONEYSACKLE_VALUE = 0xedfc84;
+    private static final int EGGPLANT_VALUE = 0x91438a;
+    private static final int METALLIC_BLUE_VALUE = 0x4f70a8;
 
     public static final ColorHelper MID_GREEN = new ColorHelper("mid_green", MID_GREEN_VALUE);
     public static final ColorHelper INDIGO = new ColorHelper("indigo", INDIGO_VALUE);
@@ -27,6 +29,8 @@ public class ColorHelper implements TextColor {
     public static final ColorHelper BROWN = new ColorHelper("brown", BROWN_VALUE);
     public static final ColorHelper LIGHT_GRAY = new ColorHelper("light_gray", LIGHT_GRAY_VALUE);
     public static final ColorHelper HONEYSACKLE = new ColorHelper("honeysackle", HONEYSACKLE_VALUE);
+    public static final ColorHelper EGGPLANT = new ColorHelper("eggplant", EGGPLANT_VALUE);
+    public static final ColorHelper METALLIC_BLUE = new ColorHelper("metallic_blue", METALLIC_BLUE_VALUE);
 
     private static final String RAW_GRADIENT_HEX_REGEX = "<\\$#[A-Fa-f0-9]{6}>";
 

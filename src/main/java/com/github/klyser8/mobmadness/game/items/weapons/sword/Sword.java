@@ -35,7 +35,6 @@ public class Sword extends MadItem implements MadWeapon {
 
         setTags(false, false, true,
                 false, true, null);
-        setDisplayName(color(type.getName()));
         createLore();
         nbt.setBoolean(WEAPON_TAG, true);
         nbt.setDouble(DAMAGE_TAG, data.getDamage());

@@ -6,6 +6,8 @@ import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.util.Sound;
 import com.github.klyser8.mobmadness.util.MadUtils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Waterlogged;
@@ -38,7 +40,6 @@ public class DetonationOrb extends MadItem {
     }
 
     protected void setup() {
-        setDisplayName(color("&aDetonation Orb"));
         setLore(Arrays.asList(
                 "&7Places a trap on the ground which",
                 "&7activates after a short delay.",

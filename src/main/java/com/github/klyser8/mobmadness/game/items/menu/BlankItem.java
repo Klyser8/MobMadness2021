@@ -39,7 +39,6 @@ public class BlankItem extends MadItem {
                 break;
         }
         nbt.getItem().setType(type);
-        setDisplayName(color("&k"));
         setTags(false, false, true,
                 false, false, null);
     }

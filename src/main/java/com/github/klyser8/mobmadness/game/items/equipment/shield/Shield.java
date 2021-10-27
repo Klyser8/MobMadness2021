@@ -1,9 +1,13 @@
 package com.github.klyser8.mobmadness.game.items.equipment.shield;
 
 import com.github.klyser8.mobmadness.MobMadness;
+import com.github.klyser8.mobmadness.game.Tier;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.storage.GameData;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.Banner;
@@ -32,7 +36,6 @@ public class Shield extends MadItem { //TODO fix shield durability not going dow
 
     @Override
     protected void setup() {
-        setDisplayName(color(type.getName()));
         createLore();
         createShieldPatterns();
         nbt.setInteger(MAX_DURABILITY_TAG, data.getMaxDurability());

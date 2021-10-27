@@ -65,7 +65,6 @@ public class Trider extends MadItem implements MadWeapon {
         createData(this);
         setTags(false, false, true,
                 false, true, null);
-        setDisplayName(color(type.getName()));
         createLore();
         nbt.setBoolean(WEAPON_TAG, true);
         nbt.setDouble(DAMAGE_TAG, data.getDamage());

@@ -5,6 +5,8 @@ import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.util.Sound;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
@@ -30,7 +32,6 @@ public class ThrowableTNT extends MadItem {
     }
 
     protected void setup() {
-        setDisplayName(color("&aThrowable TNT"));
         setLore(Arrays.asList(
                 "&7Light-weight TNT which can",
                 "&7be thrown by&f right-clicking&7.",

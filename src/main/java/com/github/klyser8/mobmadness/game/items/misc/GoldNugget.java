@@ -4,6 +4,9 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.util.ColorHelper;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -24,7 +27,6 @@ public class GoldNugget extends MadItem {
 
     protected void setup() {
         Map<String, String> tags = new HashMap<>();
-        setDisplayName(color("&6Gold Nugget"));
         setLore(Arrays.asList(
                 "&8&oMain game currency.",
                 "&8&oWorth 64 Iron Nuggets."

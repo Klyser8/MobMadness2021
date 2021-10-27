@@ -6,6 +6,8 @@ import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.game.player.Profile;
 import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.util.Sound;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -37,7 +39,6 @@ public class Barricade extends MadItem {
     }
 
     protected void setup() {
-        setDisplayName(color(type.getName()));
         setLore(Arrays.asList(
                 "&7Builds a short lasting",
                 "&f3x2 &7barricade where clicked."
