@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 
 import static com.github.klyser8.mobmadness.util.MadUtils.getPlayerGame;
 
@@ -21,7 +22,7 @@ public class SoulStateListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler                                     //Prevent mobs with the "Dazzled" soul state from damaging players
+    /*@EventHandler                                     //Prevent mobs with the "Dazzled" soul state from damaging players
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof LivingEntity)) return;
         LivingEntity damager = (LivingEntity) event.getDamager();
@@ -32,7 +33,7 @@ public class SoulStateListener implements Listener {
             if (gameData == null) return;
             MadEntity madMob = gameData.getMobMap().get(damager);
             if (madMob != null) {
-                if (/*damager.hasMetadata(Dazzled.DAZZLED_TAG)*/
+                if (*//*damager.hasMetadata(Dazzled.DAZZLED_TAG)*//*
                         madMob.getCurrentSoulStates().containsKey(SoulStateType.DAZZLED)) {
                     event.setCancelled(true);
                 }
@@ -52,10 +53,28 @@ public class SoulStateListener implements Listener {
                 if (shooter == null) return;
                 MadEntity madMob = gameData.getMobMap().get(shooter);
                 if (madMob != null) {
-                    if (/*shooter.hasMetadata(Dazzled.DAZZLED_TAG)*/
+                    if (*//*shooter.hasMetadata(Dazzled.DAZZLED_TAG)*//*
                             madMob.getCurrentSoulStates().containsKey(SoulStateType.DAZZLED)) {
                         event.setCancelled(true);
                     }
+                }
+            }
+        }
+    }*/
+
+    @EventHandler
+    public void onEntityTarget(EntityTargetLivingEntityEvent event) {
+        if (!(event.getEntity() instanceof LivingEntity)) return;
+        LivingEntity targeter = (LivingEntity) event.getEntity();
+        LivingEntity target = event.getTarget();
+        if (target instanceof Player) {
+            Player victim = (Player) target;
+            GameData gameData = getPlayerGame(plugin, victim);
+            if (gameData == null) return;
+            MadEntity madMob = gameData.getMobMap().get(targeter);
+            if (madMob != null) {
+                if (madMob.getCurrentSoulStates().containsKey(SoulStateType.DAZZLED)) {
+                    event.setTarget(null);
                 }
             }
         }

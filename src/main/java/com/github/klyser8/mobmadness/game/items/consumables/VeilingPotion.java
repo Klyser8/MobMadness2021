@@ -9,6 +9,7 @@ import com.github.klyser8.mobmadness.util.ItemGlow;
 import com.github.klyser8.mobmadness.util.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static me.mattstudios.mf.base.components.MfUtil.color;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public class VeilingPotion extends MadItem {
 
@@ -37,9 +39,12 @@ public class VeilingPotion extends MadItem {
     }
 
     protected void setup() {
-        setLore(Arrays.asList(
-                "&7Generates&f " + RUNIC_HEART_AMOUNT / 2 + "&6 \u2764&7 upon",
-                "&7consumption."
+        setCompLore(Arrays.asList(
+                Component.text("Generates ").color(GRAY)
+                        .append(Component.text(String.valueOf(RUNIC_HEART_AMOUNT / 2)).color(WHITE))
+                        .append(Component.text(" \u2764 ").color(GOLD))
+                        .append(Component.text("upon").color(GRAY)),
+                Component.text("upon consumption").color(NamedTextColor.GRAY)
         ));
 
         setTags(true, false, true, false, false, null);

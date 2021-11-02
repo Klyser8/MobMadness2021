@@ -7,6 +7,7 @@ import com.github.klyser8.mobmadness.game.items.consumables.MadPotion;
 import com.github.klyser8.mobmadness.storage.GameData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Color;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -17,6 +18,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.*;
 
 import static me.mattstudios.mf.base.components.MfUtil.color;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public class HealthPotion extends MadItem implements MadPotion {
 
@@ -28,12 +30,16 @@ public class HealthPotion extends MadItem implements MadPotion {
     @Override
     protected void setup() {
         createPotionMeta();
-        setLore(Arrays.asList(
-                "&7Heals you and nearby allies",
-                "&7by up to &f2 &c\u2764",
-                "&8--------------------------------",
-                "&8&oAmount healed based on distance",
-                "&8&ofrom the potion."
+        setCompLore(Arrays.asList(
+                Component.text("Heals you and nearby allies").color(NamedTextColor.GRAY),
+                Component.text("by up to ").color(NamedTextColor.GRAY)
+                        .append(Component.text("2 ").color(WHITE))
+                        .append(Component.text("\u2764").color(RED)),
+                Component.text("--------------------------------").color(DARK_GRAY),
+                Component.text("Amount healed based on distance").color(DARK_GRAY)
+                        .decoration(TextDecoration.ITALIC, true),
+                Component.text("from the potion's splash.").color(DARK_GRAY)
+                        .decoration(TextDecoration.ITALIC, true)
         ));
         setTags(true, false, true,
                 false, false, null);

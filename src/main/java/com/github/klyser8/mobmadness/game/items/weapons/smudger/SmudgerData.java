@@ -28,11 +28,11 @@ public class SmudgerData extends WeaponData {
     private void setup() {
         switch (type) {
             case DEFECTIVE_SMUDGER:
-                damage = 0.5;
+                damage = 0.4;
                 pellets = 20;
                 pelletSpread = 30;
-                pelletRange = 25;
-                cooldown = 40;
+                pelletRange = 30;
+                cooldown = 50;
 
                 rgb = 100;
                 knockback = 0.025;
@@ -42,11 +42,11 @@ public class SmudgerData extends WeaponData {
                 longCooldown = 160;
                 break;
             case PLEASANT_SMUDGER:
-                damage = 0.8;
+                damage = 0.6;
                 pellets = 20;
                 pelletSpread = 30;
-                pelletRange = 27;
-                cooldown = 36;
+                pelletRange = 32;
+                cooldown = 47;
 
                 rgb = 80;
                 knockback = 0.025;
@@ -56,11 +56,11 @@ public class SmudgerData extends WeaponData {
                 longCooldown = 156;
                 break;
             case SILVER_PLATED_SMUDGER:
-                damage = 1.3;
+                damage = 0.9;
                 pellets = 20;
                 pelletSpread = 30;
-                pelletRange = 29;
-                cooldown = 32;
+                pelletRange = 34;
+                cooldown = 44;
                 rgb = 60;
 
                 ultDamage = 1.95;
@@ -68,11 +68,11 @@ public class SmudgerData extends WeaponData {
                 longCooldown = 152;
                 break;
             case LUSTROUS_SMUDGER:
-                damage = 2.0;
+                damage = 1.3;
                 pellets = 20;
                 pelletSpread = 30;
-                pelletRange = 31;
-                cooldown = 28;
+                pelletRange = 36;
+                cooldown = 41;
 
                 rgb = 40;
                 knockback = 0.025;
@@ -82,11 +82,11 @@ public class SmudgerData extends WeaponData {
                 longCooldown = 148;
                 break;
             case DRACONIC_SMUDGER:
-                damage = 3.2;
+                damage = 1.8;
                 pellets = 20;
                 pelletSpread = 30;
-                pelletRange = 33;
-                cooldown = 24;
+                pelletRange = 38;
+                cooldown = 38;
 
                 rgb = 20;
                 knockback = 0.025;
@@ -96,11 +96,11 @@ public class SmudgerData extends WeaponData {
                 longCooldown = 144;
                 break;
             case POSSESSED_SMUDGER:
-                damage = 5.0;
+                damage = 2.4;
                 pellets = 20;
                 pelletSpread = 30;
-                pelletRange = 35;
-                cooldown = 20;
+                pelletRange = 40;
+                cooldown = 35;
 
                 rgb = 0;
                 knockback = 0.025;

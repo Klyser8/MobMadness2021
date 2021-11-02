@@ -4,6 +4,7 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.util.ColorHelper;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
@@ -24,15 +25,15 @@ public class ChorusFruit extends MadItem {
     }
 
     protected void setup() {
-        setLore(Arrays.asList(
-                "&7Teleports the user to the map's",
-                "&7spawn point upon consumption."
+        setCompLore(Arrays.asList(
+                Component.text("Teleports the user to the map's").color(NamedTextColor.GRAY),
+                Component.text("Respawn Anchor").color(ColorHelper.INDIGO)
         ));
         setTags(true, false, true, false, false, null);
     }
 
     /**
-     * Teleports the player to the spawn point of the current map.
+     * Teleports the player to the map's Respawn Anchor.
      *
      * @param event an instance of {@link PlayerTeleportEvent}
      */

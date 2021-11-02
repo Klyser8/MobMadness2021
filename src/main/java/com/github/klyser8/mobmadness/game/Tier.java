@@ -70,15 +70,15 @@ public enum Tier {
      * @return
      */
     public static Tier getTierUsingScore(int score) {
-        if (score < I.minScore) {
+        if (score < II.minScore) {
             return I;
-        } else if (score < II.minScore) {
-            return II;
         } else if (score < III.minScore) {
-            return III;
+            return II;
         } else if (score < IV.minScore) {
-            return IV;
+            return III;
         } else if (score < V.minScore) {
+            return IV;
+        } else if (score < VI.minScore) {
             return V;
         } else {
             return VI;

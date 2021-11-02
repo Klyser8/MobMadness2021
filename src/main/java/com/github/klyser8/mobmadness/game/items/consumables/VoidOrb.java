@@ -7,6 +7,7 @@ import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.util.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Particle;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
@@ -21,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static me.mattstudios.mf.base.components.MfUtil.color;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
 
 public class VoidOrb extends MadItem {
 
@@ -34,13 +36,16 @@ public class VoidOrb extends MadItem {
     }
 
     protected void setup() {
-        setLore(Arrays.asList(
-                "&7Dematerializes mobs near the",
-                "&7landing location of this item.",
-                "&8--------------------------------",
-                "&8&oDematerialized mobs do not die,",
-                "&8&oinstead simply despawn.",
-                "&8&oDoes not work on bosses."
+        setCompLore(Arrays.asList(
+                Component.text("Dematerializes mobs near the").color(NamedTextColor.GRAY),
+                Component.text("landing location of this item").color(NamedTextColor.GRAY),
+                Component.text("--------------------------------").color(DARK_GRAY),
+                Component.text("Demateralized mobs do not die,").color(DARK_GRAY)
+                        .decoration(TextDecoration.ITALIC, true),
+                Component.text("Instead simply despawn.").color(DARK_GRAY)
+                        .decoration(TextDecoration.ITALIC, true),
+                Component.text("Ineffective against bosses.").color(DARK_GRAY)
+                        .decoration(TextDecoration.ITALIC, true)
         ));
 
         setTags(true, false, true, false, false, null);

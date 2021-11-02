@@ -1,25 +1,24 @@
 package com.github.klyser8.mobmadness.game.mob;
 
-import com.destroystokyo.paper.entity.Pathfinder;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.mob.loot.LootTable;
 import com.github.klyser8.mobmadness.game.mob.soulstates.SoulState;
 import com.github.klyser8.mobmadness.game.mob.soulstates.SoulStateType;
 import com.github.klyser8.mobmadness.storage.GameData;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public abstract class MadEntity {
 
-    public static final String MM_TAG = "mm.mm";
+    public static final String MM_TYPE_TAG = "mm.type";
     public static final String DAMAGE_TAG = "mm.damage";
     public static final String MULTIPLIER_TAG = "mm.multiplier";
     public static final String TIER_TAG = "mm.tier";
@@ -30,6 +29,10 @@ public abstract class MadEntity {
     //Shotgun Tags
     public static final String PELLETS_DMG_TAG = "mm.smudger.damage";
     public static final String PELLETS_KNOCKBACK_TAG = "mm.smudger.knockback";
+    //AI tags
+    public static final String IGNORE_PLAYERS_TAG = "mm.ai.ignore_players";
+
+    protected int generalCooldown = 0;
 
     protected final MobMadness plugin;
     protected final GameData gameData;
@@ -38,7 +41,9 @@ public abstract class MadEntity {
     protected final World world;
     protected Location spawnLoc;
 
-    protected Map<SoulStateType, SoulState> currentSoulStates;
+    protected Runnable mobRunnable = null;
+
+    protected final Map<SoulStateType, SoulState> currentSoulStates;
 
     protected LootTable lootTable;
     protected Random random;
@@ -55,15 +60,21 @@ public abstract class MadEntity {
         currentSoulStates = new HashMap<>();
     }
 
-    protected Mob spawnEntity(Location spawnLoc, double maxHP, String name, ChatColor color) {
+    protected void createLootTable() {
+
+    }
+
+    protected Mob spawnEntity(Location spawnLoc, double maxHP) {
         this.spawnLoc = spawnLoc;
         mob = (Mob) world.spawnEntity(spawnLoc, type.getEntityType(), CreatureSpawnEvent.SpawnReason.REINFORCEMENTS);
         mob.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHP);
+        mob.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(type.getDmg());
+        mob.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(type.getSpeed());
         mob.setHealth(maxHP);
-        mob.setCustomName(color + name);
+        mob.customName(type.getNameComp().color(type.getNameColor()));
         mob.setCustomNameVisible(true);
         mob.setRemoveWhenFarAway(false);
-        mob.setMetadata(MM_TAG, new FixedMetadataValue(plugin, type));
+        mob.setMetadata(MM_TYPE_TAG, new FixedMetadataValue(plugin, type));
         mob.setMetadata(DAMAGE_TAG, new FixedMetadataValue(plugin, type.getDmg()));
         mob.setMetadata(TIER_TAG, new FixedMetadataValue(plugin, gameData.getTier().getNumericTier()));
         mob.setRemoveWhenFarAway(false);
@@ -77,8 +88,17 @@ public abstract class MadEntity {
 
     public void handleDeath() {
         gameData.getMobMap().remove(mob);
-        gameData.setCurrentWeight(gameData.getCurrentWeight() + type.getWeight());
+        gameData.setCurrentWeight(gameData.getCurrentWeight() - type.getWeight());
         world.dropItem(mob.getLocation(), lootTable.calculate());
+        if (mob.getKiller() != null) {
+            Player killer = mob.getKiller();
+            killer.setLevel(killer.getLevel() + type.getWeight());
+        }
+    }
+
+    public void remove() {
+        gameData.setCurrentWeight(gameData.getCurrentWeight() - type.getWeight());
+        mob.remove();
     }
 
     public Mob getMob() {
@@ -95,5 +115,31 @@ public abstract class MadEntity {
      */
     public Location getSpawnLoc() {
         return spawnLoc;
+    }
+
+    /**
+     * Util method to check if the entity currently has a specific soul state.
+     *
+     * @param type the soul state to check for
+     * @return
+     */
+    public boolean hasSoulState(SoulStateType type) {
+        return currentSoulStates.containsKey(type);
+    }
+
+    /**
+     * Returns the general cooldown of this entity. Used for abilities.
+     * @return
+     */
+    public int getGeneralCooldown() {
+        return generalCooldown;
+    }
+
+    /**
+     * Sets the general cooldown of this entity. Used for abilities
+     * @param generalCooldown
+     */
+    public void setGeneralCooldown(int generalCooldown) {
+        this.generalCooldown = generalCooldown;
     }
 }

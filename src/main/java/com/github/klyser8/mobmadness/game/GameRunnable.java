@@ -6,12 +6,16 @@ import com.github.klyser8.mobmadness.game.mob.classic.MadCreeper;
 import com.github.klyser8.mobmadness.game.mob.classic.MadSkeleton;
 import com.github.klyser8.mobmadness.game.mob.classic.MadSpider;
 import com.github.klyser8.mobmadness.game.mob.classic.MadZombie;
+import com.github.klyser8.mobmadness.game.mob.classic.jockey.JockeySkeleton;
+import com.github.klyser8.mobmadness.game.player.Profile;
 import com.github.klyser8.mobmadness.game.world.SpawnArea;
 import com.github.klyser8.mobmadness.lang.English;
 import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.util.ComponentHelper;
 import com.github.klyser8.mobmadness.util.MadUtils;
 import com.github.klyser8.mobmadness.util.Sound;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.entity.LivingEntity;
@@ -27,7 +31,7 @@ import static java.lang.Math.abs;
  * Main game loop. This is where any loop or repeated action related to the game takes place.
  *
  */
-public class GameRunnable extends BukkitRunnable {
+public class GameRunnable implements Runnable {
 
     //How often the loop should run (In ticks)
     public static final int TICK_INTERVAL = 20;
@@ -44,6 +48,8 @@ public class GameRunnable extends BukkitRunnable {
     private final Sound tierUpSound = new Sound("entity.wither.spawn", 10.0f, 1.0f);
     //Sound played when the game's tier decreases
     private final Sound tierDownSound = new Sound("entity.ghast.scream", 10.0f, 1.0f);
+    //Sound player when a boss is summoned
+    private final Sound bossSummonedSound = new Sound("entity.evoker.prepare_summon", 10.0f, 1.0f);
 
     //Current in-game time (in seconds)
     private int clock = -60 * TICK_INTERVAL;
@@ -93,6 +99,11 @@ public class GameRunnable extends BukkitRunnable {
                 }
                 //Prevent mobs from spawning and the timer from increasing if the game hasn't started
                 if (clock > 0) {
+                    if (checkTier()) {
+                        for (Profile profile : gameData.getPlayers().values()) {
+                            profile.rerollShop();
+                        }
+                    }
                     gameData.setTime(gameData.getTime() + 1);
                     attemptMobSpawn();
                 }
@@ -105,15 +116,50 @@ public class GameRunnable extends BukkitRunnable {
         clock += TICK_INTERVAL;
     }
 
-    //TODO boss spawning sound: evoker prepare summon
-    private void checkTier() {
+    private boolean checkTier() {
         Tier calcTier = Tier.getTierUsingScore(gameData.calculateAvgScore());
-        if (gameData.getTier() == calcTier) return;
-
+        if (gameData.getTier() == calcTier || gameData.getTier() == null) return false;
         if (calcTier.getNumericTier() > gameData.getTier().getNumericTier()) {
-            tierUpSound.play(gameData.getRespawnAnchor().getLocation(), SoundCategory.NEUTRAL);
+            if (gameData.getCurrentBoss() == null) {
+                spawnBoss(calcTier);
+            } else if (gameData.getCurrentBoss().getMob().isDead()) {
+                tierUp(calcTier);
+                gameData.setCurrentBoss(null);
+                return true;
+            }
         } else {
             tierDownSound.play(gameData.getRespawnAnchor().getLocation(), SoundCategory.NEUTRAL);
+            for (Player player : gameData.getPlayers().keySet()) {
+                player.sendMessage(English.TIER_DECREASE_MSG.getComponent(calcTier.getNumericTier()));
+            }
+            gameData.setTier(calcTier);
+        }
+        return false;
+    }
+
+    private void spawnBoss(Tier calcTier) {
+        switch (calcTier) {
+            case I:
+            case II:
+            case III:
+            case IV:
+            case V:
+            case VI:
+                gameData.setCurrentBoss(
+                        new JockeySkeleton(plugin, gameData.getMapSpawnPoint().getWorld(), gameData));
+                break;
+        }
+        bossSummonedSound.play(gameData.getMapSpawnPoint(), SoundCategory.HOSTILE);
+        gameData.getCurrentBoss().spawn(gameData.getMapSpawnPoint());
+    }
+
+    private void tierUp(Tier calcTier) {
+        tierUpSound.play(gameData.getRespawnAnchor().getLocation(), SoundCategory.NEUTRAL);
+        for (Player player : gameData.getPlayers().keySet()) {
+            ComponentHelper.sendPlayerTitle(player,
+                    English.TIER_INCREASE_TITLE.getComponent(calcTier),
+                    English.TIER_INCREASE_SUBTITLE.getComponent(calcTier),
+                    20, 60, 20);
         }
         gameData.setTier(calcTier);
     }
@@ -122,7 +168,7 @@ public class GameRunnable extends BukkitRunnable {
         if (gameData.getCurrentWeight() >= gameData.getMaxWeight()) {
             for (LivingEntity entity : gameData.getMobMap().keySet()) {
                 if (entity.getTicksLived() > MOB_AGE_CAP && entity.getKiller() == null) {
-                    entity.damage(100000, null);
+                    gameData.getMobMap().get(entity).remove();
                 }
             }
         }
@@ -142,10 +188,13 @@ public class GameRunnable extends BukkitRunnable {
                 } else if (bound > 0) {
                     entity = new MadSkeleton(plugin, world, gameData);
                 }
-                break;
-            case II:
-                break;
-            case III:
+                //When the boss is alive, mobs may be replaced with spiders.
+                if (gameData.getCurrentBoss() != null
+                        && !(entity instanceof MadSpider)
+                        && random.nextBoolean()) {
+                    System.out.println("replaced bitch");
+                    entity = new MadSpider(plugin, world, gameData);
+                }
                 break;
             case IV:
                 break;

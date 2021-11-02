@@ -23,6 +23,11 @@ public class MadSkeleton extends MadEntity {
 
     public MadSkeleton(MobMadness plugin, World world, GameData gameData) {
         super(plugin, MadMobType.SKELETON, world, gameData);
+        createLootTable();
+    }
+
+    @Override
+    protected void createLootTable() {
         IronNugget ironNugget = new IronNugget(plugin, random.nextInt(3) + 1, gameData);
         Crystal crystal = new Crystal(plugin, 1, gameData);
         LootTable.LootTableBuilder builder = new LootTable.LootTableBuilder();
@@ -32,7 +37,7 @@ public class MadSkeleton extends MadEntity {
     }
 
     public void spawn(Location spawnLoc) {
-        Skeleton skeleton = (Skeleton) spawnEntity(spawnLoc, type.getHP(), "Skeleton", ChatColor.of("#cccccc"));
+        Skeleton skeleton = (Skeleton) spawnEntity(spawnLoc, type.getHP());
         skeleton.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(type.getDmg());
         skeleton.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(type.getHP());
         skeleton.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(type.getSpeed());

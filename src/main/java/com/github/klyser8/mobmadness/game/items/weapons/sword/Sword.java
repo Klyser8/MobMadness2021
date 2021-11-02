@@ -6,6 +6,8 @@ import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.game.items.weapons.MadWeapon;
 import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.game.player.Profile;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -13,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static me.mattstudios.mf.base.components.MfUtil.color;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public class Sword extends MadItem implements MadWeapon {
 
@@ -46,7 +50,7 @@ public class Sword extends MadItem implements MadWeapon {
     }
 
     private void createLore() {
-        List<String> lore = new ArrayList<>();
+        /*List<String> lore = new ArrayList<>();
         lore.add("&7Damage: &f" + data.getDamage());
         lore.add("&7Crit. Damage: &f" + data.getCritDamage());
         lore.add("&8--------------------------------");
@@ -58,7 +62,31 @@ public class Sword extends MadItem implements MadWeapon {
         lore.add("&dRadius: &f" + data.getUltRadius() + " blocks");
         lore.add("&dDelay: &f" + data.getUltDelay() / 20 + "s");
         lore.add("&dCooldown: &f" + data.getUltCooldown() / 20 + "s");
-        setLore(lore);
+        setLore(lore);*/
+        setCompLore(List.of(
+                text("Damage: ").color(GRAY)
+                        .append(text(data.getDamage()).color(WHITE)),
+                text("Crit. Damage: ").color(GRAY)
+                        .append(text(data.getCritDamage()).color(WHITE)),
+                text("--------------------------------").color(DARK_GRAY),
+                text("Shift + Right Click: ").color(DARK_PURPLE)
+                        .append(text("A beam appears").color(WHITE)),
+                text("at your location, healing players near").color(WHITE),
+                text("it after a delay").color(WHITE),
+                text(""),
+                text("Total Healing: ").color(LIGHT_PURPLE)
+                        .append(text(data.getUltHealing()).color(WHITE))
+                        .append(text(" \u2764").color(RED)),
+                text("Radius: ").color(LIGHT_PURPLE)
+                        .append(text(data.getUltRadius()).color(WHITE))
+                        .append(text(" blocks").color(WHITE)),
+                text("Delay: ").color(LIGHT_PURPLE)
+                        .append(text(data.getUltDelay() / 20).color(WHITE))
+                        .append(text("s").color(WHITE)),
+                text("Cooldown: ").color(LIGHT_PURPLE)
+                        .append(text(data.getUltCooldown() / 20).color(WHITE))
+                        .append(text("s").color(WHITE))
+        ));
     }
 
     @Override

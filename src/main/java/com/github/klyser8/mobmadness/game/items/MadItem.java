@@ -5,6 +5,7 @@ import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.util.Sound;
 import de.tr7zw.nbtapi.NBTItem;
 import me.mattstudios.mf.base.components.MfUtil;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.SoundCategory;
 import org.bukkit.enchantments.Enchantment;
@@ -75,6 +76,15 @@ public abstract class MadItem {
     protected final GameData gameData;
     protected final ItemType type;
 
+    /**
+     * Any item revolving around Mob Madness should extend this class to work correctly.
+     *
+     * @param type the "id" of the item.
+     * @param item the itemstack object for the item.
+     * @param plugin an instance of {@link MobMadness}
+     * @param gameData the game which the item should be part of
+     * @param hideAttr whether attributes should be hidden or not
+     */
     protected MadItem(ItemType type, ItemStack item, MobMadness plugin, GameData gameData, boolean hideAttr) {
         this.type = type;
         nbt = new NBTItem(item);
@@ -102,6 +112,11 @@ public abstract class MadItem {
         return nbt;
     }
 
+    /**
+     * Gets the item stack from the nbt object.
+     *
+     * @return
+     */
     public ItemStack getItemStack() {
         return nbt.getItem();
     }
@@ -159,6 +174,7 @@ public abstract class MadItem {
      * {@link MfUtil#color(String)}
      *
      * @param lore the new lore
+     * @deprecated should use {@link #setCompLore(List)} instead
      */
     public void setLore(List<String> lore) {
         ItemMeta meta = nbt.getItem().getItemMeta();
@@ -167,6 +183,18 @@ public abstract class MadItem {
             coloredLore.add(color(line));
         }
         meta.setLore(coloredLore);
+        nbt.getItem().setItemMeta(meta);
+    }
+
+    /**
+     * Replaces the lore of the item to the provided one.
+     * Requires a list of text components.
+     *
+     * @param lore the new lore
+     */
+    public void setCompLore(List<Component> lore) {
+        ItemMeta meta = nbt.getItem().getItemMeta();
+        meta.lore(lore);
         nbt.getItem().setItemMeta(meta);
     }
 

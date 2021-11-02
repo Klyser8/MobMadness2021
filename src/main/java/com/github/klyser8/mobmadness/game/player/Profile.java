@@ -3,12 +3,15 @@ package com.github.klyser8.mobmadness.game.player;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.shop.ShopInventory;
 import com.github.klyser8.mobmadness.game.items.weapons.MadWeapon;
+import com.github.klyser8.mobmadness.lang.English;
 import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.util.Sound;
+import org.bukkit.Bukkit;
 import org.bukkit.SoundCategory;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.UUID;
 
@@ -28,6 +31,8 @@ public class Profile {
     private final UUID uuid;
     //The username of the player.
     private final String name;
+    //Sound effect for when ult ability is ready
+    private final Sound ultReadySound;
 
     //The game the player is currently in.
     private final GameData currentGame;
@@ -43,7 +48,7 @@ public class Profile {
     private ShopInventory playerShop;
 
     //Profile loop.
-    private final ProfileRunnable runnable;
+    private final BukkitTask profileTask;
 
     public Profile(MobMadness plugin, Player player, GameData currentGame) {
         this.plugin = plugin;
@@ -51,8 +56,9 @@ public class Profile {
         this.uuid = player.getUniqueId();
         this.name = player.getName();
         this.currentGame = currentGame;
-        runnable = new ProfileRunnable(this, currentGame);
-        runnable.runTaskTimer(plugin, 0, ProfileRunnable.TICK_INTERVAL);
+        ultReadySound = new Sound("block.beacon.activate", 1.0f, 2.0f);
+        profileTask = Bukkit.getScheduler().runTaskTimer(plugin,
+                new ProfileRunnable(this, currentGame), 0, ProfileRunnable.TICK_INTERVAL);
         player.setExp(0.99f);
         player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(STARTING_HP);
         player.setHealth(Profile.STARTING_HP);
@@ -137,7 +143,7 @@ public class Profile {
      * Stops the profile runnable
      */
     public void stopProfileRunnable() {
-        runnable.cancel();
+        profileTask.cancel();
     }
 
     /**
@@ -164,6 +170,8 @@ public class Profile {
                 }
                 if (!isOnCooldown) {
                     player.setExp(0.99f);
+                    ultReadySound.play(player.getLocation(), SoundCategory.PLAYERS, player);
+                    player.sendMessage(English.SPECIAL_ABILITY_READY.getComponent());
                     cancel();
                 }
             }

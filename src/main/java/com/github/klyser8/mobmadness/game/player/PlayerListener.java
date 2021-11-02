@@ -74,7 +74,9 @@ public class PlayerListener implements Listener {
                     if (deadPlayer.getLocation().distance(deathLoc) > 5) {
                         deadPlayer.teleport(deathLoc);
                     }
-                    if (seconds == 30 && deadPlayer.getGameMode() == GameMode.SPECTATOR) {
+                    //After 30 seconds respawn. If the player is in survival though, respawn immediately
+                    if ((seconds >= 30 && deadPlayer.getGameMode() == GameMode.SPECTATOR)
+                            || deadPlayer.getGameMode() == GameMode.SURVIVAL) {
                         deadPlayer.teleport(gameData.getGameMap().getMapType().getSpawn());
                         clearInventory(deadPlayer);
                         addItemToSlot(deadPlayer, 8, new Compass(plugin, gameData).getItemStack());

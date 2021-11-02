@@ -280,7 +280,7 @@ public class WeaponListener implements Listener {
         NBTItem nbt = new NBTItem(item);
         String enumStr = nbt.getString(MadItem.MM_ENUM_TAG);
         if (enumStr.contains("SWORD")) {
-            if (isAttackCritical(player)) {
+            if (event.isCritical()) {
                 event.setDamage(nbt.getDouble(Sword.CRIT_DAMAGE_TAG));
             } else {
                 event.setDamage(nbt.getDouble(Sword.DAMAGE_TAG) * player.getAttackCooldown());
@@ -390,6 +390,7 @@ public class WeaponListener implements Listener {
      *
      * @param player the player to check
      * @return true if the attack's a critical hit, false otherwise.
+     * @deprecated since {@link EntityDamageByEntityEvent#isCritical()} exists
      */
     private boolean isAttackCritical(Player player) {
         return player.getFallDistance() > 0 && !player.isOnGround() && player.getAttackCooldown() == 1.0;

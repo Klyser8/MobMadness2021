@@ -39,14 +39,24 @@ public class Barricade extends MadItem {
     }
 
     protected void setup() {
-        setLore(Arrays.asList(
-                "&7Builds a short lasting",
-                "&f3x2 &7barricade where clicked."
+        setCompLore(Arrays.asList(
+                Component.text("Builds a short lasting").color(NamedTextColor.GRAY),
+                Component.text("3x2 ").color(NamedTextColor.WHITE)
+                        .append(Component.text("barricade where clicked").color(NamedTextColor.GRAY))
         ));
 
         setTags(true, false, true, false, false, null);
     }
 
+    /**
+     * Builds a 3x2 wall in front of the player, at the clicked location.
+     * The duration of the wall is {@link #BARRICADE_DURATION}, and replaces any
+     * passable block the wall is built on.
+     *
+     * @param profile the profile of the player who used the item
+     * @param item the itemstack of the consumable
+     * @param origin the 'origin' point of the wall.
+     */
     public void build(Profile profile, ItemStack item, Location origin) {
         Player player = profile.getPlayer();
         World world = player.getWorld();

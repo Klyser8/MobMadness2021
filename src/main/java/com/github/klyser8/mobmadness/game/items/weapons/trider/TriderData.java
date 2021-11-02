@@ -24,8 +24,8 @@ public class TriderData extends WeaponData {
     private void setup() {
         switch (type) {
             case IMPRUDENT_TRIDER:
-                damage = 4.0;
-                rangedDamage = 5;
+                damage = 5.0;
+                rangedDamage = 6.0;
                 loyaltyWait = 100;
                 range = 30;
 
@@ -34,8 +34,8 @@ public class TriderData extends WeaponData {
                 ultCooldown = 600;
                 break;
             case LOYAL_TRIDER:
-                damage = 5;
-                rangedDamage = 6.5;
+                damage = 6.5;
+                rangedDamage = 7.5;
                 loyaltyWait = 90;
                 range = 32.5;
 
@@ -44,8 +44,8 @@ public class TriderData extends WeaponData {
                 ultCooldown = 570;
                 break;
             case FERROUS_TRIDER:
-                damage = 6.5;
-                rangedDamage = 8.5;
+                damage = 9.5;
+                rangedDamage = 10.5;
                 loyaltyWait = 80;
                 range = 35.0;
 
@@ -54,8 +54,8 @@ public class TriderData extends WeaponData {
                 ultCooldown = 540;
                 break;
             case ANGELIC_TRIDER:
-                damage = 8.5;
-                rangedDamage = 11;
+                damage = 14.0;
+                rangedDamage = 15.0;
                 loyaltyWait = 70;
                 range = 37.5;
 
@@ -64,8 +64,8 @@ public class TriderData extends WeaponData {
                 ultCooldown = 510;
                 break;
             case HELLISH_TRIDER:
-                damage = 11;
-                rangedDamage = 14;
+                damage = 20.0;
+                rangedDamage = 21;
                 loyaltyWait = 60;
                 range = 40;
 
@@ -74,8 +74,8 @@ public class TriderData extends WeaponData {
                 ultCooldown = 480;
                 break;
             case MANIC_TRIDER:
-                damage = 14;
-                rangedDamage = 17.5;
+                damage = 26.0;
+                rangedDamage = 27.5;
                 loyaltyWait = 50;
                 range = 42.5;
 

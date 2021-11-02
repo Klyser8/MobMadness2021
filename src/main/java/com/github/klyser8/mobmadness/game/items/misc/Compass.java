@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static me.mattstudios.mf.base.components.MfUtil.color;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public class Compass extends MadItem {
 
@@ -26,13 +27,17 @@ public class Compass extends MadItem {
 
     protected void setup() {
         Map<String, String> tags = new HashMap<>();
-        setLore(Arrays.asList(
-                "&3Mob Tracker:&7 Shows the location",
-                "&7of the closest enemy when held.",
-                "&8---------------------------------",
-                "&3Shop:&7 Opens the item shop",
-                "&7when right clicked."
-        ));
+        setCompLore(Arrays.asList(
+                Component.text("Mob Tracker").color(ColorHelper.ORANGE)
+                        .append(Component.text(": Shows the location").color(GRAY)),
+                Component.text("of the closest enemy when held").color(GRAY),
+                Component.text("--------------------------------").color(DARK_GRAY),
+                Component.text("Shop").color(ColorHelper.REAL_AQUA)
+                        .append(Component.text(": Opens the item shop").color(GRAY)),
+                Component.text("when ").color(GRAY)
+                        .append(Component.text("Right-Clicked").color(WHITE))
+
+                ));
         tags.put(OPEN_SHOP_TAG, "");
         setTags(false, false, true, false, false, tags);
     }

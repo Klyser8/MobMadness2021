@@ -19,9 +19,11 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static me.mattstudios.mf.base.components.MfUtil.color;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public class Shield extends MadItem { //TODO fix shield durability not going down when hit by an arrow
 
@@ -43,9 +45,12 @@ public class Shield extends MadItem { //TODO fix shield durability not going dow
     }
 
     private void createLore() {
-        List<String> lore = new ArrayList<>();
-        lore.add("&7Durability: &e" + data.getDurability() + "&7/&f" + data.getMaxDurability());
-        setLore(lore);
+        setCompLore(Arrays.asList(
+                Component.text("Durability: ").color(GRAY)
+                        .append(Component.text(data.getDurability()).color(YELLOW))
+                        .append(Component.text("/").color(GRAY))
+                        .append(Component.text(data.getMaxDurability()).color(WHITE))
+        ));
     }
 
 

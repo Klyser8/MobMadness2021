@@ -40,12 +40,10 @@ public class DetonationOrb extends MadItem {
     }
 
     protected void setup() {
-        setLore(Arrays.asList(
-                "&7Places a trap on the ground which",
-                "&7activates after a short delay.",
-                "&7Explodes once a mob gets close.",
-                "&8--------------------------------",
-                "&8&oOnly works on mobs."
+        setCompLore(Arrays.asList(
+                Component.text("Places a trap on the ground which").color(NamedTextColor.GRAY),
+                Component.text("activates after a short delay.").color(NamedTextColor.GRAY),
+                Component.text("Explodes once a mob gets close").color(NamedTextColor.GRAY)
         ));
 
         setTags(true, false, true, false, false, null);
@@ -54,6 +52,7 @@ public class DetonationOrb extends MadItem {
     /**
      * Places down a "Dead Fire Coral Fan" above the chosen block. After which, an instance of
      * {@link DetonationOrbRunnable} is created, running every tick (0.05s).
+     * Instead of being placed above the clicked block, it may replace the block itself if it is considered passable.
      *
      * @param player the player who placed the orb
      * @param item the ItemStack of the orb

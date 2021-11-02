@@ -31,6 +31,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 import static com.github.klyser8.mobmadness.util.MadMath.isInteger;
 import static me.mattstudios.mf.base.components.MfUtil.color;
@@ -89,9 +90,10 @@ public class MadUtils {
      * @param loc
      * @return the mob closest to said location
      */
-    public static LivingEntity getMadMobClosestToLocation(Location loc, GameData gameData) {
+    /*public static LivingEntity getMadMobClosestToLocation(Location loc, GameData gameData) {
         LivingEntity entity = null;
         //Loops all entities in the current game
+        Player player;
         for (MadEntity madEntity : gameData.getMobMap().values()) {
             //A value needs to be assigned to entity to avoid NPE.
             if (entity == null ||
@@ -101,6 +103,12 @@ public class MadUtils {
             }
         }
         return entity;
+    }*/
+    public static LivingEntity getMadMobClosestToLocation(Location loc) {
+        List<LivingEntity> nearbyEntities = (List<LivingEntity>) loc.getNearbyLivingEntities(100, 20, 100);
+        nearbyEntities.removeIf(livingEntity -> livingEntity instanceof Player);
+        nearbyEntities.sort(Comparator.comparingDouble(o -> o.getLocation().distanceSquared(loc)));
+        return nearbyEntities.size() == 0 ? null : nearbyEntities.get(0);
     }
 
     /** Returns the closest mob to the player.

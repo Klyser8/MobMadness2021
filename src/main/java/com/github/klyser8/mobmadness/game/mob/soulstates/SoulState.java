@@ -3,6 +3,7 @@ package com.github.klyser8.mobmadness.game.mob.soulstates;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.mob.MadEntity;
 import com.github.klyser8.mobmadness.storage.GameData;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * A soul state is what Mob Madness's potion effects/status effects are called.
@@ -15,9 +16,11 @@ public abstract class SoulState {
     protected final GameData gameData;
     protected final SoulStateType type;
     protected final MadEntity entity;
-    protected final int level;
-    protected final int duration; //in ticks
+    protected int level;
+    protected int duration; //in ticks
     protected int currentDuration; //in ticks
+
+    protected final boolean applied;
 
     protected SoulState(MobMadness plugin, GameData gameData, SoulStateType type, MadEntity entity,
                         int level, int duration) {
@@ -28,22 +31,70 @@ public abstract class SoulState {
         this.level = level;
         this.duration = duration;
         this.currentDuration = duration;
+        //Checks whether the entity already has a soul state of this type. If the entity does, the soul state is stopped
+        //And replaced with this new instance (only if this new one is judged to be stronger).
+        if (!entity.getCurrentSoulStates().containsKey(type)
+                || entity.getCurrentSoulStates().get(type).level < level
+                || entity.getCurrentSoulStates().get(type).getCurrentDuration() < currentDuration) {
+            if (entity.getCurrentSoulStates().containsKey(type)) {
+                entity.getCurrentSoulStates().get(type).endSoulState();
+            }
+            entity.getCurrentSoulStates().put(type, this);
+            applied = true;
+        } else {
+            applied = false;
+        }
     }
+
+    /**
+     * This is what runs the SoulState's code every tick.
+     * However, this will start only if the soul state was applied correctly.
+     */
+    protected void runSoulState(int particleInterval, int soundInterval) {
+        startSoulState();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                applySoulStateLoop();
+                if (currentDuration % particleInterval == 0) {
+                    playSoulStateParticles();
+                }
+                if (currentDuration % soundInterval == 0) {
+                    playSoulStateSounds();
+                }
+                System.out.println(currentDuration);
+                currentDuration--;
+                if (currentDuration == 0 || entity.getMob().isDead()) {
+                    cancel();
+                    endSoulState();
+                }
+            }
+        }.runTaskTimer(plugin, 1, 1);
+    }
+
+    /**
+     * Logic to start the soul state. Only runs once, at the beginning.
+     */
+    protected abstract void startSoulState();
 
     /**
      * Logic to run the soul state itself. This is where the code dictating the soul state's behavior is written.
      */
-    public abstract void runSoulState();
+    protected abstract void applySoulStateLoop();
 
     /**
      * Logic which plays particle effects for the soul state
      */
-    public abstract void playSoulStateParticles();
+    protected abstract void playSoulStateParticles();
 
     /**
      * Logic which plays sound effects for the soul state
      */
-    public abstract void playSoulStateSounds();
+    protected abstract void playSoulStateSounds();
+
+    public void endSoulState() {
+        entity.getCurrentSoulStates().remove(getType());
+    }
 
     public SoulStateType getType() {
         return type;
@@ -53,8 +104,19 @@ public abstract class SoulState {
         return level;
     }
 
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
     public int getDuration() {
         return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+        if (currentDuration > this.duration) {
+            currentDuration = this.duration;
+        }
     }
 
     public int getCurrentDuration() {

@@ -24,6 +24,11 @@ public class MadSpider extends MadEntity {
 
     public MadSpider(MobMadness plugin, World world, GameData gameData) {
         super(plugin, MadMobType.SPIDER, world, gameData);
+        createLootTable();
+    }
+
+    @Override
+    protected void createLootTable() {
         IronNugget ironNugget = new IronNugget(plugin, random.nextInt(2) + 1, gameData);
         Crystal crystal = new Crystal(plugin, 1, gameData);
         LootTable.LootTableBuilder builder = new LootTable.LootTableBuilder();
@@ -33,14 +38,14 @@ public class MadSpider extends MadEntity {
     }
 
     public void spawn(Location spawnLoc) {
-        Spider spider = (Spider) spawnEntity(spawnLoc, type.getHP(), "Spider", ChatColor.of("#cccccc"));
+        Spider spider = (Spider) spawnEntity(spawnLoc, type.getHP());
         spider.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(type.getDmg());
         spider.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(type.getHP());
         spider.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(type.getSpeed());
         for (PotionEffect effect : spider.getActivePotionEffects()) {
             spider.removePotionEffect(effect.getType());
         }
-        spider.setTarget(MadUtils.pickRandomPlayer(gameData.getPlayers().keySet()));
+//        spider.damage(0, MadUtils.pickRandomPlayer(gameData.getPlayers().keySet()));
     }
 
 }

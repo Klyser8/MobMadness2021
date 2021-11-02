@@ -2,9 +2,11 @@ package com.github.klyser8.mobmadness.game.mob.soulstates;
 
 public enum SoulStateType {
 
-    //Marked enemies are slowed down slightly and take extra damage from arrows
+    //Marked entities are slowed down slightly and take extra damage from arrows
     MARKED,
-    //Dazzled enemies cannot target players
-    DAZZLED
+    //Dazzled entities cannot target players
+    DAZZLED,
+    //Hasted entities move 10% x level faster
+    HASTED
 
 }

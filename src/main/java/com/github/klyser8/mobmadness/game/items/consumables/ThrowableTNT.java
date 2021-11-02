@@ -7,6 +7,7 @@ import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.util.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
@@ -32,12 +33,14 @@ public class ThrowableTNT extends MadItem {
     }
 
     protected void setup() {
-        setLore(Arrays.asList(
-                "&7Light-weight TNT which can",
-                "&7be thrown by&f right-clicking&7.",
-                "&8--------------------------------",
-                "&8&oThe explosion does not damage",
-                "&8&onearby players."
+        setCompLore(Arrays.asList(
+                Component.text("Light-weight TNT which can").color(NamedTextColor.GRAY),
+                Component.text("be thrown by ").color(NamedTextColor.GRAY)
+                        .append(Component.text("right-clicking.").color(NamedTextColor.WHITE)),
+                Component.text("--------------------------------").color(NamedTextColor.DARK_GRAY),
+                Component.text("The explosion does not damage").color(NamedTextColor.DARK_GRAY)
+                        .decoration(TextDecoration.ITALIC, true),
+                Component.text("nearby players").color(NamedTextColor.DARK_GRAY)
         ));
 
         setTags(true, false, true, false, false, null);

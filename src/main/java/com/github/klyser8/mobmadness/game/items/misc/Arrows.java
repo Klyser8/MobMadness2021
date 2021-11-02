@@ -8,9 +8,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static me.mattstudios.mf.base.components.MfUtil.color;
+import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 
 public class Arrows extends MadItem {
 
@@ -20,8 +23,8 @@ public class Arrows extends MadItem {
     }
 
     protected void setup() {
-        setLore(Collections.singletonList(
-                "&7Used for Crossbows and Bows"
+        setCompLore(List.of(
+                Component.text("Used in Bows and Crossbows").color(GRAY)
         ));
 
         setTags(true, false, true, false, false, null);

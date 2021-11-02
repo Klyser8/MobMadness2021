@@ -19,6 +19,7 @@ import org.bukkit.entity.Trident;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Consumer;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -113,7 +114,9 @@ public class Trider extends MadItem implements MadWeapon {
                             trident.getVelocity().getZ() * (double)i / 4.0), 1,
                             0.01, 0.01, 0.01, 0.25);
                 }
-                if (groundClock == data.getLoyaltyWait()) {
+                if (groundClock == data.getLoyaltyWait()
+                        && shooter.getGameMode() == GameMode.SURVIVAL
+                        && !shooter.getInventory().contains(Material.TRIDENT)) {
                     returnTrident();
                 }
                 //Despawn trident if player has died!
@@ -132,6 +135,7 @@ public class Trider extends MadItem implements MadWeapon {
              * Returns the trident to the player, with added particle effects and sounds.
              */
             private void returnTrident() {
+                System.out.println("return");
                 shooter.getInventory().addItem(trident.getItem());
                 Vector direction = getDirectionBetweenLocations(
                         trident.getLocation(), shooter.getEyeLocation()).normalize();
@@ -150,6 +154,10 @@ public class Trider extends MadItem implements MadWeapon {
                 trident.remove();
             }
         }.runTaskTimer(plugin, 1, 1);
+    }
+
+    private void calculateTrident(Consumer<Trident> consumer) {
+//        consumer.accept(consumer);
     }
 
     //particles for trident: 1. Glow 2. Glow_squid_ink 3. scrape
@@ -222,9 +230,8 @@ public class Trider extends MadItem implements MadWeapon {
                     modifiedDistance = 1;
                 }
                 int dazzleDuration = (int) (data.getUltDazzleMaxDuration() / modifiedDistance);
-                double damage = data.getRangedDamage() / modifiedDistance;
-                SoulState state = new Dazzled(plugin, gameData, SoulStateType.DAZZLED, madMob, dazzleDuration);
-                madMob.getCurrentSoulStates().put(state.getType(), state);
+                double damage = data.getRangedDamage() / (modifiedDistance * 2);
+                new Dazzled(plugin, gameData, madMob, dazzleDuration);
                 //avoid damaging the same entity twice.
                 if (hitEntity == null || !hitEntity.getUniqueId().equals(mob.getUniqueId())) {
                     mob.damage(damage, trident);

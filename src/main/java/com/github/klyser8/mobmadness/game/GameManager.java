@@ -4,6 +4,7 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.consumables.AethersBerries;
 import com.github.klyser8.mobmadness.game.items.misc.Compass;
 import com.github.klyser8.mobmadness.game.items.misc.IronNugget;
+import com.github.klyser8.mobmadness.game.mob.MadEntity;
 import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.game.player.Profile;
 import com.github.klyser8.mobmadness.game.world.GameMap;
@@ -67,15 +68,15 @@ public class GameManager {
             Profile profile = gameData.getPlayers().get(player);
             profile.stopProfileRunnable();
             profile.stopCooldown();
-            gameData.getPlayers().remove(player);
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(Profile.STARTING_HP);
             player.setHealth(Profile.STARTING_HP);
         }
-        for (LivingEntity entity : gameData.getMobMap().keySet()) {
+        for (MadEntity entity : gameData.getMobMap().values()) {
             entity.remove();
         }
-        gameData.getGameRunnable().cancel();
-        Block anchorBlock = gameData.getMapSpawnPoint().add(0, -1, 0).getBlock();
+        gameData.getPlayers().clear();
+        gameData.getMobMap().clear();
+        gameData.getGameTask().cancel();
         //Resets the respawn anchor to 0 charges.
         gameData.setAnchorCharges(0);
         gamesMap.remove(mapType);

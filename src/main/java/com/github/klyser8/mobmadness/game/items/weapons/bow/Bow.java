@@ -16,7 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static me.mattstudios.mf.base.components.MfUtil.color;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 
+//TODO Change bow ultimate to use a "Marked" soul state
 public class Bow extends MadItem implements MadWeapon {
 
     private BowData data;
@@ -56,13 +60,36 @@ public class Bow extends MadItem implements MadWeapon {
         lore.add("&5Left-Click: &fAllows the user to dash");
         lore.add("&fin a direction, tossing any enemy hit");
         lore.add("&fbackwards and&3 marking&f it.");
-        lore.add("&3&oMarked&7: &otakes extra damage");
-        lore.add("&7&ofrom a subsequent arrow.");
         lore.add("");
         lore.add("&dExtra Damage: &f" + data.getUltDmgMultiplier() * 100 + "%");
         lore.add("&dCooldown: &f" + data.getUltCooldown() / 20 + "s");
         lore.add("&dMark Duration: &f" + data.getUltMarkDuration() / 20 + "s");
         setLore(lore);
+        /*setCompLore(List.of(
+                text("Damage: ").color(GRAY)
+                        .append(text(data.getDamage() + "-" + data.getHighDamage()).color(WHITE)),
+                text("Max Range: ").color(GRAY)
+                        .append(text("80 blocks").color(WHITE)),
+                text("--------------------------------").color(DARK_GRAY),
+                text("Left-Click: ").color(DARK_PURPLE)
+                        .append(text("Allows the user to dash").color(WHITE)),
+                text("in a direction, tossing any enemy hit").color(WHITE),
+                text("backwards and ").color(WHITE)
+                        .append(text("marking ").color(DARK_AQUA))
+                        .append(text(" it").color(WHITE)),
+                text(""),
+                text("Marked Duration: ").color(LIGHT_PURPLE)
+                        .append(text(data.getUltDmgMultiplier() * 100 + "%").color(WHITE)),
+                text("Radius: ").color(LIGHT_PURPLE)
+                        .append(text(data.getUltRadius()).color(WHITE))
+                        .append(text(" blocks").color(WHITE)),
+                text("Delay: ").color(LIGHT_PURPLE)
+                        .append(text(data.getUltDelay() / 20).color(WHITE))
+                        .append(text("s").color(WHITE)),
+                text("Cooldown: ").color(LIGHT_PURPLE)
+                        .append(text(data.getUltCooldown() / 20).color(WHITE))
+                        .append(text("s").color(WHITE))
+        ));*/
     }
 
     @Override

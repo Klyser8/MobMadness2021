@@ -1,5 +1,6 @@
 package com.github.klyser8.mobmadness.lang;
 
+import com.github.klyser8.mobmadness.game.Tier;
 import com.github.klyser8.mobmadness.game.world.MapType;
 import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.util.ColorHelper;
@@ -40,6 +41,13 @@ public enum English {
 
     GAME_STARTED(Component.text("THE MADNESS HAS BEGUN!").color(ColorHelper.REAL_AQUA)
             .decoration(TextDecoration.BOLD, true)),
+    TIER_INCREASE_TITLE(Component.text("New Game Tier!").color(NamedTextColor.YELLOW)
+            .decoration(TextDecoration.BOLD, true)),
+    TIER_INCREASE_SUBTITLE(Component.text("Tier reached: ").color(NamedTextColor.GOLD)
+            .append(Component.text("<tier>").color(NamedTextColor.WHITE))),
+    TIER_DECREASE_MSG(Component.text("The game tier has decreased to: ").color(NamedTextColor.RED)
+            .decoration(TextDecoration.BOLD, true)
+            .append(Component.text("<tier>").color(NamedTextColor.WHITE))),
     GAME_OVER(Component.text("GAME OVER! ").color(NamedTextColor.DARK_RED).decoration(TextDecoration.BOLD, true)
             .append(Component.text("<player> ").color(NamedTextColor.WHITE).decoration(TextDecoration.BOLD, false))
             .append(Component.text("died after the ").color(NamedTextColor.RED))
@@ -47,6 +55,7 @@ public enum English {
             .append(Component.text("'s supply of ").color(NamedTextColor.RED))
             .append(Component.text("Aether's Berries ").color(ColorHelper.HONEYSACKLE))
             .append(Component.text("ran out").color(NamedTextColor.RED))),
+    SPECIAL_ABILITY_READY(Component.text("Your weapon's special ability is ready").color(ColorHelper.INDIGO)),
 
     PLAYER_JOIN(Component.text("<player> ").color(NamedTextColor.WHITE)
             .append(Component.text("has joined the game").color(NamedTextColor.GREEN))),
@@ -76,5 +85,10 @@ public enum English {
     public TextComponent getComponent(int time) {
         return time == 0 ? comp : (TextComponent) comp.replaceText(TextReplacementConfig.builder().match("<time>")
                 .replacement(String.valueOf(time)).build()).asComponent();
+    }
+
+    public TextComponent getComponent(Tier tier) {
+        return (TextComponent) comp.replaceText(TextReplacementConfig.builder().match("<tier>")
+                .replacement(tier.getTierComp().color(tier.getTierColor())).build()).asComponent();
     }
 }

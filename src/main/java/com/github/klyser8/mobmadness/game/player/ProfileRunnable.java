@@ -1,18 +1,22 @@
 package com.github.klyser8.mobmadness.game.player;
 
+import com.github.klyser8.mobmadness.lang.English;
 import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.util.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Consumer;
 
 import static com.github.klyser8.mobmadness.util.MadUtils.getMadMobClosestToLocation;
-import static me.mattstudios.mf.base.components.MfUtil.color;
 
-public class ProfileRunnable extends BukkitRunnable {
+public class ProfileRunnable implements Runnable {
 
     //How often the loop should run (In ticks)
     public static final int TICK_INTERVAL = 2;
@@ -38,12 +42,15 @@ public class ProfileRunnable extends BukkitRunnable {
                 player.setExp(player.getExp() + (MANA_REGEN * TICK_INTERVAL));
             }
         }
-
-        if (clock % 20 == 0 && gameData.getTime() > 0) {
-            player.setLevel(player.getLevel() + 1);
-            pointCompassAtMonster(player);
+        if (gameData.getTime() > 0) {
+            if (clock % 20 == 0) {
+                pointCompassAtMonster(player);
+            }
+            if (clock % 30 == 0) {
+                player.setLevel(player.getLevel() + 1);
+            }
         }
-        clock+= TICK_INTERVAL;
+        clock += TICK_INTERVAL;
     }
 
     /**
@@ -53,7 +60,8 @@ public class ProfileRunnable extends BukkitRunnable {
      * @param player player to execute method on.
      */
     private void pointCompassAtMonster(Player player) {
-        LivingEntity mob = getMadMobClosestToLocation(player.getLocation(), gameData);
+        if (player.getNearbyEntities(100, 20, 100).size() == 0) return;
+        LivingEntity mob = getMadMobClosestToLocation(player.getLocation());
         if (mob != null) {
             player.setCompassTarget(mob.getLocation());
             if (player.getInventory().getItemInMainHand().getType() == Material.COMPASS) {

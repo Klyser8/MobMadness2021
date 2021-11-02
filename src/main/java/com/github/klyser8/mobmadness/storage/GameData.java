@@ -3,6 +3,7 @@ package com.github.klyser8.mobmadness.storage;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.GameRunnable;
 import com.github.klyser8.mobmadness.game.Tier;
+import com.github.klyser8.mobmadness.game.mob.BossMob;
 import com.github.klyser8.mobmadness.game.mob.MadEntity;
 import com.github.klyser8.mobmadness.game.player.Profile;
 import com.github.klyser8.mobmadness.game.world.GameMap;
@@ -13,6 +14,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
@@ -48,6 +50,8 @@ public class GameData {
     //Map containing all present mobs in the game.
     private final Map<LivingEntity, MadEntity> mobMap;
 
+    private BossMob currentBoss = null;
+
     //Team containing all players with low health. Used for colored glowing
     private Team lowHPTeam;
 
@@ -56,7 +60,7 @@ public class GameData {
     //The game's scoreboard.
     private Scoreboard board;
     //Main game loop.
-    private final GameRunnable runnable;
+    private final BukkitTask gameTask;
     //Instance of the game map.
     private final GameMap map;
     //Instance of the main class
@@ -66,12 +70,11 @@ public class GameData {
         playerMap = new HashMap<>();
         mobMap = new LinkedHashMap<>();
         this.map = map;
-        this.runnable = new GameRunnable(plugin, this);
+        this.gameTask = Bukkit.getScheduler().runTaskTimer(plugin,
+                new GameRunnable(plugin, this), 0, GameRunnable.TICK_INTERVAL);
         respawnAnchor = getMapSpawnPoint().add(0, -1, 0).getBlock();
 
         setupScoreboard();
-
-        runnable.runTaskTimer(plugin, 0, GameRunnable.TICK_INTERVAL);
     }
 
     private void setupScoreboard() {
@@ -210,13 +213,13 @@ public class GameData {
     }
 
     /**
-     * Gets the {@link GameRunnable} object of the game.
+     * Gets the {@link BukkitTask} object of the game.
      * Runs all scheduled tasks of the game.
      *
-     * @return {@link #runnable}
+     * @return {@link #gameTask}
      */
-    public GameRunnable getGameRunnable() {
-        return runnable;
+    public BukkitTask getGameTask() {
+        return gameTask;
     }
 
     /**
@@ -260,4 +263,11 @@ public class GameData {
         return board;
     }
 
+    public BossMob getCurrentBoss() {
+        return currentBoss;
+    }
+
+    public void setCurrentBoss(BossMob currentBoss) {
+        this.currentBoss = currentBoss;
+    }
 }

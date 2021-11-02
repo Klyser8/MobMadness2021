@@ -7,7 +7,6 @@ public class JavaTests {
         s = s.replaceAll(".", "$0\\$");
         s = "$" + s;
         s = s.substring(0, s.length() - 1);
-        System.out.println(s);
     }
 
 }

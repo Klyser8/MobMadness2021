@@ -30,10 +30,12 @@ public class BottledHealingGas extends MadItem implements MadPotion {
     @Override
     protected void setup() {
         createPotionMeta();
-        setLore(Arrays.asList(
-                "&7Creates a healing area in the",
-                "&7location it is thrown, healing",
-                "&7up to &f15 &c\u2764"
+        setCompLore(Arrays.asList(
+                Component.text("Creates a healing area in the").color(NamedTextColor.GRAY),
+                Component.text("location it is thrown, healing").color(NamedTextColor.GRAY),
+                Component.text("up to ").color(NamedTextColor.GRAY)
+                        .append(Component.text("15 ")).color(NamedTextColor.GRAY)
+                        .append(Component.text("\u2764")).color(NamedTextColor.RED)
         ));
         setTags(true, false, true,
                 false, false, null);

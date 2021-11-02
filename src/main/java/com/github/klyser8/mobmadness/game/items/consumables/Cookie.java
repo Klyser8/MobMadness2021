@@ -33,9 +33,11 @@ public class Cookie extends MadItem {
     }
 
     protected void setup() {
-        setLore(Arrays.asList(
-                "&7Instantly restores&f 0.5&c \u2764",
-                "&7upon consumption."
+        setCompLore(Arrays.asList(
+                Component.text("Instantly restores ").color(NamedTextColor.GRAY)
+                        .append(Component.text("0.5 ").color(NamedTextColor.WHITE))
+                        .append(Component.text("\u2764").color(NamedTextColor.RED)),
+                Component.text("upon consumption").color(NamedTextColor.GRAY)
         ));
 
         setTags(true, false, true, false, false, null);

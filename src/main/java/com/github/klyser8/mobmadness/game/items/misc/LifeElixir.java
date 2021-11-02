@@ -7,6 +7,8 @@ import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.util.ColorHelper;
 import com.github.klyser8.mobmadness.util.Sound;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Location;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
@@ -20,6 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static me.mattstudios.mf.base.components.MfUtil.color;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 
 public class LifeElixir extends MadItem {
 
@@ -40,11 +44,14 @@ public class LifeElixir extends MadItem {
     }
 
     protected void setup() {
-        setLore(Arrays.asList(
-                "&7Increases your maximum health",
-                "&7by&f 1&c \u2764",
-                "&8--------------------------------",
-                "&8&oYou can only have up to 20 &c\u2764"
+        setCompLore(Arrays.asList(
+                Component.text("Grans the user ").color(NamedTextColor.GRAY)
+                        .append(Component.text("1 ").color(WHITE))
+                        .append(Component.text("\u2764").color(RED)),
+                Component.text("permanently").color(NamedTextColor.GRAY),
+                Component.text("--------------------------------").color(NamedTextColor.DARK_GRAY),
+                Component.text("You can only have up to 20 \u2764").color(NamedTextColor.DARK_GRAY)
+                        .decoration(TextDecoration.ITALIC, true)
         ));
 
         setTags(true, false, true, false, false, null);

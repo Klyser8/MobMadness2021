@@ -18,6 +18,11 @@ public class MadCreeper extends MadEntity {
 
     public MadCreeper(MobMadness plugin, World world, GameData gameData) {
         super(plugin, MadMobType.CREEPER, world, gameData);
+        createLootTable();
+    }
+
+    @Override
+    protected void createLootTable() {
         IronNugget ironNugget = new IronNugget(plugin, random.nextInt(3) + 1, gameData);
         Crystal crystal = new Crystal(plugin, 1, gameData);
         LootTable.LootTableBuilder builder = new LootTable.LootTableBuilder();
@@ -27,7 +32,7 @@ public class MadCreeper extends MadEntity {
     }
 
     public void spawn(Location spawnLoc) {
-        Creeper creeper = (Creeper) spawnEntity(spawnLoc, type.getHP(), "Creeper", ChatColor.of("#cccccc"));
+        Creeper creeper = (Creeper) spawnEntity(spawnLoc, type.getHP());
         creeper.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(type.getDmg());
         creeper.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(type.getHP());
         creeper.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(type.getSpeed());

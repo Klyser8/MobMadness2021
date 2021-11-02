@@ -10,6 +10,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
+import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.LazyMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -22,40 +23,26 @@ public class Dazzled extends SoulState {
     private final Sound dazzleSound;
 //    public static final String DAZZLED_TAG = "mm.soulstate.dazzled";
 
-    public Dazzled(MobMadness plugin, GameData gameData, SoulStateType type, MadEntity entity, int duration) {
-        super(plugin, gameData, type, entity, 1, duration);
+    public Dazzled(MobMadness plugin, GameData gameData, MadEntity entity, int duration) {
+        super(plugin, gameData, SoulStateType.DAZZLED, entity, 1, duration);
 //        dazzleSound = new Sound("block.amethyst_block.chime", 1.0f, 1.25f);
         dazzleSound = new Sound("block.amethyst_cluster.step", 0.3f, 2.0f);
 //        entity.getMob().setMetadata(DAZZLED_TAG, new FixedMetadataValue(plugin, true));
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                runSoulState();
-                playSoulStateParticles();
-                playSoulStateSounds();
-                currentDuration--;
-                if (currentDuration == 0 || entity.getMob().isDead()) {
-                    cancel();
-                    entity.getCurrentSoulStates().remove(getType());
-//                    entity.getMob().removeMetadata(DAZZLED_TAG, plugin);
-                }
-            }
-        }.runTaskTimer(plugin, 0, 1);
+        runSoulState(1, 1);
     }
 
     @Override
-    public void runSoulState() {
+    protected void startSoulState() {
+        entity.getMob().setTarget(null);
+        entity.getMob().setMetadata(MadEntity.IGNORE_PLAYERS_TAG, new FixedMetadataValue(plugin, true));
+    }
+
+    @Override
+    public void applySoulStateLoop() {
         Monster mob = (Monster) entity.getMob();
         MadEntity madMob = gameData.getMobMap().get(mob);
         if (madMob == null) return;
         mob.getPathfinder().moveTo(madMob.getSpawnLoc());
-//        MadEntity madMob = getRandomMadMob(gameData);
-//        if (madMob == null) madMob.getMob().getPathfinder().moveTo(madMob)
-//        mob.getPathfinder().moveTo(getRandomMadMob(gameData).getMob());
-        if (mob instanceof Creeper) {
-            Creeper creeper = (Creeper) mob;
-            creeper.setIgnited(false);
-        }
     }
 
     @Override
@@ -72,6 +59,12 @@ public class Dazzled extends SoulState {
 
     @Override
     public void playSoulStateSounds() {
-        dazzleSound.play(entity.getMob().getEyeLocation(), SoundCategory.HOSTILE);
+        dazzleSound.play(entity.getMob().getEyeLocation(), SoundCategory.AMBIENT);
+    }
+
+    @Override
+    public void endSoulState() {
+        super.endSoulState();
+        entity.getMob().removeMetadata(MadEntity.IGNORE_PLAYERS_TAG, plugin);
     }
 }

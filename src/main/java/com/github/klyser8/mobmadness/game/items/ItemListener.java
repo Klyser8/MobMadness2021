@@ -106,7 +106,7 @@ public class ItemListener implements Listener {
         } else if (type == ItemType.AETHERS_BERRIES) {
             AethersBerries berries = new AethersBerries(plugin, item.getAmount(), gameData);
             if (event.getClickedBlock().getType() == Material.RESPAWN_ANCHOR) {
-                berries.chargeAnchor(player, item, clickedBlock);
+                berries.chargeAnchor(player, item);
                 event.setCancelled(true);
             }
         }
