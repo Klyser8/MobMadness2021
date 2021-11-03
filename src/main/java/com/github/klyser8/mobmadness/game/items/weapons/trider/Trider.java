@@ -4,15 +4,12 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.game.items.weapons.MadWeapon;
-import com.github.klyser8.mobmadness.game.mob.MadEntity;
+import com.github.klyser8.mobmadness.game.mob.Beast;
 import com.github.klyser8.mobmadness.game.mob.soulstates.Dazzled;
-import com.github.klyser8.mobmadness.game.mob.soulstates.SoulState;
-import com.github.klyser8.mobmadness.game.mob.soulstates.SoulStateType;
 import com.github.klyser8.mobmadness.game.player.Profile;
 import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.util.Sound;
 import org.bukkit.*;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Trident;
@@ -196,7 +193,7 @@ public class Trider extends MadItem implements MadWeapon {
         profile.startCooldown(data.getUltCooldown());
     }
 
-    public void tideBreaker(Profile profile, Trident trident, Entity hitEntity) {
+    public void tideBreaker(Profile profile, Trident trident, org.bukkit.entity.Entity hitEntity) {
         trident.removeMetadata(RIPTIDING_TAG, plugin);
         trident.eject();
         Player rider = profile.getPlayer();
@@ -224,7 +221,7 @@ public class Trider extends MadItem implements MadWeapon {
         for (LivingEntity mob : landingLoc.getNearbyLivingEntities(data.getUltTideBreakerRadius(),
                 data.getUltTideBreakerRadius(), data.getUltTideBreakerRadius())) {
             if (gameData.getMobMap().containsKey(mob)) {
-                MadEntity madMob = gameData.getMobMap().get(mob);
+                Beast madMob = gameData.getMobMap().get(mob);
                 double modifiedDistance = mob.getEyeLocation().distance(landingLoc) / 3;
                 if (modifiedDistance < 1) {
                     modifiedDistance = 1;

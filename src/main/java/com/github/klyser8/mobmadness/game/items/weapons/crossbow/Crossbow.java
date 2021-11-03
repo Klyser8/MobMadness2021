@@ -4,7 +4,7 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.game.items.weapons.MadWeapon;
-import com.github.klyser8.mobmadness.game.mob.MadEntity;
+import com.github.klyser8.mobmadness.game.mob.Beast;
 import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.game.player.Profile;
 import com.github.klyser8.mobmadness.util.MadMath;
@@ -178,8 +178,8 @@ public class Crossbow extends MadItem implements MadWeapon {
                 List<LivingEntity> entityList = new ArrayList<>();
                 for (LivingEntity nearbyEntity : arrowLoc.getNearbyLivingEntities(50, 50, 50)) {
                     if (nearbyEntity instanceof Player) continue;
-                    if (nearbyEntity.hasMetadata(MadEntity.PIERCED_TAG) &&
-                            nearbyEntity.getMetadata(MadEntity.PIERCED_TAG).get(0).asString()
+                    if (nearbyEntity.hasMetadata(Beast.PIERCED_TAG) &&
+                            nearbyEntity.getMetadata(Beast.PIERCED_TAG).get(0).asString()
                                     .equals(arrow.getUniqueId().toString())) continue;
                     entityList.add(nearbyEntity);
                 }

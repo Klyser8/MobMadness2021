@@ -1,21 +1,14 @@
 package com.github.klyser8.mobmadness.game.mob.soulstates;
 
 import com.github.klyser8.mobmadness.MobMadness;
-import com.github.klyser8.mobmadness.game.mob.MadEntity;
+import com.github.klyser8.mobmadness.game.mob.Beast;
 import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.util.Sound;
 import org.bukkit.Particle;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
-import org.bukkit.entity.Creeper;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
-import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.LazyMetadataValue;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import static com.github.klyser8.mobmadness.util.MadUtils.getRandomMadMob;
 
 //TODO fix creepers exploding even under this soul state, and spiders jumping towards players in this state
 public class Dazzled extends SoulState {
@@ -23,8 +16,8 @@ public class Dazzled extends SoulState {
     private final Sound dazzleSound;
 //    public static final String DAZZLED_TAG = "mm.soulstate.dazzled";
 
-    public Dazzled(MobMadness plugin, GameData gameData, MadEntity entity, int duration) {
-        super(plugin, gameData, SoulStateType.DAZZLED, entity, 1, duration);
+    public Dazzled(MobMadness plugin, GameData gameData, Beast beast, int duration) {
+        super(plugin, gameData, SoulStateType.DAZZLED, beast, 1, duration);
 //        dazzleSound = new Sound("block.amethyst_block.chime", 1.0f, 1.25f);
         dazzleSound = new Sound("block.amethyst_cluster.step", 0.3f, 2.0f);
 //        entity.getMob().setMetadata(DAZZLED_TAG, new FixedMetadataValue(plugin, true));
@@ -33,22 +26,22 @@ public class Dazzled extends SoulState {
 
     @Override
     protected void startSoulState() {
-        entity.getMob().setTarget(null);
-        entity.getMob().setMetadata(MadEntity.IGNORE_PLAYERS_TAG, new FixedMetadataValue(plugin, true));
+        beast.getMob().setTarget(null);
+        beast.getMob().setMetadata(Beast.IGNORE_PLAYERS_TAG, new FixedMetadataValue(plugin, true));
     }
 
     @Override
     public void applySoulStateLoop() {
-        Monster mob = (Monster) entity.getMob();
-        MadEntity madMob = gameData.getMobMap().get(mob);
+        Monster mob = (Monster) beast.getMob();
+        Beast madMob = gameData.getMobMap().get(mob);
         if (madMob == null) return;
         mob.getPathfinder().moveTo(madMob.getSpawnLoc());
     }
 
     @Override
     public void playSoulStateParticles() {
-        World world = entity.getMob().getWorld();
-        Monster mob = (Monster) entity.getMob();
+        World world = beast.getMob().getWorld();
+        Monster mob = (Monster) beast.getMob();
         mob.getBoundingBox().getWidthX();
         world.spawnParticle(Particle.ELECTRIC_SPARK, mob.getEyeLocation(), level,
                 mob.getBoundingBox().getWidthX() / 2.5,
@@ -59,12 +52,12 @@ public class Dazzled extends SoulState {
 
     @Override
     public void playSoulStateSounds() {
-        dazzleSound.play(entity.getMob().getEyeLocation(), SoundCategory.AMBIENT);
+        dazzleSound.play(beast.getMob().getEyeLocation(), SoundCategory.AMBIENT);
     }
 
     @Override
     public void endSoulState() {
         super.endSoulState();
-        entity.getMob().removeMetadata(MadEntity.IGNORE_PLAYERS_TAG, plugin);
+        beast.getMob().removeMetadata(Beast.IGNORE_PLAYERS_TAG, plugin);
     }
 }

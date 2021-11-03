@@ -3,26 +3,21 @@ package com.github.klyser8.mobmadness.game.mob.classic;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.misc.Crystal;
 import com.github.klyser8.mobmadness.game.items.misc.IronNugget;
-import com.github.klyser8.mobmadness.game.mob.MadEntity;
-import com.github.klyser8.mobmadness.game.mob.MadMobType;
+import com.github.klyser8.mobmadness.game.mob.Beast;
+import com.github.klyser8.mobmadness.game.mob.BeastType;
 import com.github.klyser8.mobmadness.game.mob.loot.LootTable;
 import com.github.klyser8.mobmadness.storage.GameData;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
 
-import java.util.Arrays;
+public class Scheleton extends Beast {
 
-public class MadSkeleton extends MadEntity {
-
-    public MadSkeleton(MobMadness plugin, World world, GameData gameData) {
-        super(plugin, MadMobType.SKELETON, world, gameData);
+    public Scheleton(MobMadness plugin, World world, GameData gameData) {
+        super(plugin, BeastType.SKELETON, world, gameData);
         createLootTable();
     }
 

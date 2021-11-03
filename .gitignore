@@ -1,3 +1,12 @@
+.gradle
+.idea
+build
+pom.xml
+gradle
+gradlew
+gradlew.bat
+settings.gradle.kts
+
 # User-specific stuff
 .idea/
 

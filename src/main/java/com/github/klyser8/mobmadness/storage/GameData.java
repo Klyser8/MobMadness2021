@@ -3,8 +3,8 @@ package com.github.klyser8.mobmadness.storage;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.GameRunnable;
 import com.github.klyser8.mobmadness.game.Tier;
-import com.github.klyser8.mobmadness.game.mob.BossMob;
-import com.github.klyser8.mobmadness.game.mob.MadEntity;
+import com.github.klyser8.mobmadness.game.mob.BossBeast;
+import com.github.klyser8.mobmadness.game.mob.Beast;
 import com.github.klyser8.mobmadness.game.player.Profile;
 import com.github.klyser8.mobmadness.game.world.GameMap;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -12,7 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.RespawnAnchor;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
@@ -48,9 +48,9 @@ public class GameData {
     private final Map<Player, Profile> playerMap;
 
     //Map containing all present mobs in the game.
-    private final Map<LivingEntity, MadEntity> mobMap;
+    private final Map<Mob, Beast> mobMap;
 
-    private BossMob currentBoss = null;
+    private BossBeast currentBoss = null;
 
     //Team containing all players with low health. Used for colored glowing
     private Team lowHPTeam;
@@ -68,7 +68,7 @@ public class GameData {
     public GameData(MobMadness plugin, GameMap map) {
         this.plugin = plugin;
         playerMap = new HashMap<>();
-        mobMap = new LinkedHashMap<>();
+        mobMap = new LinkedHashMap<org.bukkit.entity.Mob, Beast>();
         this.map = map;
         this.gameTask = Bukkit.getScheduler().runTaskTimer(plugin,
                 new GameRunnable(plugin, this), 0, GameRunnable.TICK_INTERVAL);
@@ -231,7 +231,7 @@ public class GameData {
         return map.getMapType().getSpawn();
     }
 
-    public Map<LivingEntity, MadEntity> getMobMap() {
+    public Map<Mob, Beast> getMobMap() {
         return mobMap;
     }
 
@@ -263,11 +263,11 @@ public class GameData {
         return board;
     }
 
-    public BossMob getCurrentBoss() {
+    public BossBeast getCurrentBoss() {
         return currentBoss;
     }
 
-    public void setCurrentBoss(BossMob currentBoss) {
+    public void setCurrentBoss(BossBeast currentBoss) {
         this.currentBoss = currentBoss;
     }
 }

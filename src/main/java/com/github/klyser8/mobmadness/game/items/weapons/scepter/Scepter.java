@@ -4,7 +4,7 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.game.items.weapons.MadWeapon;
-import com.github.klyser8.mobmadness.game.mob.MadEntity;
+import com.github.klyser8.mobmadness.game.mob.Beast;
 import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.game.player.Profile;
 import com.github.klyser8.mobmadness.util.MadMath;
@@ -100,7 +100,7 @@ public class Scepter extends MadItem implements MadWeapon {
         shootSound.play(eyeLoc, SoundCategory.PLAYERS);
         fireball.setShooter(shooter);
         fireball.setIsIncendiary(false);
-        fireball.setMetadata(MadEntity.DAMAGE_TAG, new FixedMetadataValue(plugin, data.getDamage()));
+        fireball.setMetadata(Beast.DAMAGE_TAG, new FixedMetadataValue(plugin, data.getDamage()));
         fireball.setMetadata(RADIUS_TAG, new FixedMetadataValue(plugin, data.getRadius()));
         setMana(profile, data.getManaCost());
     }
@@ -121,7 +121,7 @@ public class Scepter extends MadItem implements MadWeapon {
         ultSound.play(eyeLoc, SoundCategory.PLAYERS);
         fireball.setShooter(shooter);
         fireball.setIsIncendiary(false);
-        fireball.setMetadata(MadEntity.DAMAGE_TAG, new FixedMetadataValue(plugin, data.getUltDamage()));
+        fireball.setMetadata(Beast.DAMAGE_TAG, new FixedMetadataValue(plugin, data.getUltDamage()));
         fireball.setMetadata(RADIUS_TAG, new FixedMetadataValue(plugin, data.getUltRadius()));
         new BukkitRunnable() {
             @Override

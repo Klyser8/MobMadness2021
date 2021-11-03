@@ -1,10 +1,10 @@
 package com.github.klyser8.mobmadness.game.mob;
 
-public abstract class MobRunnable<T extends MadEntity> implements Runnable {
+public abstract class BeastRunnable<T extends Beast> implements Runnable {
 
     protected final T entity;
 
-    protected MobRunnable(T entity) {
+    protected BeastRunnable(T entity) {
         this.entity = entity;
     }
 

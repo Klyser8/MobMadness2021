@@ -4,7 +4,7 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.game.items.weapons.MadWeapon;
-import com.github.klyser8.mobmadness.game.mob.MadEntity;
+import com.github.klyser8.mobmadness.game.mob.Beast;
 import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.game.player.Profile;
 import com.github.klyser8.mobmadness.util.Sound;
@@ -170,24 +170,24 @@ public class Smudger extends MadItem implements MadWeapon {
         }
         double currentDmg = pelletDmg;
         double currentKnockback = pelletKnockback;
-        if (mob.hasMetadata(MadEntity.PELLETS_DMG_TAG) && mob.hasMetadata(MadEntity.PELLETS_KNOCKBACK_TAG)) {
-            currentDmg = mob.getMetadata(MadEntity.PELLETS_DMG_TAG).get(0).asDouble();
+        if (mob.hasMetadata(Beast.PELLETS_DMG_TAG) && mob.hasMetadata(Beast.PELLETS_KNOCKBACK_TAG)) {
+            currentDmg = mob.getMetadata(Beast.PELLETS_DMG_TAG).get(0).asDouble();
             currentDmg += pelletDmg;
-            currentKnockback = mob.getMetadata(MadEntity.PELLETS_KNOCKBACK_TAG).get(0).asDouble();
+            currentKnockback = mob.getMetadata(Beast.PELLETS_KNOCKBACK_TAG).get(0).asDouble();
             currentKnockback += pelletKnockback;
         }
-        mob.setMetadata(MadEntity.PELLETS_DMG_TAG, new FixedMetadataValue(plugin, currentDmg));
-        mob.setMetadata(MadEntity.PELLETS_KNOCKBACK_TAG, new FixedMetadataValue(plugin, currentKnockback));
+        mob.setMetadata(Beast.PELLETS_DMG_TAG, new FixedMetadataValue(plugin, currentDmg));
+        mob.setMetadata(Beast.PELLETS_KNOCKBACK_TAG, new FixedMetadataValue(plugin, currentKnockback));
     }
 
     private void damageMob(Player shooter, LivingEntity mob, Location targetLoc) {
         Vector direction = getDirectionBetweenLocations(shooter.getEyeLocation(), targetLoc).normalize();
-        double damage = mob.getMetadata(MadEntity.PELLETS_DMG_TAG).get(0).asDouble();
-        double knockback = mob.getMetadata(MadEntity.PELLETS_KNOCKBACK_TAG).get(0).asDouble();
+        double damage = mob.getMetadata(Beast.PELLETS_DMG_TAG).get(0).asDouble();
+        double knockback = mob.getMetadata(Beast.PELLETS_KNOCKBACK_TAG).get(0).asDouble();
         mob.damage(damage, shooter);
         mob.setVelocity(mob.getVelocity().add(direction.multiply(1 + knockback)));
-        mob.removeMetadata(MadEntity.PELLETS_DMG_TAG, plugin);
-        mob.removeMetadata(MadEntity.PELLETS_KNOCKBACK_TAG, plugin);
+        mob.removeMetadata(Beast.PELLETS_DMG_TAG, plugin);
+        mob.removeMetadata(Beast.PELLETS_KNOCKBACK_TAG, plugin);
     }
 
     private boolean isThirdShot(Player shooter) {

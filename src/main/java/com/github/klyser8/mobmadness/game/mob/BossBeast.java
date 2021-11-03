@@ -15,7 +15,9 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class BossMob extends MadEntity {
+public abstract class BossBeast extends Beast {
+
+    public static final String MM_BOSS_TAG = "mm.boss";
 
     protected BossBar bossBar = null;
     protected int playerCount;
@@ -24,9 +26,9 @@ public abstract class BossMob extends MadEntity {
     protected final Map<SoulStateType, Double> soulStateModifiers;
     protected final List<PotionEffectType> potionImmunityList;
 
-    public BossMob(MobMadness plugin, MadMobType type, World world, GameData gameData,
-                   Map<EntityDamageEvent.DamageCause, Double> dmgCauseModifiers,
-                   Map<SoulStateType, Double> soulStateModifiers, List<PotionEffectType> potionImmunityList) {
+    public BossBeast(MobMadness plugin, BeastType type, World world, GameData gameData,
+                     Map<EntityDamageEvent.DamageCause, Double> dmgCauseModifiers,
+                     Map<SoulStateType, Double> soulStateModifiers, List<PotionEffectType> potionImmunityList) {
         super(plugin, type, world, gameData);
         this.dmgCauseModifiers = dmgCauseModifiers;
         this.soulStateModifiers = soulStateModifiers;
@@ -70,14 +72,13 @@ public abstract class BossMob extends MadEntity {
         hideBossBar();
     }
 
-    public EntityDamageEvent handleDamage(EntityDamageEvent event) {
+    public void handleDamage(EntityDamageEvent event) {
         if (dmgCauseModifiers.containsKey(event.getCause())) {
             if (dmgCauseModifiers.get(event.getCause()) == 0) {
                 event.setCancelled(true);
             }
             event.setDamage(event.getDamage() * dmgCauseModifiers.get(event.getCause()));
         }
-        return event;
     }
 
     public SoulState handleSoulState(SoulState soulState) {

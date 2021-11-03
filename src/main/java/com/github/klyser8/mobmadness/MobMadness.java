@@ -5,9 +5,9 @@ import com.github.klyser8.mobmadness.game.MiscListener;
 import com.github.klyser8.mobmadness.game.items.ItemListener;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.WeaponListener;
-import com.github.klyser8.mobmadness.game.mob.MadMobType;
+import com.github.klyser8.mobmadness.game.mob.BeastType;
 import com.github.klyser8.mobmadness.game.GameManager;
-import com.github.klyser8.mobmadness.game.mob.MobListener;
+import com.github.klyser8.mobmadness.game.mob.BeastListener;
 import com.github.klyser8.mobmadness.game.mob.soulstates.SoulStateListener;
 import com.github.klyser8.mobmadness.game.player.PlayerListener;
 import com.github.klyser8.mobmadness.game.shop.ShopListener;
@@ -50,7 +50,7 @@ public final class MobMadness extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ShopListener(this), this);
         getServer().getPluginManager().registerEvents(new ItemListener(this), this);
         getServer().getPluginManager().registerEvents(new WeaponListener(this), this);
-        getServer().getPluginManager().registerEvents(new MobListener(this), this);
+        getServer().getPluginManager().registerEvents(new BeastListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         getServer().getPluginManager().registerEvents(new SoulStateListener(this), this);
 
@@ -87,10 +87,10 @@ public final class MobMadness extends JavaPlugin {
     private void registerCommands() {
         CommandManager commandManager = new CommandManager(this, true);
         commandManager.getCompletionHandler().register("#madmobs", input ->
-                Arrays.stream(MadMobType.values()).map(MadMobType::toString).collect(Collectors.toList()));
-        commandManager.getParameterHandler().register(MadMobType.class, argument ->
+                Arrays.stream(BeastType.values()).map(BeastType::toString).collect(Collectors.toList()));
+        commandManager.getParameterHandler().register(BeastType.class, argument ->
                 new TypeResult(Enums.getIfPresent(
-                        MadMobType.class, String.valueOf(argument).toUpperCase()).orNull(), argument));
+                        BeastType.class, String.valueOf(argument).toUpperCase()).orNull(), argument));
 
         commandManager.getCompletionHandler().register("#maptypes", input ->
                 Arrays.stream(MapType.values()).map(MapType::toString).collect(Collectors.toList()));

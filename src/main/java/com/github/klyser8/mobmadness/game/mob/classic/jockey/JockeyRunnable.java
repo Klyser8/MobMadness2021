@@ -1,9 +1,9 @@
 package com.github.klyser8.mobmadness.game.mob.classic.jockey;
 
 import com.github.klyser8.mobmadness.MobMadness;
-import com.github.klyser8.mobmadness.game.mob.MadEntity;
-import com.github.klyser8.mobmadness.game.mob.MobRunnable;
-import com.github.klyser8.mobmadness.game.mob.classic.MadSpider;
+import com.github.klyser8.mobmadness.game.mob.Beast;
+import com.github.klyser8.mobmadness.game.mob.BeastRunnable;
+import com.github.klyser8.mobmadness.game.mob.classic.Spyder;
 import com.github.klyser8.mobmadness.game.mob.soulstates.Hasted;
 import com.github.klyser8.mobmadness.game.mob.soulstates.SoulStateType;
 import com.github.klyser8.mobmadness.storage.GameData;
@@ -22,7 +22,7 @@ import org.bukkit.util.Vector;
 
 import java.util.Random;
 
-public class JockeyRunnable extends MobRunnable<JockeySkeleton> {
+public class JockeyRunnable extends BeastRunnable<Jockey> {
 
     private int clock = 0;
     private Spider ride = null;
@@ -35,7 +35,7 @@ public class JockeyRunnable extends MobRunnable<JockeySkeleton> {
     private final Sound mountSound;
     private final Sound spiderConvertSound;
 
-    public JockeyRunnable(JockeySkeleton jockeySkel, MobMadness plugin, GameData gameData) {
+    public JockeyRunnable(Jockey jockeySkel, MobMadness plugin, GameData gameData) {
         super(jockeySkel);
         random = new Random();
         this.plugin = plugin;
@@ -62,9 +62,9 @@ public class JockeyRunnable extends MobRunnable<JockeySkeleton> {
                 if (ride.getLocation().distance(mob.getLocation()) < 2) {
                     mountSpider();
                     //End hasted soul state if it is present
-                    MadSpider madSpider = (MadSpider) gameData.getMobMap().get(ride);
-                    if (!madSpider.hasSoulState(SoulStateType.HASTED)) {
-                        new Hasted(plugin, gameData, madSpider, 1, 2400);
+                    Spyder spyder = (Spyder) gameData.getMobMap().get(ride);
+                    if (!spyder.hasSoulState(SoulStateType.HASTED)) {
+                        new Hasted(plugin, gameData, spyder, 1, 2400);
                     }
                     ride.addPotionEffect(
                             new PotionEffect(PotionEffectType.REGENERATION, 2400, 1,
@@ -94,7 +94,7 @@ public class JockeyRunnable extends MobRunnable<JockeySkeleton> {
         if (!entity.hasSoulState(SoulStateType.HASTED)) {
             new Hasted(plugin, gameData, entity, 3, 200);
         }
-        mob.setMetadata(MadEntity.IGNORE_PLAYERS_TAG, new FixedMetadataValue(plugin, true));
+        mob.setMetadata(Beast.IGNORE_PLAYERS_TAG, new FixedMetadataValue(plugin, true));
     }
 
     private void moveTowardsSpider() {
@@ -121,7 +121,7 @@ public class JockeyRunnable extends MobRunnable<JockeySkeleton> {
                     0.1, 0.1, 0.1, 0);
         }
         ride.addPassenger(mob);
-        mob.removeMetadata(MadEntity.IGNORE_PLAYERS_TAG, plugin);
+        mob.removeMetadata(Beast.IGNORE_PLAYERS_TAG, plugin);
         mountSound.play(ride.getLocation(), SoundCategory.HOSTILE);
         Bukkit.getScheduler().runTaskLater(plugin,
                 () -> {

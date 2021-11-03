@@ -1,7 +1,7 @@
 package com.github.klyser8.mobmadness.ui;
 
 import com.github.klyser8.mobmadness.MobMadness;
-import com.github.klyser8.mobmadness.game.mob.MadEntity;
+import com.github.klyser8.mobmadness.game.mob.Beast;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -21,8 +21,8 @@ import static me.mattstudios.mf.base.components.MfUtil.color;
  */
 public class UIHelper {
 
-    public static void displayMobHpBar(MobMadness plugin, MadEntity madEntity, Player player, double dmg) {
-        LivingEntity entity = madEntity.getMob();
+    public static void displayMobHpBar(MobMadness plugin, Beast beast, Player player, double dmg) {
+        LivingEntity entity = beast.getMob();
         //The entity's current hp (Rounded up)
         int currentHP = (int) Math.ceil(entity.getHealth() - dmg);
         if (currentHP < 0) {

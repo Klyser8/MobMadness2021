@@ -1,7 +1,7 @@
 package com.github.klyser8.mobmadness.game.items.weapons.bow;
 
 import com.github.klyser8.mobmadness.MobMadness;
-import com.github.klyser8.mobmadness.game.mob.MadEntity;
+import com.github.klyser8.mobmadness.game.mob.Beast;
 import com.github.klyser8.mobmadness.util.Sound;
 import com.github.klyser8.mobmadness.util.MadUtils;
 import org.bukkit.Location;
@@ -50,8 +50,8 @@ public class BowUltRunnable extends BukkitRunnable {
 
     private void tossEnemies(List<LivingEntity> mobs) {               //Throws any mob hit by the dash behind the caster
         for (LivingEntity mob : mobs) {
-            if (mob.hasMetadata(MadEntity.MARKED_TAG)) continue;
-            mob.setMetadata(MadEntity.MARKED_TAG,
+            if (mob.hasMetadata(Beast.MARKED_TAG)) continue;
+            mob.setMetadata(Beast.MARKED_TAG,
                     new FixedMetadataValue(plugin, bowData.getUltMarkDuration()));                   //Marks the hit mob
             mob.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, bowData.getUltMarkDuration(), 0,
                     false, false, false));
@@ -66,9 +66,9 @@ public class BowUltRunnable extends BukkitRunnable {
         new BukkitRunnable() {
             @Override
             public void run() {
-                int markDuration = mob.getMetadata(MadEntity.MARKED_TAG).get(0).asInt();
+                int markDuration = mob.getMetadata(Beast.MARKED_TAG).get(0).asInt();
                 if (markDuration == 0 || mob.isDead()) {
-                    mob.removeMetadata(MadEntity.MARKED_TAG, plugin);
+                    mob.removeMetadata(Beast.MARKED_TAG, plugin);
                     mob.removePotionEffect(PotionEffectType.SLOW);
                     cancel();
                     return;
@@ -77,7 +77,7 @@ public class BowUltRunnable extends BukkitRunnable {
                     world.spawnParticle(Particle.SNEEZE, mob.getEyeLocation(), 5,
                             0.25, 0.5 ,0.25, 0.025);
                 }
-                mob.setMetadata(MadEntity.MARKED_TAG, new FixedMetadataValue(plugin, markDuration - 1));
+                mob.setMetadata(Beast.MARKED_TAG, new FixedMetadataValue(plugin, markDuration - 1));
             }
         }.runTaskTimer(plugin, 0, 1);
     }

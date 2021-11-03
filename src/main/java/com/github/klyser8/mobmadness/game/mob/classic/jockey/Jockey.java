@@ -3,12 +3,10 @@ package com.github.klyser8.mobmadness.game.mob.classic.jockey;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.misc.Crystal;
 import com.github.klyser8.mobmadness.game.items.misc.IronNugget;
-import com.github.klyser8.mobmadness.game.mob.BossMob;
-import com.github.klyser8.mobmadness.game.mob.MadMobType;
-import com.github.klyser8.mobmadness.game.mob.ParentBoss;
+import com.github.klyser8.mobmadness.game.mob.BossBeast;
+import com.github.klyser8.mobmadness.game.mob.BeastType;
 import com.github.klyser8.mobmadness.game.mob.loot.LootTable;
 import com.github.klyser8.mobmadness.storage.GameData;
-import com.github.klyser8.mobmadness.util.MadUtils;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -17,10 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Spider;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,12 +23,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class JockeySkeleton extends BossMob {
+public class Jockey extends BossBeast {
 
-    public JockeySkeleton(MobMadness plugin, World world, GameData gameData) {
-        super(plugin, MadMobType.JOCKEY_SKELETON, world, gameData, Map.of(
+    public Jockey(MobMadness plugin, World world, GameData gameData) {
+        super(plugin, BeastType.JOCKEY_SKELETON, world, gameData, Map.of(
                         EntityDamageEvent.DamageCause.FIRE, 0.1, EntityDamageEvent.DamageCause.FIRE_TICK, 0.1,
-                        EntityDamageEvent.DamageCause.LAVA, 0.1, EntityDamageEvent.DamageCause.SUFFOCATION, 0.0),
+                        EntityDamageEvent.DamageCause.LAVA, 0.1, EntityDamageEvent.DamageCause.FALL, 0.0,
+                        EntityDamageEvent.DamageCause.SUFFOCATION, 0.0),
                 Map.of(), List.of());
         playerCount = gameData.getPlayers().size();
         createLootTable();

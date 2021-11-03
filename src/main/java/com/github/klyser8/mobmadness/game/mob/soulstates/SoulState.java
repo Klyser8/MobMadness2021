@@ -1,7 +1,7 @@
 package com.github.klyser8.mobmadness.game.mob.soulstates;
 
 import com.github.klyser8.mobmadness.MobMadness;
-import com.github.klyser8.mobmadness.game.mob.MadEntity;
+import com.github.klyser8.mobmadness.game.mob.Beast;
 import com.github.klyser8.mobmadness.storage.GameData;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -15,31 +15,31 @@ public abstract class SoulState {
     protected final MobMadness plugin;
     protected final GameData gameData;
     protected final SoulStateType type;
-    protected final MadEntity entity;
+    protected final Beast beast;
     protected int level;
     protected int duration; //in ticks
     protected int currentDuration; //in ticks
 
     protected final boolean applied;
 
-    protected SoulState(MobMadness plugin, GameData gameData, SoulStateType type, MadEntity entity,
+    protected SoulState(MobMadness plugin, GameData gameData, SoulStateType type, Beast beast,
                         int level, int duration) {
         this.plugin = plugin;
         this.gameData = gameData;
         this.type = type;
-        this.entity = entity;
+        this.beast = beast;
         this.level = level;
         this.duration = duration;
         this.currentDuration = duration;
         //Checks whether the entity already has a soul state of this type. If the entity does, the soul state is stopped
         //And replaced with this new instance (only if this new one is judged to be stronger).
-        if (!entity.getCurrentSoulStates().containsKey(type)
-                || entity.getCurrentSoulStates().get(type).level < level
-                || entity.getCurrentSoulStates().get(type).getCurrentDuration() < currentDuration) {
-            if (entity.getCurrentSoulStates().containsKey(type)) {
-                entity.getCurrentSoulStates().get(type).endSoulState();
+        if (!beast.getCurrentSoulStates().containsKey(type)
+                || beast.getCurrentSoulStates().get(type).level < level
+                || beast.getCurrentSoulStates().get(type).getCurrentDuration() < currentDuration) {
+            if (beast.getCurrentSoulStates().containsKey(type)) {
+                beast.getCurrentSoulStates().get(type).endSoulState();
             }
-            entity.getCurrentSoulStates().put(type, this);
+            beast.getCurrentSoulStates().put(type, this);
             applied = true;
         } else {
             applied = false;
@@ -64,7 +64,7 @@ public abstract class SoulState {
                 }
                 System.out.println(currentDuration);
                 currentDuration--;
-                if (currentDuration == 0 || entity.getMob().isDead()) {
+                if (currentDuration == 0 || beast.getMob().isDead()) {
                     cancel();
                     endSoulState();
                 }
@@ -93,7 +93,7 @@ public abstract class SoulState {
     protected abstract void playSoulStateSounds();
 
     public void endSoulState() {
-        entity.getCurrentSoulStates().remove(getType());
+        beast.getCurrentSoulStates().remove(getType());
     }
 
     public SoulStateType getType() {

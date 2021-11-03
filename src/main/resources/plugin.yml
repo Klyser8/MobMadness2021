@@ -1,5 +1,5 @@
 name: MobMadness
-version: ${project.version}
+version: 1.0.0
 main: com.github.klyser8.mobmadness.MobMadness
 api-version: 1.17
 authors: [ Klyser8 ]

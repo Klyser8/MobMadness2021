@@ -1,8 +1,8 @@
 package com.github.klyser8.mobmadness.commands;
 
 import com.github.klyser8.mobmadness.MobMadness;
-import com.github.klyser8.mobmadness.game.mob.MadEntity;
-import com.github.klyser8.mobmadness.game.mob.MadMobType;
+import com.github.klyser8.mobmadness.game.mob.Beast;
+import com.github.klyser8.mobmadness.game.mob.BeastType;
 import com.github.klyser8.mobmadness.game.world.SpawnArea;
 import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.util.MadUtils;
@@ -30,7 +30,7 @@ public class SummonMobCommand extends CommandBase {
     @SubCommand("summon")
     @Permission("mm.command.summon")
     @Completion({"#madmobs", "#range"})
-    public void summonCommand(CommandSender sender, MadMobType type, @Optional Integer amount) {
+    public void summonCommand(CommandSender sender, BeastType type, @Optional Integer amount) {
         if (sender instanceof ConsoleCommandSender) return;
         Player player = (Player) sender;
         GameData gameData = MadUtils.getPlayerGame(plugin, player);
@@ -41,7 +41,7 @@ public class SummonMobCommand extends CommandBase {
             if (spawnArea == null) continue;
             Location spawnLoc = MadUtils.pickRandomSpawnLocation(spawnArea.getCorner1(), spawnArea.getCorner2());
             if (spawnLoc == null) continue;
-            MadEntity mob = MadMobType.createMob(type, player.getWorld(), gameData);
+            Beast mob = BeastType.createMob(type, player.getWorld(), gameData);
             mob.spawn(spawnLoc);
             final TextComponent component = Component.text("Spawned ", NamedTextColor.YELLOW)
                     .append(Component.text(mob.getMob().getCustomName()))

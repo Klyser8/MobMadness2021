@@ -3,21 +3,19 @@ package com.github.klyser8.mobmadness.game.mob.classic;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.misc.Crystal;
 import com.github.klyser8.mobmadness.game.items.misc.IronNugget;
-import com.github.klyser8.mobmadness.game.mob.MadEntity;
-import com.github.klyser8.mobmadness.game.mob.MadMobType;
+import com.github.klyser8.mobmadness.game.mob.Beast;
+import com.github.klyser8.mobmadness.game.mob.BeastType;
 import com.github.klyser8.mobmadness.game.mob.loot.LootTable;
 import com.github.klyser8.mobmadness.storage.GameData;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Creeper;
-import org.bukkit.metadata.FixedMetadataValue;
 
-public class MadCreeper extends MadEntity {
+public class Kreeper extends Beast {
 
-    public MadCreeper(MobMadness plugin, World world, GameData gameData) {
-        super(plugin, MadMobType.CREEPER, world, gameData);
+    public Kreeper(MobMadness plugin, World world, GameData gameData) {
+        super(plugin, BeastType.CREEPER, world, gameData);
         createLootTable();
     }
 
@@ -32,7 +30,7 @@ public class MadCreeper extends MadEntity {
     }
 
     public void spawn(Location spawnLoc) {
-        Creeper creeper = (Creeper) spawnEntity(spawnLoc, type.getHP());
+        org.bukkit.entity.Creeper creeper = (org.bukkit.entity.Creeper) spawnEntity(spawnLoc, type.getHP());
         creeper.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(type.getDmg());
         creeper.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(type.getHP());
         creeper.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(type.getSpeed());

@@ -35,9 +35,9 @@ public class SmudgerData extends WeaponData {
                 cooldown = 50;
 
                 rgb = 100;
-                knockback = 0.025;
+                knockback = 0.015;
 
-                ultDamage = 0.75;
+                ultDamage = 0.6;
                 ultPellets = 25;
                 longCooldown = 160;
                 break;
@@ -49,9 +49,9 @@ public class SmudgerData extends WeaponData {
                 cooldown = 47;
 
                 rgb = 80;
-                knockback = 0.025;
+                knockback = 0.016;
 
-                ultDamage = 1.2;
+                ultDamage = 0.9;
                 ultPellets = 25;
                 longCooldown = 156;
                 break;
@@ -61,9 +61,11 @@ public class SmudgerData extends WeaponData {
                 pelletSpread = 30;
                 pelletRange = 34;
                 cooldown = 44;
-                rgb = 60;
 
-                ultDamage = 1.95;
+                rgb = 60;
+                knockback = 0.017;
+
+                ultDamage = 1.35;
                 ultPellets = 25;
                 longCooldown = 152;
                 break;
@@ -75,9 +77,9 @@ public class SmudgerData extends WeaponData {
                 cooldown = 41;
 
                 rgb = 40;
-                knockback = 0.025;
+                knockback = 0.018;
 
-                ultDamage = 3.0;
+                ultDamage = 1.95;
                 ultPellets = 25;
                 longCooldown = 148;
                 break;
@@ -89,9 +91,9 @@ public class SmudgerData extends WeaponData {
                 cooldown = 38;
 
                 rgb = 20;
-                knockback = 0.025;
+                knockback = 0.019;
 
-                ultDamage = 4.8;
+                ultDamage = 2.7;
                 ultPellets = 25;
                 longCooldown = 144;
                 break;
@@ -103,9 +105,9 @@ public class SmudgerData extends WeaponData {
                 cooldown = 35;
 
                 rgb = 0;
-                knockback = 0.025;
+                knockback = 0.020;
 
-                ultDamage = 7.5;
+                ultDamage = 3.6;
                 ultPellets = 25;
                 longCooldown = 140;
                 break;

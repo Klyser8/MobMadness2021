@@ -1,12 +1,12 @@
 package com.github.klyser8.mobmadness.game;
 
 import com.github.klyser8.mobmadness.MobMadness;
-import com.github.klyser8.mobmadness.game.mob.MadEntity;
-import com.github.klyser8.mobmadness.game.mob.classic.MadCreeper;
-import com.github.klyser8.mobmadness.game.mob.classic.MadSkeleton;
-import com.github.klyser8.mobmadness.game.mob.classic.MadSpider;
-import com.github.klyser8.mobmadness.game.mob.classic.MadZombie;
-import com.github.klyser8.mobmadness.game.mob.classic.jockey.JockeySkeleton;
+import com.github.klyser8.mobmadness.game.mob.Beast;
+import com.github.klyser8.mobmadness.game.mob.classic.Kreeper;
+import com.github.klyser8.mobmadness.game.mob.classic.Scheleton;
+import com.github.klyser8.mobmadness.game.mob.classic.Spyder;
+import com.github.klyser8.mobmadness.game.mob.classic.Zomby;
+import com.github.klyser8.mobmadness.game.mob.classic.jockey.Jockey;
 import com.github.klyser8.mobmadness.game.player.Profile;
 import com.github.klyser8.mobmadness.game.world.SpawnArea;
 import com.github.klyser8.mobmadness.lang.English;
@@ -15,12 +15,10 @@ import com.github.klyser8.mobmadness.util.ComponentHelper;
 import com.github.klyser8.mobmadness.util.MadUtils;
 import com.github.klyser8.mobmadness.util.Sound;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -146,7 +144,7 @@ public class GameRunnable implements Runnable {
             case V:
             case VI:
                 gameData.setCurrentBoss(
-                        new JockeySkeleton(plugin, gameData.getMapSpawnPoint().getWorld(), gameData));
+                        new Jockey(plugin, gameData.getMapSpawnPoint().getWorld(), gameData));
                 break;
         }
         bossSummonedSound.play(gameData.getMapSpawnPoint(), SoundCategory.HOSTILE);
@@ -175,25 +173,25 @@ public class GameRunnable implements Runnable {
         calculateBound();
         World world = gameData.getGameMap().getMapType().getSpawn().getWorld();
         int bound = random.nextInt(gameData.getBound());
-        MadEntity entity = null;
+        Beast beast = null;
         if (bound > 2000) return;
         switch (gameData.getTier()) {
             case I:
                 if (bound > 1500) {
-                    entity = new MadZombie(plugin, world, gameData);
+                    beast = new Zomby(plugin, world, gameData);
                 } else if (bound > 1000) {
-                    entity = new MadSpider(plugin, world, gameData);
+                    beast = new Spyder(plugin, world, gameData);
                 } else if (bound > 500) {
-                    entity = new MadCreeper(plugin, world, gameData);
+                    beast = new Kreeper(plugin, world, gameData);
                 } else if (bound > 0) {
-                    entity = new MadSkeleton(plugin, world, gameData);
+                    beast = new Scheleton(plugin, world, gameData);
                 }
                 //When the boss is alive, mobs may be replaced with spiders.
                 if (gameData.getCurrentBoss() != null
-                        && !(entity instanceof MadSpider)
+                        && !(beast instanceof Spyder)
                         && random.nextBoolean()) {
                     System.out.println("replaced bitch");
-                    entity = new MadSpider(plugin, world, gameData);
+                    beast = new Spyder(plugin, world, gameData);
                 }
                 break;
             case IV:
@@ -204,10 +202,10 @@ public class GameRunnable implements Runnable {
                 break;
         }
         SpawnArea area = pickSpawnArea(gameData);
-        if (area == null || entity == null) return;
+        if (area == null || beast == null) return;
         Location spawnLoc = MadUtils.pickRandomSpawnLocation(area.getCorner1(), area.getCorner2());
         if (spawnLoc == null) return;
-        entity.spawn(spawnLoc);
+        beast.spawn(spawnLoc);
         mobSpawnSound.play(spawnLoc, SoundCategory.HOSTILE);
     }
 

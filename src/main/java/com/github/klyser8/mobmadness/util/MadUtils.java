@@ -2,38 +2,27 @@ package com.github.klyser8.mobmadness.util;
 
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.MadItem;
-import com.github.klyser8.mobmadness.game.mob.MadEntity;
+import com.github.klyser8.mobmadness.game.mob.Beast;
 import com.github.klyser8.mobmadness.game.world.SpawnArea;
 import com.github.klyser8.mobmadness.storage.GameData;
 import de.tr7zw.nbtapi.NBTItem;
-import net.kyori.adventure.text.ComponentBuilder;
-import net.kyori.adventure.text.TextComponent;
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
-import org.bukkit.block.banner.Pattern;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.BannerMeta;
-import org.bukkit.inventory.meta.BlockStateMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.*;
-import java.util.function.Predicate;
 
-import static com.github.klyser8.mobmadness.util.MadMath.isInteger;
 import static me.mattstudios.mf.base.components.MfUtil.color;
 
 /**
@@ -118,7 +107,7 @@ public class MadUtils {
      */
     public static LivingEntity getClosestMob(Location loc, double rangeX, double rangeY, double rangeZ) {
         List<LivingEntity> entityList = new ArrayList<>();
-        for (Entity nearbyEntity : loc.getNearbyEntities(rangeX, rangeY, rangeZ)) {
+        for (org.bukkit.entity.Entity nearbyEntity : loc.getNearbyEntities(rangeX, rangeY, rangeZ)) {
             if (nearbyEntity instanceof LivingEntity && !(nearbyEntity instanceof Player) && !(nearbyEntity instanceof ArmorStand)) {
                 entityList.add((LivingEntity) nearbyEntity);
             }
@@ -225,7 +214,22 @@ public class MadUtils {
     public static GameData getPlayerGame(MobMadness plugin, Player player) {
         for (GameData gameData : plugin.getGameManager().getGames().values()) {
             if (!gameData.getPlayers().containsKey(player)) continue;
-            return gameData.getPlayers().get(player).getCurrentGame();
+            return gameData;
+        }
+        return null;
+    }
+
+    /**
+     * Gets the game the provided MadEntity is in.
+     *
+     * @param plugin instance of the main class.
+     * @param mob the mob who's game should be returned.
+     * @return instance of {@link GameData}, or null if the entity is not present in any game
+     */
+    public static GameData getBeastGame(MobMadness plugin, Mob mob) {
+        for (GameData gameData : plugin.getGameManager().getGames().values()) {
+            if (!gameData.getMobMap().containsKey(mob)) continue;
+            return gameData;
         }
         return null;
     }
@@ -449,9 +453,9 @@ public class MadUtils {
      * @param gameData
      * @return
      */
-    public static MadEntity getRandomMadMob(GameData gameData) {
+    public static Beast getRandomMadMob(GameData gameData) {
         Random random = new Random();
-        MadEntity[] values = gameData.getMobMap().values().toArray(new MadEntity[0]);
+        Beast[] values = gameData.getMobMap().values().toArray(new Beast[0]);
         if (values.length == 0) {
             return null;
         }

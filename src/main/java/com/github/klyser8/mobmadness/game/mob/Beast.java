@@ -12,11 +12,10 @@ import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public abstract class MadEntity {
+public abstract class Beast {
 
     public static final String MM_TYPE_TAG = "mm.type";
     public static final String DAMAGE_TAG = "mm.damage";
@@ -37,7 +36,7 @@ public abstract class MadEntity {
     protected final MobMadness plugin;
     protected final GameData gameData;
 
-    protected final MadMobType type;
+    protected final BeastType type;
     protected final World world;
     protected Location spawnLoc;
 
@@ -50,7 +49,7 @@ public abstract class MadEntity {
 
     protected Mob mob;
 
-    public MadEntity(MobMadness plugin, MadMobType type, World world, GameData gameData) {
+    public Beast(MobMadness plugin, BeastType type, World world, GameData gameData) {
         this.plugin = plugin;
         this.type = type;
         this.world = world;

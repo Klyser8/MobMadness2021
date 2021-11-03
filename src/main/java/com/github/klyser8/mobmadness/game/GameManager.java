@@ -4,7 +4,7 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.consumables.AethersBerries;
 import com.github.klyser8.mobmadness.game.items.misc.Compass;
 import com.github.klyser8.mobmadness.game.items.misc.IronNugget;
-import com.github.klyser8.mobmadness.game.mob.MadEntity;
+import com.github.klyser8.mobmadness.game.mob.Beast;
 import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.game.player.Profile;
 import com.github.klyser8.mobmadness.game.world.GameMap;
@@ -12,8 +12,6 @@ import com.github.klyser8.mobmadness.game.world.MapType;
 import com.github.klyser8.mobmadness.game.world.SpawnArea;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.block.Block;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -71,8 +69,8 @@ public class GameManager {
             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(Profile.STARTING_HP);
             player.setHealth(Profile.STARTING_HP);
         }
-        for (MadEntity entity : gameData.getMobMap().values()) {
-            entity.remove();
+        for (Beast beast : gameData.getMobMap().values()) {
+            beast.remove();
         }
         gameData.getPlayers().clear();
         gameData.getMobMap().clear();

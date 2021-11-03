@@ -3,21 +3,20 @@ package com.github.klyser8.mobmadness.game.mob.classic;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.misc.Crystal;
 import com.github.klyser8.mobmadness.game.items.misc.IronNugget;
-import com.github.klyser8.mobmadness.game.mob.MadEntity;
-import com.github.klyser8.mobmadness.game.mob.MadMobType;
+import com.github.klyser8.mobmadness.game.mob.Beast;
+import com.github.klyser8.mobmadness.game.mob.BeastType;
 import com.github.klyser8.mobmadness.game.mob.loot.LootTable;
 import com.github.klyser8.mobmadness.storage.GameData;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Zombie;
-import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.entity.Spider;
+import org.bukkit.potion.PotionEffect;
 
-public class MadZombie extends MadEntity {
+public class Spyder extends Beast {
 
-    public MadZombie(MobMadness plugin, World world, GameData gameData) {
-        super(plugin, MadMobType.ZOMBIE, world, gameData);
+    public Spyder(MobMadness plugin, World world, GameData gameData) {
+        super(plugin, BeastType.SPIDER, world, gameData);
         createLootTable();
     }
 
@@ -32,14 +31,14 @@ public class MadZombie extends MadEntity {
     }
 
     public void spawn(Location spawnLoc) {
-        Zombie zombie = (Zombie) spawnEntity(spawnLoc, type.getHP());
-        zombie.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(type.getDmg());
-        zombie.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(type.getHP());
-        zombie.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(type.getSpeed());
-        zombie.setShouldBurnInDay(false);
-        zombie.setAdult();
-        zombie.stopDrowning();
-        zombie.getEquipment().clear();
+        Spider spider = (Spider) spawnEntity(spawnLoc, type.getHP());
+        spider.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(type.getDmg());
+        spider.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(type.getHP());
+        spider.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(type.getSpeed());
+        for (PotionEffect effect : spider.getActivePotionEffects()) {
+            spider.removePotionEffect(effect.getType());
+        }
+//        spider.damage(0, MadUtils.pickRandomPlayer(gameData.getPlayers().keySet()));
     }
 
 }

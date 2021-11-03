@@ -1,13 +1,11 @@
 package com.github.klyser8.mobmadness.game.mob.soulstates;
 
 import com.github.klyser8.mobmadness.MobMadness;
-import com.github.klyser8.mobmadness.game.mob.MadEntity;
+import com.github.klyser8.mobmadness.game.mob.Beast;
 import com.github.klyser8.mobmadness.storage.GameData;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 
 import static com.github.klyser8.mobmadness.util.MadUtils.getPlayerGame;
@@ -71,7 +69,7 @@ public class SoulStateListener implements Listener {
             Player victim = (Player) target;
             GameData gameData = getPlayerGame(plugin, victim);
             if (gameData == null) return;
-            MadEntity madMob = gameData.getMobMap().get(targeter);
+            Beast madMob = gameData.getMobMap().get(targeter);
             if (madMob != null) {
                 if (madMob.getCurrentSoulStates().containsKey(SoulStateType.DAZZLED)) {
                     event.setTarget(null);
