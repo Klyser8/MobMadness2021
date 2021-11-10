@@ -3,7 +3,7 @@ package com.github.klyser8.mobmadness.game.items.consumables;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
-import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.storage.Game;
 import com.github.klyser8.mobmadness.util.Sound;
 import com.github.klyser8.mobmadness.util.MadUtils;
 import net.kyori.adventure.text.Component;
@@ -32,8 +32,8 @@ public class DetonationOrb extends MadItem {
 
     private final Sound placeSound;
     private final Sound ambientFireSound;
-    public DetonationOrb(MobMadness plugin, int amount, GameData gameData) {
-        super(ItemType.DETONATION_ORB, new ItemStack(ItemType.DETONATION_ORB.getMaterial(), amount), plugin, gameData, true);
+    public DetonationOrb(MobMadness plugin, int amount, Game game) {
+        super(ItemType.DETONATION_ORB, new ItemStack(ItemType.DETONATION_ORB.getMaterial(), amount), plugin, game, true);
         placeSound = new Sound("block.coral_block.place", 1.0f, 0.5f);
         ambientFireSound = new Sound("block.fire.ambient", 1.0f, 1.0f);
         setup();
@@ -111,13 +111,13 @@ public class DetonationOrb extends MadItem {
                 playFlameParticles();
                 playAmbientFire();
                 List<LivingEntity> nearbyEntities = getEntitiesNearTrap();
-                if (MadUtils.getMobsInArea(clickLoc,
+                if (MadUtils.getBeastsInArea(plugin, clickLoc,
                         RADIUS / 2.0, RADIUS / 2.0, RADIUS / 2.0).size() > 0) {
                     triggerTrap(nearbyEntities);
                     remove();
                 }
             }
-            if (!plugin.getGameManager().getGames().containsKey(gameData.getGameMap().getMapType())) {
+            if (!plugin.getGameManager().getGames().containsKey(game.getGameMap().getMapType())) {
                 remove();
             }
         }

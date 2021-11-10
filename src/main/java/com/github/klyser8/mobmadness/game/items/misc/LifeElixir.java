@@ -3,8 +3,7 @@ package com.github.klyser8.mobmadness.game.items.misc;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
-import com.github.klyser8.mobmadness.storage.GameData;
-import com.github.klyser8.mobmadness.util.ColorHelper;
+import com.github.klyser8.mobmadness.storage.Game;
 import com.github.klyser8.mobmadness.util.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -32,8 +31,8 @@ public class LifeElixir extends MadItem {
 
     private final Sound drinkSound;
     private final List<Sound> healthUpChime;
-    public LifeElixir(MobMadness plugin, int amount, GameData gameData) {
-        super(ItemType.LIFE_ELIXIR, new ItemStack(ItemType.LIFE_ELIXIR.getMaterial(), amount), plugin, gameData, true);
+    public LifeElixir(MobMadness plugin, int amount, Game game) {
+        super(ItemType.LIFE_ELIXIR, new ItemStack(ItemType.LIFE_ELIXIR.getMaterial(), amount), plugin, game, true);
         healthUpChime = new ArrayList<>(Arrays.asList(
                 new Sound("entity.experience_orb.pickup", 1.0f, 1.189207f),
                 new Sound("entity.experience_orb.pickup", 1.0f, 1.587401f),

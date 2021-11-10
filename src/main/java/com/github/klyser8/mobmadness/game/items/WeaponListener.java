@@ -1,17 +1,20 @@
 package com.github.klyser8.mobmadness.game.items;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.PacketContainer;
 import com.github.klyser8.mobmadness.MobMadness;
+import com.github.klyser8.mobmadness.game.entity.beast.Beast;
 import com.github.klyser8.mobmadness.game.items.equipment.shield.Shield;
 import com.github.klyser8.mobmadness.game.items.weapons.bow.Bow;
 import com.github.klyser8.mobmadness.game.items.weapons.crossbow.Crossbow;
-import com.github.klyser8.mobmadness.game.items.weapons.railgun.Railgun;
+import com.github.klyser8.mobmadness.game.items.weapons.rayler.Rayler;
 import com.github.klyser8.mobmadness.game.items.weapons.scepter.Scepter;
 import com.github.klyser8.mobmadness.game.items.weapons.smudger.Smudger;
 import com.github.klyser8.mobmadness.game.items.weapons.sword.Sword;
 import com.github.klyser8.mobmadness.game.items.weapons.trider.Trider;
-import com.github.klyser8.mobmadness.game.mob.Beast;
-import com.github.klyser8.mobmadness.storage.GameData;
-import com.github.klyser8.mobmadness.game.player.Profile;
+import com.github.klyser8.mobmadness.storage.Game;
+import com.github.klyser8.mobmadness.game.entity.player.Profile;
 import com.github.klyser8.mobmadness.util.MadMath;
 import com.github.klyser8.mobmadness.util.Sound;
 import com.github.klyser8.mobmadness.util.MadUtils;
@@ -31,6 +34,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -59,16 +63,16 @@ public class WeaponListener implements Listener {
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (!player.isSneaking()) return;
         ItemStack item = event.getItem();
-        GameData gameData = MadUtils.getPlayerGame(plugin, player);
-        if (isItemInvalid(gameData, item)) return;
-        Profile profile = gameData.getPlayers().get(player);
+        Game game = MadUtils.getEntityGame(plugin, player);
+        if (isItemInvalid(game, item)) return;
+        Profile profile = game.getPlayers().get(player);
         NBTItem nbt = new NBTItem(item);
         if (!nbt.hasKey(MadItem.MM_ENUM_TAG)) return;
         if (nbt.getString(MadItem.MM_ENUM_TAG).contains("SWORD")) {
             event.setCancelled(true);
             ItemType type = ItemType.valueOf(nbt.getString(MadItem.MM_ENUM_TAG));
             if (!(profile.getCurrentWeapon() instanceof Sword) || profile.getCurrentWeapon().getType() != type) {
-                profile.setCurrentWeapon(new Sword(type, item, plugin, gameData));
+                profile.setCurrentWeapon(new Sword(type, plugin, game));
             }
             ((Sword) profile.getCurrentWeapon()).healingBeam(profile);
         }
@@ -78,39 +82,49 @@ public class WeaponListener implements Listener {
     public void onWeaponRightClick(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (event.getItem() != null && event.getItem().getType() == Material.WOODEN_PICKAXE) {
+            PacketContainer container1 = new PacketContainer(PacketType.Play.Server.ANIMATION);
+            container1.getIntegers().write(0, event.getPlayer().getEntityId());
+            container1.getIntegers().write(1, 0);
+            try {
+                ProtocolLibrary.getProtocolManager().sendServerPacket(event.getPlayer(), container1);
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
         ItemStack item = event.getItem();
-        GameData gameData = MadUtils.getPlayerGame(plugin, player);
-        if (isItemInvalid(gameData, item)) return;
+        Game game = MadUtils.getEntityGame(plugin, player);
+        if (isItemInvalid(game, item)) return;
         NBTItem nbt = new NBTItem(item);
-        Profile profile = gameData.getPlayers().get(player);
+        Profile profile = game.getPlayers().get(player);
         if (!nbt.hasKey(MadItem.MM_ENUM_TAG)) return;
         if (nbt.getString(MadItem.MM_ENUM_TAG).contains("SCEPTER")) {
             event.setCancelled(true);
             ItemType type = ItemType.valueOf(nbt.getString(MadItem.MM_ENUM_TAG));
             if (!(profile.getCurrentWeapon() instanceof Scepter) || profile.getCurrentWeapon().getType() != type) {
-                profile.setCurrentWeapon(new Scepter(type, item, plugin, gameData));
+                profile.setCurrentWeapon(new Scepter(type, plugin, game));
             }
             if (player.isSneaking()) {
                 ((Scepter) profile.getCurrentWeapon()).meteor(profile);
             } else {
                 ((Scepter) profile.getCurrentWeapon()).shoot(profile);
             }
-        } else if (nbt.getString(MadItem.MM_ENUM_TAG).contains("RAILGUN")) {
+        } else if (nbt.getString(MadItem.MM_ENUM_TAG).contains("RAYLER")) {
             event.setCancelled(true);
             ItemType type = ItemType.valueOf(nbt.getString(MadItem.MM_ENUM_TAG));
-            if (!(profile.getCurrentWeapon() instanceof Railgun) || profile.getCurrentWeapon().getType() != type) {
-                profile.setCurrentWeapon(new Railgun(type, item, plugin, gameData));
+            if (!(profile.getCurrentWeapon() instanceof Rayler) || profile.getCurrentWeapon().getType() != type) {
+                profile.setCurrentWeapon(new Rayler(type, plugin, game));
             }
             if (player.isSneaking()) {
-                ((Railgun) profile.getCurrentWeapon()).shootGleam(profile);
+                ((Rayler) profile.getCurrentWeapon()).shootGleam(profile);
             } else {
-                ((Railgun) profile.getCurrentWeapon()).charge(player);
+                ((Rayler) profile.getCurrentWeapon()).charge(player);
             }
         } else if (nbt.getString(MadItem.MM_ENUM_TAG).contains("SMUDGER")) {
             event.setCancelled(true);
             ItemType type = ItemType.valueOf(nbt.getString(MadItem.MM_ENUM_TAG));
             if (!(profile.getCurrentWeapon() instanceof Smudger) || profile.getCurrentWeapon().getType() != type) {
-                profile.setCurrentWeapon(new Smudger(type, item, plugin, gameData));
+                profile.setCurrentWeapon(new Smudger(type, plugin, game));
             }
             ((Smudger) profile.getCurrentWeapon()).shoot(profile);
         }
@@ -121,16 +135,16 @@ public class WeaponListener implements Listener {
         Player player = event.getPlayer();
         if (event.getAction() != Action.LEFT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_BLOCK) return;
         ItemStack item = event.getItem();
-        GameData gameData = MadUtils.getPlayerGame(plugin, player);
-        if (isItemInvalid(gameData, item)) return;
-        Profile profile = gameData.getPlayers().get(player);
+        Game game = MadUtils.getEntityGame(plugin, player);
+        if (isItemInvalid(game, item)) return;
+        Profile profile = game.getPlayers().get(player);
         NBTItem nbt = new NBTItem(item);
         if (!nbt.hasKey(MadItem.MM_ENUM_TAG)) return;
         event.setCancelled(true);
         if (nbt.getString(MadItem.MM_ENUM_TAG).contains("_BOW")) {
             ItemType type = ItemType.valueOf(nbt.getString(MadItem.MM_ENUM_TAG));
             if (!(profile.getCurrentWeapon() instanceof Bow) || profile.getCurrentWeapon().getType() != type) {
-                profile.setCurrentWeapon(new Bow(type, item, plugin, gameData));
+                profile.setCurrentWeapon(new Bow(type, plugin, game));
             }
             ((Bow) profile.getCurrentWeapon()).cripplingDash(profile);
         }
@@ -143,8 +157,8 @@ public class WeaponListener implements Listener {
         Arrow arrow = (Arrow) event.getProjectile();
         Player player = (Player) event.getEntity();
         ItemStack item = event.getBow();
-        GameData gameData = MadUtils.getPlayerGame(plugin, player);
-        if (isItemInvalid(gameData, item)) return;
+        Game game = MadUtils.getEntityGame(plugin, player);
+        if (isItemInvalid(game, item)) return;
         NBTItem nbt = new NBTItem(item);
         if (!nbt.hasKey(MadItem.MM_ENUM_TAG)) return;
         if (nbt.getString(MadItem.MM_ENUM_TAG).contains("_BOW")) {
@@ -153,8 +167,6 @@ public class WeaponListener implements Listener {
         double damage = MadMath.randomDoubleBetween(nbt.getDouble(MadItem.DAMAGE_TAG),
                 ((nbt.getDouble(Bow.HIGH_DAMAGE_TAG))));
         arrow.setDamage(damage * event.getForce());
-        arrow.setMetadata(Beast.MULTIPLIER_TAG,
-                new FixedMetadataValue(plugin, nbt.getDouble(Bow.ULT_DMG_MULTIPLIER_TAG)));
     }
 
     @EventHandler
@@ -164,9 +176,9 @@ public class WeaponListener implements Listener {
         Arrow arrow = (Arrow) event.getProjectile();
         Player player = (Player) event.getEntity();
         ItemStack item = event.getBow();
-        GameData gameData = MadUtils.getPlayerGame(plugin, player);
-        if (isItemInvalid(gameData, item)) return;
-        Profile profile = gameData.getPlayers().get(player);
+        Game game = MadUtils.getEntityGame(plugin, player);
+        if (isItemInvalid(game, item)) return;
+        Profile profile = game.getPlayers().get(player);
         NBTItem nbt = new NBTItem(item);
         if (!nbt.hasKey(MadItem.MM_ENUM_TAG)) return;
         if (nbt.getString(MadItem.MM_ENUM_TAG).contains("CROSSBOW")) {
@@ -176,10 +188,10 @@ public class WeaponListener implements Listener {
                 arrow.setDamage(damage);
                 return;
             }
-            arrow.setMetadata(Beast.ENCHANTED_TAG, new FixedMetadataValue(plugin, true));
+            arrow.setMetadata(Crossbow.ENCHANTED_TAG, new FixedMetadataValue(plugin, true));
             ItemType type = ItemType.valueOf(nbt.getString(MadItem.MM_ENUM_TAG));
             if (!(profile.getCurrentWeapon() instanceof Crossbow) || profile.getCurrentWeapon().getType() != type) {
-                profile.setCurrentWeapon(new Crossbow(type, item, plugin, gameData));
+                profile.setCurrentWeapon(new Crossbow(type, plugin, game));
             }
             ((Crossbow) profile.getCurrentWeapon()).shootArrow(profile, arrow);
         }
@@ -187,20 +199,19 @@ public class WeaponListener implements Listener {
 
     @EventHandler
     public void onTridentThrow(ProjectileLaunchEvent event) {
-        if (event.getEntity() instanceof Trident && event.getEntity().getShooter() instanceof Player) {
-            Trident tridentEntity = (Trident) event.getEntity();
+        if (event.getEntity() instanceof Trident tridentEntity
+                && event.getEntity().getShooter() instanceof Player player) {
             ItemStack item = tridentEntity.getItem();
-            Player player = (Player) tridentEntity.getShooter();
             World world = player.getWorld();
-            GameData gameData = getPlayerGame(plugin, player);
-            if (gameData == null) return;
-            if (isItemInvalid(gameData, item)) return;
+            Game game = getEntityGame(plugin, player);
+            if (game == null) return;
+            if (isItemInvalid(game, item)) return;
             NBTItem nbt = new NBTItem(item);
-            Profile profile = gameData.getPlayers().get(player);
+            Profile profile = game.getPlayers().get(player);
             if (nbt.getString(MadItem.MM_ENUM_TAG).contains("TRIDER")) {
                 ItemType type = ItemType.valueOf(nbt.getString(MadItem.MM_ENUM_TAG));
                 if (!(profile.getCurrentWeapon() instanceof Trider) || profile.getCurrentWeapon().getType() != type) {
-                    profile.setCurrentWeapon(new Trider(type, item, plugin, gameData));
+                    profile.setCurrentWeapon(new Trider(type, plugin, game));
                 }
                 Trider trider = ((Trider) profile.getCurrentWeapon());
                 //Set the range of the trider to the appropriate one.
@@ -234,10 +245,10 @@ public class WeaponListener implements Listener {
         ItemStack item = trident.getItem();
         Player shooter = (Player) trident.getShooter();
         if (shooter == null) return;
-        GameData gameData = MadUtils.getPlayerGame(plugin, shooter);
-        if (gameData == null) return;
-        if (isItemInvalid(gameData, item)) return;
-        Profile profile = gameData.getPlayers().get(shooter);
+        Game game = MadUtils.getEntityGame(plugin, shooter);
+        if (game == null) return;
+        if (isItemInvalid(game, item)) return;
+        Profile profile = game.getPlayers().get(shooter);
         NBTItem nbt = new NBTItem(item);
         if (!nbt.hasKey(MadItem.MM_ENUM_TAG) ||
                 (trident.hasMetadata(Trider.RIPTIDING_TAG)
@@ -255,10 +266,10 @@ public class WeaponListener implements Listener {
                 return;
             }
             Player shooter = (Player) trident.getShooter();
-            GameData gameData = MadUtils.getPlayerGame(plugin, shooter);
-            if (gameData == null) return;
-            if (isItemInvalid(gameData, item)) return;
-            Profile profile = gameData.getPlayers().get(shooter);
+            Game game = MadUtils.getEntityGame(plugin, shooter);
+            if (game == null) return;
+            if (isItemInvalid(game, item)) return;
+            Profile profile = game.getPlayers().get(shooter);
             NBTItem nbt = new NBTItem(item);
             if (!nbt.hasKey(MadItem.MM_ENUM_TAG)) return;
             if (trident.getPassengers().contains(shooter)) {
@@ -273,8 +284,8 @@ public class WeaponListener implements Listener {
         if (!(event.getDamager() instanceof Player)) return;
         Player player = (Player) event.getDamager();
         ItemStack item = player.getInventory().getItemInMainHand();
-        GameData gameData = MadUtils.getPlayerGame(plugin, player);
-        if (isItemInvalid(gameData, item)) return;
+        Game game = MadUtils.getEntityGame(plugin, player);
+        if (isItemInvalid(game, item)) return;
         NBTItem nbt = new NBTItem(item);
         String enumStr = nbt.getString(MadItem.MM_ENUM_TAG);
         if (enumStr.contains("SWORD")) {
@@ -292,8 +303,8 @@ public class WeaponListener implements Listener {
     public void onItemDamage(PlayerItemDamageEvent event) {
         Player player = event.getPlayer();
         ItemStack item = event.getItem();
-        GameData gameData = MadUtils.getPlayerGame(plugin, player);
-        if (isItemInvalid(gameData, item)) return;
+        Game game = MadUtils.getEntityGame(plugin, player);
+        if (isItemInvalid(game, item)) return;
         NBTItem nbt = new NBTItem(item);
         String enumStr = nbt.getString(MadItem.MM_ENUM_TAG);
         ItemMeta meta = nbt.getItem().getItemMeta();
@@ -313,29 +324,6 @@ public class WeaponListener implements Listener {
         nbt.applyNBT(item);
     }
 
-
-    @EventHandler                                                                              //Bow marked arrows logic
-    public void onArrowDamageEntity(EntityDamageByEntityEvent event) {
-        if (!(event.getDamager() instanceof Arrow)) return;
-        Arrow arrow = (Arrow) event.getDamager();
-        World world = arrow.getWorld();
-        LivingEntity entity = (LivingEntity) event.getEntity();
-        event.setDamage(arrow.getDamage());
-        if (entity.hasMetadata(Beast.MARKED_TAG)) {
-            if (!(event.getEntity() instanceof LivingEntity) || event.getEntity() instanceof Player) return;
-            Sound hitSound = new Sound("entity.llama.spit", 2.0f, 1.0f);
-            if (!arrow.hasMetadata(Beast.MULTIPLIER_TAG)) return;
-            double multiplier = arrow.getMetadata(Beast.MULTIPLIER_TAG).get(0).asDouble();
-            event.setDamage(arrow.getDamage() * multiplier);
-            entity.setMetadata(Beast.MARKED_TAG, new FixedMetadataValue(plugin, 1));
-            hitSound.play(arrow.getLocation(), SoundCategory.PLAYERS);
-            world.spawnParticle(Particle.SMOKE_LARGE, entity.getEyeLocation(), 40,
-                    0.2, 0.5, 0.2, 0);
-        }
-        if (!arrow.hasMetadata(Beast.ENCHANTED_TAG)) return;
-        entity.setMetadata(Beast.PIERCED_TAG, new FixedMetadataValue(plugin, arrow.getUniqueId().toString()));
-    }
-
     @EventHandler                                                                              //Scepter fireballs logic
     public void onFireballHit(ProjectileHitEvent event) {
         if (!(event.getEntity() instanceof Fireball)) return;
@@ -345,7 +333,7 @@ public class WeaponListener implements Listener {
         Player shooter = (Player) fireball.getShooter();
         org.bukkit.entity.Entity hitEntity = event.getHitEntity();
         double radius = fireball.getMetadata(Scepter.RADIUS_TAG).get(0).asDouble();
-        double damage = fireball.getMetadata(Beast.DAMAGE_TAG).get(0).asDouble();
+        double damage = fireball.getMetadata(Scepter.DAMAGE_TAG).get(0).asDouble();
         if (fireball instanceof SmallFireball) {
             new Sound("entity.generic.explode", 1.0f, (float) (3.0f - radius))
                     .play(fireballLoc, SoundCategory.PLAYERS);
@@ -354,12 +342,13 @@ public class WeaponListener implements Listener {
         } else {
             playMeteorEffects(world, fireballLoc, radius);
         }
-        List<LivingEntity> mobs = getMobsInArea(fireballLoc, radius, radius, radius);
-        if (mobs.isEmpty()) return;
+        List<Beast> beasts = getBeastsInArea(plugin, fireballLoc, radius, radius, radius);
+        if (beasts.isEmpty()) return;
         if (hitEntity instanceof LivingEntity) {
             ((LivingEntity) hitEntity).damage(damage, shooter);
         }
-        for (LivingEntity mob : mobs) {
+        for (Beast beast : beasts) {
+            Mob mob = beast.getMob();
             if (mob.equals(hitEntity) || mob instanceof Player) continue;
             launchEntitiesFireball(mob, fireballLoc, fireball, damage, shooter);
         }
@@ -372,13 +361,13 @@ public class WeaponListener implements Listener {
      * - Not be part of any ongoing game
      * - Fail the {@link MadUtils#isMMItem(ItemStack)} check.
      *
-     * @param gameData the game the item should be present in.
+     * @param game the game the item should be present in.
      * @param item the item to check
      * @return True if it succeeds all the checks above + isMMItem(), false otherwise.
      */
-    private boolean isItemInvalid(GameData gameData, ItemStack item) {
+    private boolean isItemInvalid(Game game, ItemStack item) {
         if (item == null || item.getType() == Material.AIR) return true;
-        if (gameData == null) return true;
+        if (game == null) return true;
         return !isMMItem(item);
     }
 
@@ -390,6 +379,7 @@ public class WeaponListener implements Listener {
      * @return true if the attack's a critical hit, false otherwise.
      * @deprecated since {@link EntityDamageByEntityEvent#isCritical()} exists
      */
+    @Deprecated
     private boolean isAttackCritical(Player player) {
         return player.getFallDistance() > 0 && !player.isOnGround() && player.getAttackCooldown() == 1.0;
     }

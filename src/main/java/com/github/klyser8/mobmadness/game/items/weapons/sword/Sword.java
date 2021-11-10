@@ -4,14 +4,11 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.game.items.weapons.MadWeapon;
-import com.github.klyser8.mobmadness.storage.GameData;
-import com.github.klyser8.mobmadness.game.player.Profile;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import com.github.klyser8.mobmadness.storage.Game;
+import com.github.klyser8.mobmadness.game.entity.player.Profile;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static me.mattstudios.mf.base.components.MfUtil.color;
@@ -28,8 +25,8 @@ public class Sword extends MadItem implements MadWeapon {
     public static final String ULT_DELAY_TAG = "mm.ult.delay";
     public static final String ULT_COOLDOWN_TAG = "mm.ult.cooldown";
 
-    public Sword(ItemType type, ItemStack item, MobMadness plugin, GameData gameData) {
-        super(type, item, plugin, gameData, true);
+    public Sword(ItemType type, MobMadness plugin, Game game) {
+        super(type, new ItemStack(type.getMaterial()), plugin, game, true);
         setup();
     }
 

@@ -1,9 +1,9 @@
 package com.github.klyser8.mobmadness.commands;
 
 import com.github.klyser8.mobmadness.MobMadness;
-import com.github.klyser8.mobmadness.game.mob.Beast;
-import com.github.klyser8.mobmadness.game.mob.BeastType;
-import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.game.entity.beast.Beast;
+import com.github.klyser8.mobmadness.game.entity.beast.BeastType;
+import com.github.klyser8.mobmadness.storage.Game;
 import com.github.klyser8.mobmadness.util.MadUtils;
 import me.mattstudios.mf.annotations.*;
 import me.mattstudios.mf.base.CommandBase;
@@ -26,11 +26,11 @@ public class SpawnMobCommand extends CommandBase {
     public void spawnCommand(CommandSender sender, BeastType type, @Optional Integer amount) {
         if (sender instanceof ConsoleCommandSender) return;
         Player player = (Player) sender;
-        GameData gameData = MadUtils.getPlayerGame(plugin, player);
-        if (gameData == null) return;
+        Game game = MadUtils.getEntityGame(plugin, player);
+        if (game == null) return;
         if (amount == null) amount = 1;
         for (int i = 0; i < amount; i++) {
-            Beast mob = BeastType.createMob(type, player.getWorld(), gameData);
+            Beast mob = BeastType.createMob(type, player.getWorld(), game);
             mob.spawn(player.getLocation());
         }
     }

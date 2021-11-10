@@ -1,13 +1,9 @@
 package com.github.klyser8.mobmadness.game.items.equipment;
 
 import com.github.klyser8.mobmadness.MobMadness;
-import com.github.klyser8.mobmadness.game.Tier;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
-import com.github.klyser8.mobmadness.storage.GameData;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
+import com.github.klyser8.mobmadness.storage.Game;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -17,8 +13,8 @@ import static me.mattstudios.mf.base.components.MfUtil.color;
 
 public class Chestplate extends MadItem {
 
-    public Chestplate(MobMadness plugin, GameData gameData, ItemType type, ItemStack stack) {
-        super(type, stack, plugin, gameData, false);
+    public Chestplate(MobMadness plugin, Game game, ItemType type) {
+        super(type, new ItemStack(type.getMaterial()), plugin, game, false);
         setup();
     }
 

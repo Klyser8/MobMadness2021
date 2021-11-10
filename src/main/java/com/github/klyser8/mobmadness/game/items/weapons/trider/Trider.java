@@ -4,10 +4,10 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.game.items.weapons.MadWeapon;
-import com.github.klyser8.mobmadness.game.mob.Beast;
-import com.github.klyser8.mobmadness.game.mob.soulstates.Dazzled;
-import com.github.klyser8.mobmadness.game.player.Profile;
-import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.game.entity.beast.Beast;
+import com.github.klyser8.mobmadness.game.entity.soulstates.Dazzled;
+import com.github.klyser8.mobmadness.game.entity.player.Profile;
+import com.github.klyser8.mobmadness.storage.Game;
 import com.github.klyser8.mobmadness.util.Sound;
 import org.bukkit.*;
 import org.bukkit.entity.LivingEntity;
@@ -46,8 +46,8 @@ public class Trider extends MadItem implements MadWeapon {
     private final Sound returnSound;
 
 
-    public Trider(ItemType type, ItemStack item, MobMadness plugin, GameData gameData) {
-        super(type, item, plugin, gameData, true);
+    public Trider(ItemType type, MobMadness plugin, Game game) {
+        super(type, new ItemStack(type.getMaterial()), plugin, game, true);
         setup();
         morphSound = new Sound("entity.glow_squid.squirt", 1, 1);
         tideBreakerSplashSound = new Sound("entity.axolotl.splash", 1, 0.5f);
@@ -132,7 +132,6 @@ public class Trider extends MadItem implements MadWeapon {
              * Returns the trident to the player, with added particle effects and sounds.
              */
             private void returnTrident() {
-                System.out.println("return");
                 shooter.getInventory().addItem(trident.getItem());
                 Vector direction = getDirectionBetweenLocations(
                         trident.getLocation(), shooter.getEyeLocation()).normalize();
@@ -220,15 +219,15 @@ public class Trider extends MadItem implements MadWeapon {
         tideBreakerExplodeSound.play(landingLoc, SoundCategory.PLAYERS);
         for (LivingEntity mob : landingLoc.getNearbyLivingEntities(data.getUltTideBreakerRadius(),
                 data.getUltTideBreakerRadius(), data.getUltTideBreakerRadius())) {
-            if (gameData.getMobMap().containsKey(mob)) {
-                Beast madMob = gameData.getMobMap().get(mob);
+            if (game.getBeastMap().containsKey(mob)) {
+                Beast beast = game.getBeastMap().get(mob);
                 double modifiedDistance = mob.getEyeLocation().distance(landingLoc) / 3;
                 if (modifiedDistance < 1) {
                     modifiedDistance = 1;
                 }
                 int dazzleDuration = (int) (data.getUltDazzleMaxDuration() / modifiedDistance);
                 double damage = data.getRangedDamage() / (modifiedDistance * 2);
-                new Dazzled(plugin, gameData, madMob, dazzleDuration);
+                new Dazzled(plugin, game, beast, dazzleDuration);
                 //avoid damaging the same entity twice.
                 if (hitEntity == null || !hitEntity.getUniqueId().equals(mob.getUniqueId())) {
                     mob.damage(damage, trident);
@@ -248,14 +247,14 @@ public class Trider extends MadItem implements MadWeapon {
     }
 
     public double getRangeMultiplier() {
-        switch (type) {
-            case IMPRUDENT_TRIDER: return 0.38;
-            case LOYAL_TRIDER: return 0.41;
-            case FERROUS_TRIDER: return 0.44;
-            case ANGELIC_TRIDER: return 0.48;
-            case HELLISH_TRIDER: return 0.51;
-            case MANIC_TRIDER: return 0.54;
-        }
-        return 1.0;
+        return switch (type) {
+            case IMPRUDENT_TRIDER -> 0.38;
+            case LOYAL_TRIDER -> 0.41;
+            case FERROUS_TRIDER -> 0.44;
+            case ANGELIC_TRIDER -> 0.48;
+            case HELLISH_TRIDER -> 0.51;
+            case MANIC_TRIDER -> 0.54;
+            default -> 1.0;
+        };
     }
 }

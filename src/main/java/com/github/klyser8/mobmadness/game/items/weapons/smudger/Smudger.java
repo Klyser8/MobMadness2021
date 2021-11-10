@@ -4,9 +4,9 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.game.items.weapons.MadWeapon;
-import com.github.klyser8.mobmadness.game.mob.Beast;
-import com.github.klyser8.mobmadness.storage.GameData;
-import com.github.klyser8.mobmadness.game.player.Profile;
+import com.github.klyser8.mobmadness.game.entity.beast.Beast;
+import com.github.klyser8.mobmadness.storage.Game;
+import com.github.klyser8.mobmadness.game.entity.player.Profile;
 import com.github.klyser8.mobmadness.util.Sound;
 import org.bukkit.*;
 import org.bukkit.entity.LivingEntity;
@@ -41,8 +41,8 @@ public class Smudger extends MadItem implements MadWeapon {
     private final Sound ultReverbShotSound;
     private final Sound hitSound;
 
-    public Smudger(ItemType type, ItemStack item, MobMadness plugin, GameData gameData) {
-        super(type, item, plugin, gameData, true);
+    public Smudger(ItemType type, MobMadness plugin, Game game) {
+        super(type, new ItemStack(type.getMaterial()), plugin, game, true);
         this.random = new Random();
         setup();
         this.shotSound = new Sound("entity.dragon_fireball.explode", 1.5f, 1.6f);

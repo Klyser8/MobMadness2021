@@ -3,10 +3,9 @@ package com.github.klyser8.mobmadness.game.items.misc;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
-import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.storage.Game;
 import com.github.klyser8.mobmadness.util.ColorHelper;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -20,8 +19,8 @@ public class Compass extends MadItem {
 
     public static final String OPEN_SHOP_TAG = "mm.open_shop";
 
-    public Compass(MobMadness plugin, GameData gameData) {
-        super(ItemType.COMPASS, new ItemStack(ItemType.COMPASS.getMaterial(), 1), plugin, gameData, true);
+    public Compass(MobMadness plugin, Game game) {
+        super(ItemType.COMPASS, new ItemStack(ItemType.COMPASS.getMaterial(), 1), plugin, game, true);
         setup();
     }
 

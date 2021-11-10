@@ -7,13 +7,13 @@ import com.github.klyser8.mobmadness.game.items.misc.Compass;
 import com.github.klyser8.mobmadness.game.items.weapons.MadWeapon;
 import com.github.klyser8.mobmadness.game.items.weapons.bow.Bow;
 import com.github.klyser8.mobmadness.game.items.weapons.crossbow.Crossbow;
-import com.github.klyser8.mobmadness.game.items.weapons.railgun.Railgun;
+import com.github.klyser8.mobmadness.game.items.weapons.rayler.Rayler;
 import com.github.klyser8.mobmadness.game.items.weapons.scepter.Scepter;
 import com.github.klyser8.mobmadness.game.items.weapons.smudger.Smudger;
 import com.github.klyser8.mobmadness.game.items.weapons.sword.Sword;
 import com.github.klyser8.mobmadness.game.items.weapons.trider.Trider;
-import com.github.klyser8.mobmadness.storage.GameData;
-import com.github.klyser8.mobmadness.game.player.Profile;
+import com.github.klyser8.mobmadness.storage.Game;
+import com.github.klyser8.mobmadness.game.entity.player.Profile;
 import com.github.klyser8.mobmadness.util.MadUtils;
 import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.Material;
@@ -39,9 +39,9 @@ public class ShopListener implements Listener {
 //        if (event.getHand() != EquipmentSlot.HAND) return;
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) return;
         Player player = event.getPlayer();
-        GameData gameData = MadUtils.getPlayerGame(plugin, player);
-        if (gameData == null) return;
-        Profile profile = gameData.getPlayers().get(player);
+        Game game = MadUtils.getEntityGame(plugin, player);
+        if (game == null) return;
+        Profile profile = game.getPlayers().get(player);
         if (profile == null) return;
         ItemStack item = event.getItem();
         if (item == null) return;
@@ -59,9 +59,9 @@ public class ShopListener implements Listener {
         ItemStack clickedItem = event.getCurrentItem();
         ItemStack boughtItem = null;
         if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
-        GameData gameData = MadUtils.getPlayerGame(plugin, player);
-        if (gameData == null) return;
-        Profile profile = gameData.getPlayers().get(player);
+        Game game = MadUtils.getEntityGame(plugin, player);
+        if (game == null) return;
+        Profile profile = game.getPlayers().get(player);
         if (profile == null) return;
         NBTItem nbt = new NBTItem(clickedItem);
         if (!nbt.hasKey(MadItem.CLICKABLE_TAG)) return;
@@ -81,62 +81,23 @@ public class ShopListener implements Listener {
         if (!nbt.getBoolean(MadWeapon.WEAPON_TAG)) return;
         ItemType type = ItemType.valueOf(nbt.getString(MadItem.MM_ENUM_TAG));
         switch (type) {
-            case OLD_SWORD:
-            case STONE_SWORD:
-            case BROADSWORD:
-            case BEAM_SWORD:
-            case GLEAMING_SWORD:
-            case EXECUTIONERS_SWORD:
-                profile.setCurrentWeapon(new Sword(type, boughtItem, plugin, gameData));
-                break;
-            case FRAIL_BOW:
-            case SOLID_BOW:
-            case REINFORCED_BOW:
-            case PULSE_BOW:
-            case BLAZING_BOW:
-            case SHADOW_BOW:
-                profile.setCurrentWeapon(new Bow(type, boughtItem, plugin, gameData));
-                break;
-            case FRAIL_CROSSBOW:
-            case STEADY_CROSSBOW:
-            case ENHANCED_CROSSBOW:
-            case BLASTING_CROSSBOW:
-            case FIERY_CROSSBOW:
-            case CERBERUS_CROSSBOW:
-                profile.setCurrentWeapon(new Crossbow(type, boughtItem, plugin, gameData));
-                break;
-            case WOODEN_SCEPTER:
-            case ANCIENT_SCEPTER:
-            case MANASTEEL_SCEPTER:
-            case CRYSTALLINE_SCEPTER:
-            case INFERNAL_SCEPTER:
-            case ARMAGEDDON_SCEPTER:
-                profile.setCurrentWeapon(new Scepter(type, boughtItem, plugin, gameData));
-                break;
-            case SLOW_RAILGUN:
-            case IMPROVED_RAILGUN:
-            case TITANS_RAILGUN:
-            case VIRTUOUS_RAILGUN:
-            case ERUPTING_RAILGUN:
-            case JUDGEMENT_RAILGUN:
-                profile.setCurrentWeapon(new Railgun(type, boughtItem, plugin, gameData));
-                break;
-            case DEFECTIVE_SMUDGER:
-            case PLEASANT_SMUDGER:
-            case SILVER_PLATED_SMUDGER:
-            case LUSTROUS_SMUDGER:
-            case DRACONIC_SMUDGER:
-            case POSSESSED_SMUDGER:
-                profile.setCurrentWeapon(new Smudger(type, boughtItem, plugin, gameData));
-                break;
-            case IMPRUDENT_TRIDER:
-            case LOYAL_TRIDER:
-            case FERROUS_TRIDER:
-            case ANGELIC_TRIDER:
-            case HELLISH_TRIDER:
-            case MANIC_TRIDER:
-                profile.setCurrentWeapon(new Trider(type, boughtItem, plugin, gameData));
-                break;
+            case OLD_SWORD, STONE_SWORD, BROADSWORD, BEAM_SWORD, GLEAMING_SWORD, EXECUTIONERS_SWORD
+                    -> profile.setCurrentWeapon(new Sword(type, plugin, game));
+            case FRAIL_BOW, SOLID_BOW, REINFORCED_BOW, PULSE_BOW, BLAZING_BOW, SHADOW_BOW
+                    -> profile.setCurrentWeapon(new Bow(type, plugin, game));
+            case FRAIL_CROSSBOW, STEADY_CROSSBOW, ENHANCED_CROSSBOW, BLASTING_CROSSBOW, FIERY_CROSSBOW,
+                    CERBERUS_CROSSBOW
+                    -> profile.setCurrentWeapon(new Crossbow(type, plugin, game));
+            case WOODEN_SCEPTER, ANCIENT_SCEPTER, MANASTEEL_SCEPTER, CRYSTALLINE_SCEPTER, INFERNAL_SCEPTER,
+                    ARMAGEDDON_SCEPTER
+                    -> profile.setCurrentWeapon(new Scepter(type, plugin, game));
+            case SLOW_RAYLER, IMPROVED_RAYLER, TITANS_RAYLER, VIRTUOUS_RAYLER, ERUPTING_RAYLER, JUDGEMENT_RAYLER
+                    -> profile.setCurrentWeapon(new Rayler(type, plugin, game));
+            case DEFECTIVE_SMUDGER, PLEASANT_SMUDGER, SILVER_PLATED_SMUDGER, LUSTROUS_SMUDGER, DRACONIC_SMUDGER,
+                    POSSESSED_SMUDGER
+                    -> profile.setCurrentWeapon(new Smudger(type, plugin, game));
+            case IMPRUDENT_TRIDER, LOYAL_TRIDER, FERROUS_TRIDER, ANGELIC_TRIDER, HELLISH_TRIDER, MANIC_TRIDER
+                    -> profile.setCurrentWeapon(new Trider(type, plugin, game));
         }
         profile.setXPMana(profile.getCurrentWeapon().getType().toString().contains("SCEPTER"));
         profile.stopCooldown();
@@ -145,7 +106,7 @@ public class ShopListener implements Listener {
     /**
      * Checks if the player has an item with the weapon NBT tag.
      *
-     * @param player
+     * @param player the player to check
      * @return -1 if the player doesn't, otherwise returns the slot which the wepaon was found in.
      */
     private int playerHasWeapon(Player player) {

@@ -3,7 +3,7 @@ package com.github.klyser8.mobmadness.commands;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
-import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.storage.Game;
 import com.github.klyser8.mobmadness.util.MadUtils;
 import me.mattstudios.mf.annotations.*;
 import me.mattstudios.mf.base.CommandBase;
@@ -26,9 +26,9 @@ public class GiveItemCommand extends CommandBase {
     @Completion({"#itemtypes", "#players"})
     public void giveItemCommand(CommandSender sender, ItemType type, Integer amount) {
         Player player = (Player) sender;
-        GameData gameData = MadUtils.getPlayerGame(plugin, player);
+        Game game = MadUtils.getEntityGame(plugin, player);
         if (amount == 0) amount = 1;
-        MadItem item = ItemType.createDummyItem(plugin, gameData, type, amount);
+        MadItem item = ItemType.createDummyItem(plugin, game, type, amount);
         if (item == null) return;
         player.getInventory().addItem(item.cloneItem());
     }

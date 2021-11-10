@@ -3,8 +3,8 @@ package com.github.klyser8.mobmadness.game.items;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.consumables.*;
 import com.github.klyser8.mobmadness.game.items.misc.LifeElixir;
-import com.github.klyser8.mobmadness.game.player.Profile;
-import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.game.entity.player.Profile;
+import com.github.klyser8.mobmadness.storage.Game;
 import com.github.klyser8.mobmadness.util.MadUtils;
 import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.Location;
@@ -45,19 +45,19 @@ public class ItemListener implements Listener {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) return;
         if (!isMMItem(item)) return;
         Player player = event.getPlayer();
-        GameData gameData = MadUtils.getPlayerGame(plugin, player);
-        if (gameData == null) return;
+        Game game = MadUtils.getEntityGame(plugin, player);
+        if (game == null) return;
         if (item.getType() == Material.BEETROOT_SOUP) {
-            LifeElixir elixir = new LifeElixir(plugin, item.getAmount(), gameData);
+            LifeElixir elixir = new LifeElixir(plugin, item.getAmount(), game);
             elixir.healthUp(player, item);
             event.setCancelled(true);
         }
         else if (item.getType() == Material.COOKIE) {
-            Cookie cookie = new Cookie(plugin, item.getAmount(),gameData);
+            Cookie cookie = new Cookie(plugin, item.getAmount(), game);
             cookie.eat(player, item);
             event.setCancelled(true);
         } else if (item.getType() == Material.TNT) {
-            ThrowableTNT tnt = new ThrowableTNT(plugin, item.getAmount(), gameData);
+            ThrowableTNT tnt = new ThrowableTNT(plugin, item.getAmount(), game);
             tnt.toss(player, item);
             event.setCancelled(true);
         }
@@ -71,9 +71,9 @@ public class ItemListener implements Listener {
         if (item == null) return;
         NBTItem nbt = new NBTItem(item);
         Player player = event.getPlayer();
-        GameData gameData = MadUtils.getPlayerGame(plugin, player);
-        if (gameData == null) return;
-        Profile profile = gameData.getPlayers().get(player);
+        Game game = MadUtils.getEntityGame(plugin, player);
+        if (game == null) return;
+        Profile profile = game.getPlayers().get(player);
         if (!isMMItem(item)) return;
         if (!nbt.hasKey(MadItem.MM_ENUM_TAG)) return;
         ItemType type = ItemType.valueOf(nbt.getString(MadItem.MM_ENUM_TAG));
@@ -91,7 +91,7 @@ public class ItemListener implements Listener {
             }
             BlockData oldBlockData = trapLoc.getBlock().getBlockData();
             if (trapLoc.getBlock().isLiquid()) return;
-            new DetonationOrb(plugin, 1, gameData).place(player, item, trapLoc, oldBlockData);
+            new DetonationOrb(plugin, 1, game).place(player, item, trapLoc, oldBlockData);
         } else if (type == ItemType.BARRICADE) {
             Location barricadeLoc;
             if (clickedBlock.getType().isSolid()) {
@@ -101,10 +101,10 @@ public class ItemListener implements Listener {
             } else {
                 barricadeLoc = clickedBlock.getLocation();
             }
-            Barricade barricade = new Barricade(plugin, item.getAmount(), gameData);
+            Barricade barricade = new Barricade(plugin, item.getAmount(), game);
             barricade.build(profile, item, barricadeLoc);
         } else if (type == ItemType.AETHERS_BERRIES) {
-            AethersBerries berries = new AethersBerries(plugin, item.getAmount(), gameData);
+            AethersBerries berries = new AethersBerries(plugin, item.getAmount(), game);
             if (event.getClickedBlock().getType() == Material.RESPAWN_ANCHOR) {
                 berries.chargeAnchor(player, item);
                 event.setCancelled(true);
@@ -142,14 +142,14 @@ public class ItemListener implements Listener {
     public void onFoodEat(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();
         Player player = event.getPlayer();
-        GameData gameData = MadUtils.getPlayerGame(plugin, player);
-        if (gameData == null) return;
-        Profile profile = gameData.getPlayers().get(player);
+        Game game = MadUtils.getEntityGame(plugin, player);
+        if (game == null) return;
+        Profile profile = game.getPlayers().get(player);
         if (!isMMItem(item)) return;
         NBTItem nbt = new NBTItem(item);
         ItemType type = ItemType.valueOf(nbt.getString(MadItem.MM_ENUM_TAG));
         if (type == ItemType.VEILING_POTION) {
-            VeilingPotion potion = new VeilingPotion(plugin, item.getAmount(), gameData);
+            VeilingPotion potion = new VeilingPotion(plugin, item.getAmount(), game);
             potion.drink(profile, item);
             if (event.getReplacement() == null) return;
             event.setReplacement(new ItemStack(Material.AIR));
@@ -161,28 +161,26 @@ public class ItemListener implements Listener {
         if (!event.getFrom().getWorld().getName().equalsIgnoreCase("mobmadness")) return;
         if (event.getCause() != PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT) return;
         Player player = event.getPlayer();
-        GameData gameData = MadUtils.getPlayerGame(plugin, player);
-        if (gameData == null) return;
-        new ChorusFruit(plugin, 1, gameData).handleTeleport(event);
+        Game game = MadUtils.getEntityGame(plugin, player);
+        if (game == null) return;
+        new ChorusFruit(plugin, 1, game).handleTeleport(event);
     }
 
     @EventHandler
     public void onProjectileThrow(EntitySpawnEvent event) {
-        if (!(event.getEntity() instanceof EnderPearl)) return;
-        EnderPearl pearl = (EnderPearl) event.getEntity();
+        if (!(event.getEntity() instanceof EnderPearl pearl)) return;
         if (!pearl.getWorld().getName().equalsIgnoreCase("mobmadness")) return;
         pearl.setMetadata(MadItem.MM_ENUM_TAG, new FixedMetadataValue(plugin, ItemType.VOID_ORB.toString()));
     }
 
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event) {
-        if (!(event.getEntity() instanceof EnderPearl)) return;
-        EnderPearl pearl = (EnderPearl) event.getEntity();
+        if (!(event.getEntity() instanceof EnderPearl pearl)) return;
         if (!pearl.hasMetadata(MadItem.MM_ENUM_TAG)) return;
         Player player = (Player) pearl.getShooter();
         if (player == null) return;
-        GameData gameData = MadUtils.getPlayerGame(plugin, player);
-        new VoidOrb(plugin, 1, gameData).dematerialize(pearl);
+        Game game = MadUtils.getEntityGame(plugin, player);
+        new VoidOrb(plugin, 1, game).dematerialize(pearl);
 
     }
 

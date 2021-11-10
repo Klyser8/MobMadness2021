@@ -1,7 +1,10 @@
 package com.github.klyser8.mobmadness.game.items.weapons.bow;
 
 import com.github.klyser8.mobmadness.MobMadness;
-import com.github.klyser8.mobmadness.game.mob.Beast;
+import com.github.klyser8.mobmadness.game.entity.beast.Beast;
+import com.github.klyser8.mobmadness.game.entity.soulstates.Marked;
+import com.github.klyser8.mobmadness.game.entity.soulstates.SoulStateType;
+import com.github.klyser8.mobmadness.storage.Game;
 import com.github.klyser8.mobmadness.util.Sound;
 import com.github.klyser8.mobmadness.util.MadUtils;
 import org.bukkit.Location;
@@ -9,6 +12,7 @@ import org.bukkit.Particle;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
@@ -24,11 +28,13 @@ public class BowUltRunnable extends BukkitRunnable {
     private final World world;
     private final BowData bowData;
     private final Sound hitSound;
+    private final Game game;
     public BowUltRunnable(MobMadness plugin, Player player, BowData bowData) {
         this.plugin = plugin;
         this.player = player;
         this.world = player.getWorld();
         this.bowData = bowData;
+        game = MadUtils.getEntityGame(plugin, player);
         hitSound = new Sound("entity.iron_golem.attack", 1.0f, 0.5f);
     }
 
@@ -41,28 +47,26 @@ public class BowUltRunnable extends BukkitRunnable {
         }
         world.spawnParticle(Particle.SPIT, player.getLocation().add(0, 1, 0), (int) bowData.getDamage(),
                 0.2, 0.5, 0.2, 0);
-        List<LivingEntity> mobs = MadUtils.getMobsInArea(loc, 2.0, 2.0, 2.0);
-        if (mobs.isEmpty()) {
+        List<Beast> beasts = MadUtils.getBeastsInArea(plugin, loc, 2.0, 2.0, 2.0);
+        if (beasts.isEmpty()) {
             return;
         }
-        tossEnemies(mobs);
+        tossEnemies(beasts);
     }
 
-    private void tossEnemies(List<LivingEntity> mobs) {               //Throws any mob hit by the dash behind the caster
-        for (LivingEntity mob : mobs) {
-            if (mob.hasMetadata(Beast.MARKED_TAG)) continue;
-            mob.setMetadata(Beast.MARKED_TAG,
-                    new FixedMetadataValue(plugin, bowData.getUltMarkDuration()));                   //Marks the hit mob
-            mob.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, bowData.getUltMarkDuration(), 0,
-                    false, false, false));
+    private void tossEnemies(List<Beast> beasts) {               //Throws any mob hit by the dash behind the caster
+        for (Beast beast : beasts) {
+            if (beast.hasSoulState(SoulStateType.MARKED)) continue;
+            Mob mob = beast.getMob();
             mob.setVelocity(player.getVelocity().multiply(-1).setY(mob.getVelocity().getY() + 1)); //Tosses mob backward
             hitSound.play(mob.getEyeLocation(), SoundCategory.PLAYERS);
             mob.setKiller(player);
-            runMark(mob);
+            new Marked(plugin, game, beast, 1, bowData.getUltMarkDuration());
+//            runMark(mob);
         }
     }
 
-    private void runMark(LivingEntity mob) {                                 //Plays particle effects for marked enemies
+    /*private void runMark(LivingEntity mob) {                                 //Plays particle effects for marked enemies
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -80,5 +84,5 @@ public class BowUltRunnable extends BukkitRunnable {
                 mob.setMetadata(Beast.MARKED_TAG, new FixedMetadataValue(plugin, markDuration - 1));
             }
         }.runTaskTimer(plugin, 0, 1);
-    }
+    }*/
 }

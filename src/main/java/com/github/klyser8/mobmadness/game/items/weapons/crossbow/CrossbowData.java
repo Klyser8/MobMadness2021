@@ -27,59 +27,59 @@ public class CrossbowData extends WeaponData {
 
     private void setup() {
         switch (type) {
-            case FRAIL_CROSSBOW:
+            case FRAIL_CROSSBOW -> {
                 damage = 4.0;
                 highDamage = 5.0;
                 ultDamage = 7.0;
-                ultPierceLevel = 0;
+                ultPierceLevel = 3;
                 ultCooldown = 400;
-                break;
-            case STEADY_CROSSBOW:
+            }
+            case STEADY_CROSSBOW -> {
                 damage = 5.0;
                 highDamage = 7.0;
                 loadEnch = new Ench(Enchantment.QUICK_CHARGE, 1);
                 pierceEnch = new Ench(Enchantment.PIERCING, 1);
                 ultDamage = 9.5;
-                ultPierceLevel = 1;
+                ultPierceLevel = 5;
                 ultCooldown = 380;
-                break;
-            case ENHANCED_CROSSBOW:
+            }
+            case ENHANCED_CROSSBOW -> {
                 damage = 6.0;
                 highDamage = 9.0;
                 loadEnch = new Ench(Enchantment.QUICK_CHARGE, 1);
                 pierceEnch = new Ench(Enchantment.PIERCING, 2);
                 ultDamage = 12.0;
-                ultPierceLevel = 2;
+                ultPierceLevel = 7;
                 ultCooldown = 360;
-                break;
-            case BLASTING_CROSSBOW:
+            }
+            case BLASTING_CROSSBOW -> {
                 damage = 8.0;
                 highDamage = 11.0;
                 loadEnch = new Ench(Enchantment.QUICK_CHARGE, 2);
                 pierceEnch = new Ench(Enchantment.PIERCING, 3);
                 ultDamage = 15.0;
-                ultPierceLevel = 3;
+                ultPierceLevel = 9;
                 ultCooldown = 340;
-                break;
-            case FIERY_CROSSBOW:
+            }
+            case FIERY_CROSSBOW -> {
                 damage = 11.0;
                 highDamage = 15.0;
                 loadEnch = new Ench(Enchantment.QUICK_CHARGE, 2);
                 pierceEnch = new Ench(Enchantment.PIERCING, 4);
                 ultDamage = 20.5;
-                ultPierceLevel = 4;
+                ultPierceLevel = 11;
                 ultCooldown = 320;
-                break;
-            case CERBERUS_CROSSBOW:
+            }
+            case CERBERUS_CROSSBOW -> {
                 damage = 15.0;
                 highDamage = 19.0;
                 loadEnch = new Ench(Enchantment.QUICK_CHARGE, 3);
                 pierceEnch = new Ench(Enchantment.PIERCING, 5);
                 multiShot = new Ench(Enchantment.MULTISHOT, 1);
                 ultDamage = 26.5;
-                ultPierceLevel = 5;
+                ultPierceLevel = 13;
                 ultCooldown = 300;
-                break;
+            }
         }
     }
 

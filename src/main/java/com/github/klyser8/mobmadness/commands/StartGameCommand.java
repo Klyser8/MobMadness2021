@@ -2,7 +2,7 @@ package com.github.klyser8.mobmadness.commands;
 
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.lang.English;
-import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.storage.Game;
 import com.github.klyser8.mobmadness.game.world.MapType;
 import me.mattstudios.mf.annotations.*;
 import me.mattstudios.mf.base.CommandBase;
@@ -35,9 +35,9 @@ public class StartGameCommand extends CommandBase {
             sender.sendMessage(English.ERROR_MAP_TAKEN.getComponent());
             return;
         }
-        GameData gameData = plugin.getGameManager().createGame(type);
+        Game game = plugin.getGameManager().createGame(type);
         Player player = (Player) sender;
-        plugin.getGameManager().setupPlayer(player, gameData);
+        plugin.getGameManager().setupPlayer(player, game);
         ((Player) sender).teleport(type.getSpawn());
     }
 

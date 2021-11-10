@@ -3,7 +3,7 @@ package com.github.klyser8.mobmadness.game.items.menu;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
-import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.storage.Game;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -15,29 +15,22 @@ import static me.mattstudios.mf.base.components.MfUtil.color;
  */
 public class BlankItem extends MadItem {
 
-    public BlankItem(MobMadness plugin, GameData gameData) {
-        super(ItemType.BLANK_ITEM, new ItemStack(Material.GRAY_STAINED_GLASS_PANE, 1), plugin, gameData, true);
+    public BlankItem(MobMadness plugin, Game game) {
+        super(ItemType.BLANK_ITEM, new ItemStack(Material.GRAY_STAINED_GLASS_PANE, 1), plugin, game, true);
         nbt.setBoolean(MadItem.CLICKABLE_TAG, false);
         setup();
     }
 
     @Override
     public void setup() {
-        Material type;
-        switch (gameData.getTier()) {
-            default: type = Material.GRAY_STAINED_GLASS_PANE;
-                break;
-            case II: type = Material.LIME_STAINED_GLASS;
-                break;
-            case III: type = Material.BLUE_STAINED_GLASS_PANE;
-                break;
-            case IV: type = Material.MAGENTA_STAINED_GLASS_PANE;
-                break;
-            case V: type = Material.ORANGE_STAINED_GLASS_PANE;
-                break;
-            case VI: type = Material.RED_STAINED_GLASS_PANE;
-                break;
-        }
+        Material type = switch (game.getTier()) {
+            default -> Material.GRAY_STAINED_GLASS_PANE;
+            case II -> Material.LIME_STAINED_GLASS;
+            case III -> Material.BLUE_STAINED_GLASS_PANE;
+            case IV -> Material.MAGENTA_STAINED_GLASS_PANE;
+            case V -> Material.ORANGE_STAINED_GLASS_PANE;
+            case VI -> Material.RED_STAINED_GLASS_PANE;
+        };
         nbt.getItem().setType(type);
         setTags(false, false, true,
                 false, false, null);

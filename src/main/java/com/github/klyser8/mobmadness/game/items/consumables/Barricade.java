@@ -3,8 +3,8 @@ package com.github.klyser8.mobmadness.game.items.consumables;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
-import com.github.klyser8.mobmadness.game.player.Profile;
-import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.game.entity.player.Profile;
+import com.github.klyser8.mobmadness.storage.Game;
 import com.github.klyser8.mobmadness.util.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -29,8 +29,8 @@ public class Barricade extends MadItem {
     private final Sound buildSoundReverb;
     private final Sound crumbleSound;
     private final Sound breakSound;
-    public Barricade(MobMadness plugin, int amount, GameData gameData) {
-        super(ItemType.BARRICADE, new ItemStack(ItemType.BARRICADE.getMaterial(), amount), plugin, gameData, true);
+    public Barricade(MobMadness plugin, int amount, Game game) {
+        super(ItemType.BARRICADE, new ItemStack(ItemType.BARRICADE.getMaterial(), amount), plugin, game, true);
         buildSound = new Sound("block.netherrack.place", 1.5f, 1.0f);
         buildSoundReverb = new Sound("block.netherrack.place", 2.0f, 0.5f);
         crumbleSound = new Sound("block.nether_bricks.hit", 0.5f, 1.0f);
@@ -126,7 +126,7 @@ public class Barricade extends MadItem {
 
         @Override
         public void run() {
-            if (lifeTime == 0 || !plugin.getGameManager().getGames().containsKey(gameData.getGameMap().getMapType())) {
+            if (lifeTime == 0 || !plugin.getGameManager().getGames().containsKey(game.getGameMap().getMapType())) {
                 destroy();
             }
             if (lifeTime == 150) {

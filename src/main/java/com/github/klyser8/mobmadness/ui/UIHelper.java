@@ -1,7 +1,9 @@
 package com.github.klyser8.mobmadness.ui;
 
 import com.github.klyser8.mobmadness.MobMadness;
-import com.github.klyser8.mobmadness.game.mob.Beast;
+import com.github.klyser8.mobmadness.game.entity.beast.Beast;
+import com.github.klyser8.mobmadness.game.entity.beast.BossBeast;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -21,7 +23,18 @@ import static me.mattstudios.mf.base.components.MfUtil.color;
  */
 public class UIHelper {
 
+    /**
+     * Displays the health bar of the given beast to the given player.
+     * Additionally, it displays the last damage dealt by the player.
+     * If the hit entity is a boss, the health bar is not displayed as bosses use a {@link BossBar} themselves.
+     *
+     * @param plugin instance of the main class
+     * @param beast the beast whose HP should be shown
+     * @param player the player to show the health bar to
+     * @param dmg the damage dealt to the beast
+     */
     public static void displayMobHpBar(MobMadness plugin, Beast beast, Player player, double dmg) {
+        if (beast instanceof BossBeast) return;
         LivingEntity entity = beast.getMob();
         //The entity's current hp (Rounded up)
         int currentHP = (int) Math.ceil(entity.getHealth() - dmg);

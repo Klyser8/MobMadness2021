@@ -2,7 +2,6 @@ package com.github.klyser8.mobmadness.lang;
 
 import com.github.klyser8.mobmadness.game.Tier;
 import com.github.klyser8.mobmadness.game.world.MapType;
-import com.github.klyser8.mobmadness.storage.GameData;
 import com.github.klyser8.mobmadness.util.ColorHelper;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -10,7 +9,6 @@ import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Language class storing messages sent to players.

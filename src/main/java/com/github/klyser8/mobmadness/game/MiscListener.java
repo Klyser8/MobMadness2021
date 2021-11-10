@@ -6,7 +6,7 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.game.items.misc.Arrows;
 import com.github.klyser8.mobmadness.lang.English;
-import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.storage.Game;
 import com.github.klyser8.mobmadness.util.MadUtils;
 import com.github.klyser8.mobmadness.util.Sound;
 import de.tr7zw.nbtapi.NBTItem;
@@ -17,6 +17,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -40,38 +41,43 @@ public class MiscListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler                                          //Prevents blocks from being placed in survival in mobmadness
+    //Prevents blocks from being placed in survival in mobmadness
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockPlace(BlockPlaceEvent event) {
         if (event.getPlayer().getGameMode() != GameMode.SURVIVAL ||
-                !isMobMadness(event.getPlayer().getWorld())) return;
+                isWorldInvalid(event.getPlayer().getWorld())) return;
         event.setCancelled(true);
     }
 
-    @EventHandler                                          //Prevents blocks from being broken in survival in mobmadness
+    //Prevents blocks from being broken in survival in mobmadness
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.getPlayer().getGameMode() != GameMode.SURVIVAL ||
-                !isMobMadness(event.getPlayer().getWorld())) return;
+                isWorldInvalid(event.getPlayer().getWorld())) return;
         event.setCancelled(true);
     }
 
-    @EventHandler                                 //Prevents block from being destroyed through odd means, like tridents
+    //Prevents block from being destroyed through odd means, like tridents
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockDestroy(BlockDestroyEvent event) {
         event.setCancelled(true);
     }
 
-    @EventHandler                                                    //Prevents farmland to be destroyed when stepped on
+    //Prevents farmland to be destroyed when stepped on
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onFarmStep(PlayerInteractEvent event) {
         if (event.getClickedBlock() == null ||
-                !isMobMadness(event.getClickedBlock().getWorld())) return;
+                isWorldInvalid(event.getClickedBlock().getWorld())) return;
         if (event.getAction() != Action.PHYSICAL || event.getClickedBlock().getType() != Material.FARMLAND) return;
         event.setCancelled(true);
     }
 
-    @EventHandler                                                                //Prevents fire from being extinguished
+    //Prevents fire from being extinguished
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onFireExtinguish(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (event.getClickedBlock() == null
-                || !isMobMadness(event.getClickedBlock().getWorld())
+                || isWorldInvalid(event.getClickedBlock().getWorld())
                 || player.getGameMode() != GameMode.SURVIVAL
                 || event.getAction() != Action.LEFT_CLICK_BLOCK
                 || event.getClickedBlock().getLocation().add(0, 1, 0).getBlock().getType() != Material.FIRE)
@@ -79,14 +85,15 @@ public class MiscListener implements Listener {
         event.setCancelled(true);
     }
 
-    @EventHandler                                                    //Prevents interactive blocks to be interacted with
+    //Prevents interactive blocks to be interacted with
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (event.getClickedBlock() == null) return;
         Block block = event.getClickedBlock();
         Material mat = block.getType();
         ItemStack handItem = event.getItem();
-        if (!isMobMadness(event.getClickedBlock().getWorld())) {
+        if (isWorldInvalid(event.getClickedBlock().getWorld())) {
             return;
         }
         if (mat == Material.RESPAWN_ANCHOR
@@ -94,82 +101,27 @@ public class MiscListener implements Listener {
                 && event.getItem().getType() != Material.GLOW_BERRIES) {
             event.setCancelled(true);
         }
-        boolean interactable = mat.isInteractable();
-        switch (mat) {
-            case ANDESITE_STAIRS:
-            case ACACIA_STAIRS:
-            case STONE_BRICK_STAIRS:
-            case BIRCH_STAIRS:
-            case STONE_STAIRS:
-            case BLACKSTONE_STAIRS:
-            case BRICK_STAIRS:
-            case COBBLED_DEEPSLATE_STAIRS:
-            case COBBLESTONE_STAIRS:
-            case CRIMSON_STAIRS:
-            case CUT_COPPER_STAIRS:
-            case DARK_OAK_STAIRS:
-            case DARK_PRISMARINE_STAIRS:
-            case DEEPSLATE_BRICK_STAIRS:
-            case DEEPSLATE_TILE_STAIRS:
-            case DIORITE_STAIRS:
-            case SANDSTONE_STAIRS:
-            case END_STONE_BRICK_STAIRS:
-            case EXPOSED_CUT_COPPER_STAIRS:
-            case GRANITE_STAIRS:
-            case JUNGLE_STAIRS:
-            case MOSSY_COBBLESTONE_STAIRS:
-            case MOSSY_STONE_BRICK_STAIRS:
-            case NETHER_BRICK_STAIRS:
-            case OAK_STAIRS:
-            case OXIDIZED_CUT_COPPER_STAIRS:
-            case POLISHED_ANDESITE_STAIRS:
-            case POLISHED_BLACKSTONE_BRICK_STAIRS:
-            case POLISHED_BLACKSTONE_STAIRS:
-            case SMOOTH_QUARTZ_STAIRS:
-            case POLISHED_DEEPSLATE_STAIRS:
-            case POLISHED_DIORITE_STAIRS:
-            case POLISHED_GRANITE_STAIRS:
-            case PRISMARINE_BRICK_STAIRS:
-            case PRISMARINE_STAIRS:
-            case PURPUR_STAIRS:
-            case QUARTZ_STAIRS:
-            case RED_NETHER_BRICK_STAIRS:
-            case RED_SANDSTONE_STAIRS:
-            case SMOOTH_RED_SANDSTONE_STAIRS:
-            case SMOOTH_SANDSTONE_STAIRS:
-            case SPRUCE_STAIRS:
-            case WARPED_STAIRS:
-            case WAXED_CUT_COPPER_STAIRS:
-            case WAXED_EXPOSED_CUT_COPPER_STAIRS:
-            case WAXED_OXIDIZED_CUT_COPPER_STAIRS:
-            case WAXED_WEATHERED_CUT_COPPER_STAIRS:
-            case WEATHERED_CUT_COPPER_STAIRS:
-            case CAULDRON:
-            case LAVA_CAULDRON:
-            case POWDER_SNOW_CAULDRON:
-            case WATER_CAULDRON:
-            case IRON_TRAPDOOR:
-            case CANDLE:
-            case CYAN_CANDLE:
-            case BLACK_CANDLE:
-            case BLUE_CANDLE:
-            case BROWN_CANDLE:
-            case GRAY_CANDLE:
-            case GREEN_CANDLE:
-            case LIGHT_BLUE_CANDLE:
-            case LIGHT_GRAY_CANDLE:
-            case LIME_CANDLE:
-            case MAGENTA_CANDLE:
-            case ORANGE_CANDLE:
-            case PINK_CANDLE:
-            case PURPLE_CANDLE:
-            case RED_CANDLE:
-            case WHITE_CANDLE:
-            case YELLOW_CANDLE:
-            case CAVE_VINES: //TODO fix glow berries harvesting!
+        boolean interactable = switch (mat) {
+            case ANDESITE_STAIRS, ACACIA_STAIRS, STONE_BRICK_STAIRS, BIRCH_STAIRS, STONE_STAIRS, BLACKSTONE_STAIRS,
+                    BRICK_STAIRS, COBBLED_DEEPSLATE_STAIRS, COBBLESTONE_STAIRS, CRIMSON_STAIRS, CUT_COPPER_STAIRS,
+                    DARK_OAK_STAIRS, DARK_PRISMARINE_STAIRS, DEEPSLATE_BRICK_STAIRS, DEEPSLATE_TILE_STAIRS,
+                    DIORITE_STAIRS, SANDSTONE_STAIRS, END_STONE_BRICK_STAIRS, EXPOSED_CUT_COPPER_STAIRS, GRANITE_STAIRS,
+                    JUNGLE_STAIRS, MOSSY_COBBLESTONE_STAIRS, MOSSY_STONE_BRICK_STAIRS, NETHER_BRICK_STAIRS, OAK_STAIRS,
+                    OXIDIZED_CUT_COPPER_STAIRS, POLISHED_ANDESITE_STAIRS, POLISHED_BLACKSTONE_BRICK_STAIRS,
+                    POLISHED_BLACKSTONE_STAIRS, SMOOTH_QUARTZ_STAIRS, POLISHED_DEEPSLATE_STAIRS,
+                    POLISHED_DIORITE_STAIRS, POLISHED_GRANITE_STAIRS, PRISMARINE_BRICK_STAIRS, PRISMARINE_STAIRS,
+                    PURPUR_STAIRS, QUARTZ_STAIRS, RED_NETHER_BRICK_STAIRS, RED_SANDSTONE_STAIRS,
+                    SMOOTH_RED_SANDSTONE_STAIRS, SMOOTH_SANDSTONE_STAIRS, SPRUCE_STAIRS, WARPED_STAIRS,
+                    WAXED_CUT_COPPER_STAIRS, WAXED_EXPOSED_CUT_COPPER_STAIRS, WAXED_OXIDIZED_CUT_COPPER_STAIRS,
+                    WAXED_WEATHERED_CUT_COPPER_STAIRS, WEATHERED_CUT_COPPER_STAIRS, CAULDRON, LAVA_CAULDRON,
+                    POWDER_SNOW_CAULDRON, WATER_CAULDRON, IRON_TRAPDOOR, CANDLE, CYAN_CANDLE, BLACK_CANDLE,
+                    BLUE_CANDLE, BROWN_CANDLE, GRAY_CANDLE, GREEN_CANDLE, LIGHT_BLUE_CANDLE, LIGHT_GRAY_CANDLE,
+                    LIME_CANDLE, MAGENTA_CANDLE, ORANGE_CANDLE, PINK_CANDLE, PURPLE_CANDLE, RED_CANDLE,
+                    WHITE_CANDLE, YELLOW_CANDLE, CAVE_VINES ->
 //            case CAVE_VINES_PLANT:
-                interactable = false;
-        }
+                    false;
+            default -> mat.isInteractable();
+        };
         if (player.getGameMode() == GameMode.SURVIVAL
                 && event.getAction() == Action.RIGHT_CLICK_BLOCK
                 && interactable) {
@@ -177,11 +129,12 @@ public class MiscListener implements Listener {
         }
     }
 
-    @EventHandler                                                                //Prevents fire charges from being used
+    //Prevents fire charges from being used
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onItemUse(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (event.getClickedBlock() == null
-                || !isMobMadness(event.getPlayer().getWorld())
+                || isWorldInvalid(event.getPlayer().getWorld())
                 || player.getGameMode() != GameMode.SURVIVAL
                 || event.getAction() != Action.RIGHT_CLICK_BLOCK
                 || event.getItem() == null) return;
@@ -189,14 +142,16 @@ public class MiscListener implements Listener {
         event.setCancelled(true);
     }
 
-    @EventHandler                                                                   //Prevents ender pearl teleportation
+    //Prevents ender pearl teleportation
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onEnderpearlTeleport(PlayerTeleportEvent event) {
         if (event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL ||
-                !isMobMadness(event.getFrom().getWorld())) return;
+                isWorldInvalid(event.getFrom().getWorld())) return;
         event.setCancelled(true);
     }
 
-    @EventHandler                                                  //Prevents items with the DROP_TAG from being dropped
+    //Prevents items with the DROP_TAG from being dropped
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onItemDrop(PlayerDropItemEvent event) {
         ItemStack item = event.getItemDrop().getItemStack();
         NBTItem nbt = new NBTItem(item);
@@ -206,7 +161,8 @@ public class MiscListener implements Listener {
         event.setCancelled(true);
     }
 
-    @EventHandler                                        //Prevents items with the UNBREAKING tag from losing durability
+    //Prevents items with the UNBREAKING tag from losing durability
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onDurabilityDecrease(PlayerItemDamageEvent event) {
         ItemStack item = event.getItem();
         NBTItem nbt = new NBTItem(item);
@@ -215,24 +171,27 @@ public class MiscListener implements Listener {
         event.setCancelled(true);
     }
 
-    @EventHandler                      //Prevents explosions from breaking blocks, and prevents Fireballs from exploding
+    //Prevents explosions from breaking blocks, and prevents Fireballs from exploding
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onExplosion(EntityExplodeEvent event) {
-        if (!isMobMadness(event.getLocation().getWorld())) return;
+        if (isWorldInvalid(event.getLocation().getWorld())) return;
         event.blockList().clear();
         if (event.getEntity().getType() == EntityType.FIREBALL) {
             event.setCancelled(true);
         }
     }
 
-    @EventHandler
-    public void onBlockExplosion(BlockExplodeEvent event) {                             //Prevents blocks from exploding
-        if (!isMobMadness(event.getBlock().getLocation().getWorld())) return;
+    //Prevents blocks from exploding
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onBlockExplosion(BlockExplodeEvent event) {
+        if (isWorldInvalid(event.getBlock().getLocation().getWorld())) return;
         event.setCancelled(true);
     }
 
-    @EventHandler                                                      //Prevents TNTs with MM tag from damaging players
+    //Prevents TNTs with MM tag from damaging players
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerDamage(EntityDamageByEntityEvent event) {
-        if (!isMobMadness(event.getDamager().getWorld())) return;
+        if (isWorldInvalid(event.getDamager().getWorld())) return;
         if (!(event.getEntity() instanceof Player)) return;
         if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION
                 && event.getDamager() instanceof TNTPrimed) {
@@ -241,25 +200,19 @@ public class MiscListener implements Listener {
         }
     }
 
-    @EventHandler                                 //Disables bow damage, taking into consideration only the arrow damage
-    public void onArrowDamage(EntityDamageByEntityEvent event) {
-        if (!isMobMadness(event.getDamager().getWorld())) return;
-        if (!(event.getDamager() instanceof Arrow)) return;
-        Arrow arrow = (Arrow) event.getDamager();
-        event.setDamage(arrow.getDamage());
-    }
-
-    @EventHandler                                         //Prevents fireballs from dealing any form of 'default' damage
+    //Prevents fireballs from dealing any form of 'default' damage
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onFireballDamage(EntityDamageByEntityEvent event) {
-        if (!isMobMadness(event.getEntity().getWorld())) return;
+        if (isWorldInvalid(event.getEntity().getWorld())) return;
         if (event.getDamager().getType() != EntityType.FIREBALL) return;
         if (event.getDamager() instanceof Blaze) return;
         event.setDamage(0);
     }
 
-    @EventHandler                                    //Prevents projectiles shot from players from hitting other players
+    //Prevents projectiles shot from players from hitting other players
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onFireballHitPlayer(ProjectileCollideEvent event) {
-        if (!isMobMadness(event.getEntity().getWorld())) return;
+        if (isWorldInvalid(event.getEntity().getWorld())) return;
         Projectile projectile = event.getEntity();
         if (projectile instanceof ThrownPotion) return;
         if (!(projectile.getShooter() instanceof Player)) return;
@@ -267,20 +220,23 @@ public class MiscListener implements Listener {
         event.setCancelled(true);
     }
 
-    @EventHandler                                             //Prevents concrete powder from solidifying when in water
+    //Prevents concrete powder from solidifying when in water
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockForm(BlockFormEvent event) {
-        if (!isMobMadness(event.getBlock().getWorld())) return;
+        if (isWorldInvalid(event.getBlock().getWorld())) return;
         if (event.getBlock().getType().toString().contains("CONCRETE_POWDER")) {
             event.setCancelled(true);
         }
     }
 
-    @EventHandler                                                                         //Stops corals from going gray
+    //Stops corals from going gray
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockFade(BlockFadeEvent event) {
         event.setCancelled(true);
     }
 
-    @EventHandler                                                                       //Adds sounds to picked up items
+    //Adds sounds to picked up items
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onItemPickup(EntityPickupItemEvent event) {
         if (!(event.getEntity() instanceof Player)) return;
         ItemStack item = event.getItem().getItemStack();
@@ -291,16 +247,17 @@ public class MiscListener implements Listener {
         sound.play(event.getItem().getLocation(), SoundCategory.MASTER);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onArrowPickup(PlayerPickupArrowEvent event) {
         Player player = event.getPlayer();
-        GameData gameData = MadUtils.getPlayerGame(plugin, player);
-        if (gameData == null) return;
-        if (event.getItem().getType() == EntityType.ARROW) {
-            Arrows arrows = new Arrows(plugin, event.getItem().getItemStack().getAmount(), gameData);
+        Game game = MadUtils.getEntityGame(plugin, player);
+        System.out.println(event.getItem().getType());
+        if (game == null) return;
+        if (event.getItem().getItemStack().getType() == Material.ARROW) {
+            Arrows arrows = new Arrows(plugin, event.getItem().getItemStack().getAmount(), game);
             event.getItem().setItemStack(arrows.getItemStack());
-        } else if (event.getItem().getType() == EntityType.SPECTRAL_ARROW) {
-            Arrows arrows = new Arrows(plugin, event.getItem().getItemStack().getAmount(), gameData);
+        } else if (event.getItem().getItemStack().getType() == Material.SPECTRAL_ARROW) {
+            Arrows arrows = new Arrows(plugin, event.getItem().getItemStack().getAmount(), game);
             event.getItem().setItemStack(arrows.getItemStack());
         }
     }
@@ -311,8 +268,8 @@ public class MiscListener implements Listener {
      * @param world the world to test.
      * @return true if the world is called "mobmadness", false otherwise.
      */
-    private boolean isMobMadness(World world) {
-        return world.getName().equalsIgnoreCase("mobmadness");
+    private boolean isWorldInvalid(World world) {
+        return !world.getName().contains("mobmadness");
     }
 
 }

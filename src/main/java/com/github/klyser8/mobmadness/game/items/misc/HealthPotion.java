@@ -4,7 +4,7 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.game.items.consumables.MadPotion;
-import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.storage.Game;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -22,8 +22,8 @@ import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public class HealthPotion extends MadItem implements MadPotion {
 
-    public HealthPotion(MobMadness plugin, GameData gameData) {
-        super(ItemType.HEALTH_POTION, new ItemStack(ItemType.HEALTH_POTION.getMaterial(), 1), plugin, gameData, true);
+    public HealthPotion(MobMadness plugin, Game game) {
+        super(ItemType.HEALTH_POTION, new ItemStack(ItemType.HEALTH_POTION.getMaterial(), 1), plugin, game, true);
         setup();
     }
 

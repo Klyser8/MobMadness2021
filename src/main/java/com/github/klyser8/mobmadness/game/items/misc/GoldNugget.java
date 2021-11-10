@@ -3,10 +3,8 @@ package com.github.klyser8.mobmadness.game.items.misc;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
-import com.github.klyser8.mobmadness.storage.GameData;
-import com.github.klyser8.mobmadness.util.ColorHelper;
+import com.github.klyser8.mobmadness.storage.Game;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.inventory.ItemStack;
 
@@ -22,8 +20,8 @@ import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
  */
 public class GoldNugget extends MadItem {
 
-    public GoldNugget(MobMadness plugin, int amount, GameData gameData) {
-        super(ItemType.GOLD_NUGGET, new ItemStack(ItemType.GOLD_NUGGET.getMaterial(), amount), plugin, gameData, true);
+    public GoldNugget(MobMadness plugin, int amount, Game game) {
+        super(ItemType.GOLD_NUGGET, new ItemStack(ItemType.GOLD_NUGGET.getMaterial(), amount), plugin, game, true);
         setup();
     }
 

@@ -2,19 +2,16 @@ package com.github.klyser8.mobmadness.util;
 
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.MadItem;
-import com.github.klyser8.mobmadness.game.mob.Beast;
+import com.github.klyser8.mobmadness.game.entity.beast.Beast;
 import com.github.klyser8.mobmadness.game.world.SpawnArea;
-import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.storage.Game;
 import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Mob;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffectType;
@@ -74,37 +71,51 @@ public class MadUtils {
     }
 
     /**
-     * Gets the MadEntity closest to a location, excluding players.
+     * Returns the living entity closest to the location.
+     * The living entity needs to be an instance of {@link Beast}
      *
-     * @param loc
-     * @return the mob closest to said location
+     * @param loc the location
+     * @return the closest beast
      */
-    /*public static LivingEntity getMadMobClosestToLocation(Location loc, GameData gameData) {
-        LivingEntity entity = null;
-        //Loops all entities in the current game
-        Player player;
-        for (MadEntity madEntity : gameData.getMobMap().values()) {
-            //A value needs to be assigned to entity to avoid NPE.
-            if (entity == null ||
-                    (loc.distance(madEntity.getMob().getLocation()) < loc.distance(entity.getLocation())
-                    && !entity.isDead())) {
-                entity = madEntity.getMob();
-            }
-        }
-        return entity;
-    }*/
-    public static LivingEntity getMadMobClosestToLocation(Location loc) {
+    public static LivingEntity getClosestBeast(Location loc) {
         List<LivingEntity> nearbyEntities = (List<LivingEntity>) loc.getNearbyLivingEntities(100, 20, 100);
         nearbyEntities.removeIf(livingEntity -> livingEntity instanceof Player);
         nearbyEntities.sort(Comparator.comparingDouble(o -> o.getLocation().distanceSquared(loc)));
         return nearbyEntities.size() == 0 ? null : nearbyEntities.get(0);
     }
 
+    /**
+     * Returns the beast closest to the location.
+     *
+     * @param loc the location
+     * @param beasts the list of beasts to look through
+     * @return the closest beast
+     */
+    public static Beast getClosestBeastFromList(Location loc, List<Beast> beasts) {
+        beasts.sort(Comparator.comparingDouble(o -> o.getMob().getLocation().distanceSquared(loc)));
+        return beasts.size() == 0 ? null : beasts.get(0);
+    }
+
+    /**
+     * Returns the beast closest to the provided entity, which is in its line of sight.
+     *
+     * @param entity the entity looking for the beast
+     * @param beasts the list of beasts to look through
+     * @return the closest beast
+     */
+    public static Beast getClosestVisibleBeast(Entity entity, List<Beast> beasts) {
+        beasts.sort(Comparator.comparingDouble(beast -> beast.getMob().getLocation().distanceSquared(entity.getLocation())));
+        beasts.removeIf(beast -> !beast.getMob().hasLineOfSight(entity));
+        return beasts.size() == 0 ? null : beasts.get(0);
+    }
+
     /** Returns the closest mob to the player.
      *
      * @param loc entity to check
      * @return the closest mob found
+     * @deprecated should use {@link #getClosestBeast(Location)} instead
      */
+    @Deprecated
     public static LivingEntity getClosestMob(Location loc, double rangeX, double rangeY, double rangeZ) {
         List<LivingEntity> entityList = new ArrayList<>();
         for (org.bukkit.entity.Entity nearbyEntity : loc.getNearbyEntities(rangeX, rangeY, rangeZ)) {
@@ -134,33 +145,6 @@ public class MadUtils {
         Vector from = Start.toVector();
         Vector to = End.toVector();
         return to.subtract(from);
-    }
-
-    /**
-     * Displays the 'cooldown' of an item through its durability meter.
-     * Only works on items that have durability.
-     * @param plugin instance of {@link MobMadness}
-     * @param item the ItemStack to apply durability changes to
-     * @param cooldown the 'cooldown'
-     */
-    public static void displayCooldown(MobMadness plugin, ItemStack item, Integer cooldown) {
-        int halfCooldown = cooldown / 2;
-        new BukkitRunnable() {
-            short currentDurability = (short) (item.getType().getMaxDurability() - 1);
-            @Override
-            public void run() {
-                double maxDurability = item.getType().getMaxDurability();
-                //Starts cooldown
-                item.setDurability((short) (maxDurability - 1));
-                double durabilityPerTick = (short) Math.round((maxDurability - 1) / halfCooldown);
-                if (currentDurability - durabilityPerTick <= 0) {
-                    item.setDurability((short) 1);
-                    cancel();
-                }
-                item.setDurability(currentDurability);
-                currentDurability-=durabilityPerTick;
-            }
-        }.runTaskTimer(plugin, 0, 2);
     }
 
     /**
@@ -205,51 +189,41 @@ public class MadUtils {
     }
 
     /**
-     * Gets the game a player is currently in.
+     * Gets the game the provided entity is in.
+     * The entity needs to either implement {@link Player} or {@link Mob}.
      *
      * @param plugin instance of the main class.
-     * @param player player who's game should be returned.
-     * @return instance of {@link GameData}, or null if player is not in a game.
+     * @param entity the entity who's game should be returned.
+     * @return instance of {@link Game}, or null if the entity is not present in any game
      */
-    public static GameData getPlayerGame(MobMadness plugin, Player player) {
-        for (GameData gameData : plugin.getGameManager().getGames().values()) {
-            if (!gameData.getPlayers().containsKey(player)) continue;
-            return gameData;
+    public static Game getEntityGame(MobMadness plugin, LivingEntity entity) {
+        if (entity instanceof Player player) {
+            return getPlayerGame(plugin, player);
+        } else if (entity instanceof Mob mob ) {
+            return getMobGame(plugin, mob);
         }
         return null;
     }
 
     /**
-     * Gets the game the provided MadEntity is in.
+     * Gets all Beasts in an area
      *
-     * @param plugin instance of the main class.
-     * @param mob the mob who's game should be returned.
-     * @return instance of {@link GameData}, or null if the entity is not present in any game
-     */
-    public static GameData getBeastGame(MobMadness plugin, Mob mob) {
-        for (GameData gameData : plugin.getGameManager().getGames().values()) {
-            if (!gameData.getMobMap().containsKey(mob)) continue;
-            return gameData;
-        }
-        return null;
-    }
-
-    /**
-     * Gets all LivingEntities in an area.
-     *
-     * @param loc1 middle location
+     * @param origin origin location
      * @param xRadius radius in blocks
      * @param yRadius radius in blocks
      * @param zRadius radius in blocks
-     * @return a list containing all found entities
+     * @return a list containing all found beasts
      */
-    public static List<LivingEntity> getMobsInArea(Location loc1, Double xRadius, Double yRadius, Double zRadius) {
-        List<LivingEntity> entityList = new ArrayList<>();
-        for (LivingEntity entity : loc1.getNearbyLivingEntities(xRadius, yRadius, zRadius)) {
-            if (entity instanceof Player) continue;
-            entityList.add(entity);
+    public static List<Beast> getBeastsInArea(MobMadness plugin, Location origin,
+                                              Double xRadius, Double yRadius, Double zRadius) {
+        List<Beast> beasts = new ArrayList<>();
+        for (LivingEntity entity : origin.getNearbyLivingEntities(xRadius, yRadius, zRadius)) {
+            if (!(entity instanceof Mob mob)) continue;
+            Game game = getEntityGame(plugin, mob);
+            if (game == null) continue;
+            beasts.add(game.getBeastMap().get(mob));
         }
-        return entityList;
+        return beasts;
     }
 
     /**
@@ -411,17 +385,17 @@ public class MadUtils {
      * Picks a spawn area for a mob to spawn in, based on the current game.
      * The bigger a spawn area is, the more likely for it to be picked will be.
      *
-     * @param gameData instance of the game p
+     * @param game instance of the game p
      * @return
      */
-    public static SpawnArea pickSpawnArea(GameData gameData) {
+    public static SpawnArea pickSpawnArea(Game game) {
         Random random = new Random();
         //A sum of all the area sizes.
         int areaSizeSum = 0;
         //A list of all the area sizes.
         List<Integer> areaSizes = new ArrayList<>();
         //Loops through the map's spawn areas, and adds their size to the sum and the list of areas.
-        for (SpawnArea area : gameData.getGameMap().getSpawnAreas()) {
+        for (SpawnArea area : game.getGameMap().getSpawnAreas()) {
             areaSizeSum += area.getSize();
             areaSizes.add(area.getSize());
         }
@@ -438,7 +412,7 @@ public class MadUtils {
             }
         }*/
         int currentAreaSize = 0;
-        for (SpawnArea spawnArea : gameData.getGameMap().getSpawnAreas()) {
+        for (SpawnArea spawnArea : game.getGameMap().getSpawnAreas()) {
             currentAreaSize += spawnArea.getSize();
             if (chance < currentAreaSize) {
                 return spawnArea;
@@ -450,16 +424,46 @@ public class MadUtils {
     /**
      * Returns a random mob present in a Mob Madness game.
      *
-     * @param gameData
+     * @param game
      * @return
      */
-    public static Beast getRandomMadMob(GameData gameData) {
+    public static Beast getRandomBeast(Game game) {
         Random random = new Random();
-        Beast[] values = gameData.getMobMap().values().toArray(new Beast[0]);
+        Beast[] values = game.getBeastMap().values().toArray(new Beast[0]);
         if (values.length == 0) {
             return null;
         }
         return values[random.nextInt(values.length)];
+    }
+
+    /**
+     * Gets the game a player is currently in.
+     *
+     * @param plugin instance of the main class.
+     * @param player player who's game should be returned.
+     * @return instance of {@link Game}, or null if player is not in a game.
+     */
+    private static Game getPlayerGame(MobMadness plugin, Player player) {
+        for (Game game : plugin.getGameManager().getGames().values()) {
+            if (!game.getPlayers().containsKey(player)) continue;
+            return game;
+        }
+        return null;
+    }
+
+    /**
+     * Gets the game the provided MadEntity is in.
+     *
+     * @param plugin instance of the main class.
+     * @param mob the mob who's game should be returned.
+     * @return instance of {@link Game}, or null if the entity is not present in any game
+     */
+    private static Game getMobGame(MobMadness plugin, Mob mob) {
+        for (Game game : plugin.getGameManager().getGames().values()) {
+            if (!game.getBeastMap().containsKey(mob)) continue;
+            return game;
+        }
+        return null;
     }
 
 }

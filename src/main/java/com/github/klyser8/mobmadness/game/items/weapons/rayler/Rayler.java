@@ -1,0 +1,245 @@
+package com.github.klyser8.mobmadness.game.items.weapons.rayler;
+
+import com.github.klyser8.mobmadness.MobMadness;
+import com.github.klyser8.mobmadness.game.items.ItemType;
+import com.github.klyser8.mobmadness.game.items.MadItem;
+import com.github.klyser8.mobmadness.game.items.weapons.MadWeapon;
+import com.github.klyser8.mobmadness.storage.Game;
+import com.github.klyser8.mobmadness.game.entity.player.Profile;
+import com.github.klyser8.mobmadness.util.Sound;
+import de.tr7zw.nbtapi.NBTItem;
+import org.bukkit.*;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.github.klyser8.mobmadness.util.MadUtils.getDirectionBetweenLocations;
+import static com.github.klyser8.mobmadness.util.MadUtils.isBlockPassThrough;
+import static me.mattstudios.mf.base.components.MfUtil.color;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+
+public class Rayler extends MadItem implements MadWeapon {
+
+    private RaylerData data;
+    private final Sound chargeSound;
+    private final Sound cancelSound;
+    private final Sound shootSound;
+    private final Sound raySound;
+    private final Sound hitSound;
+
+    private final Sound ultShootSound;
+    private final Sound ultMaskSound;
+    private final Sound ultDamageSound;
+
+    public static final String PIERCE_POWER_TAG = "mm.pierce_power";
+    public static final String CHARGE_TIME_TAG = "mm.charge_time";
+    public static final String COOLDOWN_TAG = "mm.cooldown";
+    public static final String ULT_DAMAGE_TAG = "mm.ult.damage";
+    public static final String ULT_MASKING_TAG = "mm.ult.masking";
+    public static final String ULT_WIDTH_TAG = "mm.ult.width";
+    public static final String ULT_COOLDOWN_TAG = "mm.ult.cooldown";
+
+    public Rayler(ItemType type, MobMadness plugin, Game game) {
+        super(type, new ItemStack(type.getMaterial()), plugin, game, true);
+        setup();
+        this.chargeSound = new Sound("entity.illusioner.prepare_blindness", 1.0f, data.getChargePitch());
+        this.cancelSound = new Sound("entity.spider.death", 1.0f, 2.0f);
+        this.shootSound = new Sound("entity.illusioner.prepare_mirror", 1.0f, 2.0f);
+        this.raySound = new Sound("entity.bat.takeoff", 0.01f, 2.0f);
+        this.hitSound = new Sound("entity.player.attack.crit", 1.0f, 2.0f);
+        this.ultShootSound = new Sound("item.trident.riptide_3", 1.0f, 1.0f);
+        this.ultMaskSound = new Sound("block.enchantment_table.use", 1.0f, 1.0f);
+        this.ultDamageSound = new Sound("entity.evoker.cast_spell", 0.8f, 2.0f);
+    }
+
+    @Override
+    protected void setup() {
+        createData(this);
+        createLore();
+        setTags(false, false, true,
+                false, true, null);
+        nbt.setBoolean(WEAPON_TAG, true);
+        nbt.setDouble(DAMAGE_TAG, data.getDamage());
+        nbt.setDouble(PIERCE_POWER_TAG, data.getPiercePower());
+        nbt.setInteger(CHARGE_TIME_TAG, data.getChargeTime());
+        nbt.setInteger(COOLDOWN_TAG, data.getCooldown());
+        nbt.setDouble(ULT_DAMAGE_TAG, data.getUltDamage());
+        nbt.setInteger(ULT_MASKING_TAG, data.getUltMasking());
+        nbt.setDouble(ULT_WIDTH_TAG, data.getUltWidth());
+        nbt.setInteger(ULT_COOLDOWN_TAG, data.getUltCooldown());
+    }
+
+    private void createLore() {
+        setCompLore(List.of(
+                text("Damage: ").color(GRAY)
+                        .append(text(data.getDamage()).color(WHITE)),
+                text("Piercing Power: ").color(GRAY)
+                        .append(text(Math.round(data.getPiercePower() * 100) + "%").color(WHITE)),
+                text("Charge-up Time: ").color(GRAY)
+                        .append(text(data.getChargeTime() / 20.0 + "s").color(WHITE)),
+                text("Cooldown: ").color(GRAY)
+                        .append(text(data.getCooldown() / 20.0 + "s").color(WHITE)),
+                text("--------------------------------").color(DARK_GRAY),
+                text("Shift Right-Click: ").color(DARK_PURPLE)
+                        .append(text("Shoots a gleam").color(WHITE)),
+                text("which damages + knocks back enemies").color(WHITE),
+                text("and provides hit allies with").color(WHITE),
+                text("temporary ").color(WHITE)
+                        .append(text("Runic Hearts").color(GOLD)),
+                text(""),
+                text("Damage: ").color(LIGHT_PURPLE)
+                        .append(text(data.getUltDamage()).color(WHITE)),
+                text("Runic Hearts: ").color(LIGHT_PURPLE)
+                        .append(text(data.getUltMasking() / 2).color(WHITE))
+                        .append(text("\u2764").color(GOLD)),
+                text("Cooldown: ").color(LIGHT_PURPLE)
+                        .append(text(data.getUltCooldown() / 20 + "s").color(WHITE)),
+                text("Width: ").color(LIGHT_PURPLE)
+                        .append(text(data.getUltWidth() + " blocks").color(WHITE))
+        ));
+    }
+
+    public void charge(Player shooter) {
+        if (shooter.getCooldown(type.getMaterial()) > 0) {
+            return;
+        }
+        Location loc = shooter.getLocation();
+        shooter.setCooldown(type.getMaterial(), data.getCooldown());
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (data.getChargeLevel() == 0) {
+                    chargeSound.play(loc, SoundCategory.PLAYERS, shooter);
+                }
+                if (data.getChargeLevel() < data.getChargeTime()) {
+                    data.setChargeLevel(data.getChargeLevel() + 1);
+                    if (isMainItemDifferent()) {
+                        data.setChargeLevel(0);
+                        shooter.stopSound(chargeSound.getSoundName(), SoundCategory.PLAYERS);
+                        shooter.setCooldown(type.getMaterial(), 0);
+                        cancelSound.play(loc, SoundCategory.PLAYERS, shooter);
+                        cancel();
+                    }
+                } else {
+                    shootRay(shooter);
+                    data.setChargeLevel(0);
+                    cancel();
+                }
+            }
+
+            //Checks whether the current held item is different from the one which shot the ray.
+            private boolean isMainItemDifferent() {
+                boolean different = shooter.getInventory().getItemInMainHand().getType() == Material.AIR;
+                if (!different) {
+                    NBTItem mainHandNBT = new NBTItem(shooter.getInventory().getItemInMainHand());
+                    if (!new NBTItem(shooter.getInventory().getItemInMainHand()).hasKey(MM_ENUM_TAG) ||
+                            !nbt.getString(MM_ENUM_TAG).equals(mainHandNBT.getString(MM_ENUM_TAG))) {
+                        different = true;
+                    }
+                }
+                return different;
+            }
+        }.runTaskTimer(plugin, 0, 1);
+    }
+
+    private void shootRay(Player shooter) {
+        Location origin = shooter.getEyeLocation();
+        World world = origin.getWorld();
+        List<LivingEntity> mobsHit = new ArrayList<>();
+        Location targetLoc = origin.clone().add(origin.getDirection().multiply(128));
+        Vector direction = getDirectionBetweenLocations(origin, targetLoc).normalize();
+        shooter.setVelocity(origin.getDirection().normalize().multiply(-0.1));
+        shootSound.play(origin, SoundCategory.PLAYERS);
+        for (double d = 0.1; d < origin.distance(targetLoc); d += 0.1) {
+            Location loc = origin.clone();
+            loc.add(direction.clone().multiply(d));
+            world.spawnParticle(Particle.END_ROD, loc, 1,
+                    0, 0, 0, 0, null, true);
+            if (((int) d) % 1.0 == 0) {
+                if (!isBlockPassThrough(loc.getBlock().getType())) {
+                    break;
+                }
+            }
+            if (((int) d) % 5 == 0) {
+                raySound.play(loc, SoundCategory.AMBIENT);
+            }
+            List<LivingEntity> mobs = (List<LivingEntity>) loc.getNearbyLivingEntities(0.25);
+            for (LivingEntity mob : mobs) {
+                if (mob instanceof Player || mobsHit.contains(mob)) continue;
+                double damage = data.getDamage() * (Math.pow(data.getPiercePower(), mobsHit.size()));
+                mob.damage(damage, shooter);
+                mob.setVelocity(direction.clone().add(new Vector(0, 0.2, 0)).multiply(1.1));
+                mobsHit.add(mob);
+                world.spawnParticle(Particle.FIREWORKS_SPARK, loc, (int) damage / 4, 0, 0, 0, 0.025);
+            }
+        }
+    }
+
+    public void shootGleam(Profile profile) {
+        Player shooter = profile.getPlayer();
+        if (profile.isOnCooldown()) {
+            cooldownError(shooter);
+            return;
+        }
+        if (shooter.getCooldown(type.getMaterial()) > 0) return;
+        World world = shooter.getWorld();
+        Location origin = shooter.getEyeLocation();
+        Location targetLoc = origin.clone().add(origin.getDirection().multiply(256));
+        Vector direction = getDirectionBetweenLocations(origin, targetLoc).normalize();
+        ultShootSound.play(origin, SoundCategory.PLAYERS);
+        for (double d = 1; d < origin.distance(targetLoc); d += data.getUltWidth()) {
+            Location loc = origin.clone();
+            loc.add(direction.clone().multiply(d));
+            world.spawnParticle(Particle.REDSTONE, loc, (int) (data.getUltWidth() * 30),
+                    data.getUltWidth() / 2, data.getUltWidth() / 2, data.getUltWidth() / 2, 1,
+                    new Particle.DustOptions(Color.fromRGB(140, 240, 255), 1), false);
+            world.spawnParticle(Particle.REDSTONE, loc, (int) (data.getUltWidth() * 30),
+                    data.getUltWidth() / 2, data.getUltWidth() / 2, data.getUltWidth() / 2, 1,
+                    new Particle.DustOptions(Color.fromRGB(217, 250, 255), 1), false);
+            List<LivingEntity> mobs = (List<LivingEntity>) loc.getNearbyLivingEntities(data.getUltWidth());
+            if (mobs.isEmpty()) continue;
+            for (LivingEntity entity : mobs) {
+                if (entity instanceof Player player) {
+                    gleamMaskPlayer(player);
+                } else {
+                    entity.damage(data.getUltDamage(), shooter);
+                    entity.setVelocity(direction.clone().add(new Vector(0, 0.15, 0)).multiply(1.25));
+                }
+            }
+        }
+        profile.startCooldown(data.getUltCooldown());
+    }
+
+    @Override
+    public void createData(MadItem item) {
+        data = new RaylerData(this, type);
+    }
+
+    @Override
+    public ItemType getType() {
+        return type;
+    }
+
+    private void gleamMaskPlayer(Player player) {
+        World world = player.getWorld();
+        ultMaskSound.play(player.getLocation(), SoundCategory.PLAYERS);
+        world.spawnParticle(Particle.VILLAGER_HAPPY, player.getLocation().add(0, 1, 0), 25,
+                0.25, 0.5, 0.25);
+        world.spawnParticle(Particle.CRIT_MAGIC, player.getLocation().add(0, 1, 0), 30,
+                0.25, 0.5, 0.25, 0);
+        player.setAbsorptionAmount(player.getAbsorptionAmount() + data.getUltMasking());
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (player.getAbsorptionAmount() >= data.getUltMasking()) {
+                player.setAbsorptionAmount(player.getAbsorptionAmount() - data.getUltMasking());
+            } else {
+                player.setAbsorptionAmount(0);
+            }
+        }, data.getUltMaskingDuration());
+    }
+}

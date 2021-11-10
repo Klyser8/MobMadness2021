@@ -3,7 +3,7 @@ package com.github.klyser8.mobmadness.game.items.consumables;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
-import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.storage.Game;
 import com.github.klyser8.mobmadness.util.ColorHelper;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -19,8 +19,8 @@ public class ChorusFruit extends MadItem {
 
     public static final int COOLDOWN = 120;
 
-    public ChorusFruit(MobMadness plugin, int amount, GameData gameData) {
-        super(ItemType.CHORUS_FRUIT, new ItemStack(ItemType.CHORUS_FRUIT.getMaterial(), amount), plugin, gameData, true);
+    public ChorusFruit(MobMadness plugin, int amount, Game game) {
+        super(ItemType.CHORUS_FRUIT, new ItemStack(ItemType.CHORUS_FRUIT.getMaterial(), amount), plugin, game, true);
         setup();
     }
 
@@ -40,7 +40,7 @@ public class ChorusFruit extends MadItem {
     public void handleTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
         if (player.getCooldown(type.getMaterial()) > 0) return;
-        event.setTo(gameData.getGameMap().getMapType().getSpawn());
+        event.setTo(game.getGameMap().getMapType().getSpawn());
         player.setCooldown(type.getMaterial(), COOLDOWN);
     }
 }

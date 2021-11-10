@@ -1,7 +1,7 @@
 package com.github.klyser8.mobmadness.game.items;
 
 import com.github.klyser8.mobmadness.MobMadness;
-import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.storage.Game;
 import com.github.klyser8.mobmadness.util.Sound;
 import de.tr7zw.nbtapi.NBTItem;
 import me.mattstudios.mf.base.components.MfUtil;
@@ -73,7 +73,7 @@ public abstract class MadItem {
 
     protected final NBTItem nbt;
     protected final MobMadness plugin;
-    protected final GameData gameData;
+    protected final Game game;
     protected final ItemType type;
 
     /**
@@ -82,14 +82,14 @@ public abstract class MadItem {
      * @param type the "id" of the item.
      * @param item the itemstack object for the item.
      * @param plugin an instance of {@link MobMadness}
-     * @param gameData the game which the item should be part of
+     * @param game the game which the item should be part of
      * @param hideAttr whether attributes should be hidden or not
      */
-    protected MadItem(ItemType type, ItemStack item, MobMadness plugin, GameData gameData, boolean hideAttr) {
+    protected MadItem(ItemType type, ItemStack item, MobMadness plugin, Game game, boolean hideAttr) {
         this.type = type;
         nbt = new NBTItem(item);
         this.plugin = plugin;
-        this.gameData = gameData;
+        this.game = game;
         errorSound = new Sound("block.note_block.bass", 1.0f, 1.0f);
         if (hideAttr) {
             nbt.getItem().addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -176,6 +176,7 @@ public abstract class MadItem {
      * @param lore the new lore
      * @deprecated should use {@link #setCompLore(List)} instead
      */
+    @Deprecated
     public void setLore(List<String> lore) {
         ItemMeta meta = nbt.getItem().getItemMeta();
         List<String> coloredLore = new ArrayList<>();

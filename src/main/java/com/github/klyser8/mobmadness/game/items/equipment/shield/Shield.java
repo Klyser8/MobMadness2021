@@ -1,13 +1,10 @@
 package com.github.klyser8.mobmadness.game.items.equipment.shield;
 
 import com.github.klyser8.mobmadness.MobMadness;
-import com.github.klyser8.mobmadness.game.Tier;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
-import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.storage.Game;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.Banner;
@@ -30,8 +27,8 @@ public class Shield extends MadItem { //TODO fix shield durability not going dow
     private final ShieldData data;
     public static final int BASE_MAX_DURABILITY = 337;
 
-    public Shield(ItemType type, MobMadness plugin, GameData gameData) {
-        super(type, new ItemStack(Material.SHIELD), plugin, gameData, true);
+    public Shield(ItemType type, MobMadness plugin, Game game) {
+        super(type, new ItemStack(Material.SHIELD), plugin, game, true);
         data = new ShieldData(type);
         setup();
     }
@@ -45,7 +42,7 @@ public class Shield extends MadItem { //TODO fix shield durability not going dow
     }
 
     private void createLore() {
-        setCompLore(Arrays.asList(
+        setCompLore(List.of(
                 Component.text("Durability: ").color(GRAY)
                         .append(Component.text(data.getDurability()).color(YELLOW))
                         .append(Component.text("/").color(GRAY))
@@ -57,13 +54,13 @@ public class Shield extends MadItem { //TODO fix shield durability not going dow
     private void createShieldPatterns() {
         List<Pattern> patterns = new ArrayList<>();
         switch (type) {
-            case CROSS_SHIELD:
+            case CROSS_SHIELD -> {
                 patterns.add(new Pattern(DyeColor.GRAY, PatternType.BASE));
                 patterns.add(new Pattern(DyeColor.LIGHT_GRAY, PatternType.STRIPE_MIDDLE));
                 patterns.add(new Pattern(DyeColor.LIGHT_GRAY, PatternType.STRIPE_CENTER));
                 patterns.add(new Pattern(DyeColor.GRAY, PatternType.STRAIGHT_CROSS));
-                break;
-            case MOSSY_SHIELD:
+            }
+            case MOSSY_SHIELD -> {
                 patterns.add(new Pattern(DyeColor.GREEN, PatternType.BASE));
                 patterns.add(new Pattern(DyeColor.LIME, PatternType.TRIANGLE_BOTTOM));
                 patterns.add(new Pattern(DyeColor.LIME, PatternType.TRIANGLE_TOP));
@@ -71,34 +68,34 @@ public class Shield extends MadItem { //TODO fix shield durability not going dow
                 patterns.add(new Pattern(DyeColor.GREEN, PatternType.TRIANGLE_TOP));
                 patterns.add(new Pattern(DyeColor.LIME, PatternType.RHOMBUS_MIDDLE));
                 patterns.add(new Pattern(DyeColor.GREEN, PatternType.RHOMBUS_MIDDLE));
-                break;
-            case PRISMARINE_SHIELD:
+            }
+            case PRISMARINE_SHIELD -> {
                 patterns.add(new Pattern(DyeColor.CYAN, PatternType.BASE));
                 patterns.add(new Pattern(DyeColor.BLUE, PatternType.BORDER));
                 patterns.add(new Pattern(DyeColor.BLUE, PatternType.TRIANGLE_TOP));
                 patterns.add(new Pattern(DyeColor.BLUE, PatternType.TRIANGLE_BOTTOM));
                 patterns.add(new Pattern(DyeColor.CYAN, PatternType.RHOMBUS_MIDDLE));
                 patterns.add(new Pattern(DyeColor.CYAN, PatternType.STRAIGHT_CROSS));
-                break;
-            case PINK_LOTUS_SHIELD:
+            }
+            case PINK_LOTUS_SHIELD -> {
                 patterns.add(new Pattern(DyeColor.MAGENTA, PatternType.BASE));
                 patterns.add(new Pattern(DyeColor.PURPLE, PatternType.GRADIENT));
                 patterns.add(new Pattern(DyeColor.PINK, PatternType.FLOWER));
                 patterns.add(new Pattern(DyeColor.PINK, PatternType.GRADIENT_UP));
-                break;
-            case GLORIOUS_SHIELD:
+            }
+            case GLORIOUS_SHIELD -> {
                 patterns.add(new Pattern(DyeColor.ORANGE, PatternType.BASE));
                 patterns.add(new Pattern(DyeColor.BROWN, PatternType.GRADIENT_UP));
                 patterns.add(new Pattern(DyeColor.YELLOW, PatternType.GRADIENT));
                 patterns.add(new Pattern(DyeColor.BROWN, PatternType.CIRCLE_MIDDLE));
                 patterns.add(new Pattern(DyeColor.ORANGE, PatternType.BORDER));
-                break;
-            case WITHERS_SHIELD:
+            }
+            case WITHERS_SHIELD -> {
                 patterns.add(new Pattern(DyeColor.RED, PatternType.BASE));
                 patterns.add(new Pattern(DyeColor.BLACK, PatternType.SKULL));
                 patterns.add(new Pattern(DyeColor.BLACK, PatternType.TRIANGLES_BOTTOM));
                 patterns.add(new Pattern(DyeColor.BLACK, PatternType.TRIANGLES_TOP));
-                break;
+            }
         }
         ItemMeta itemMeta = nbt.getItem().getItemMeta();
         BlockStateMeta blockMeta = (BlockStateMeta) itemMeta;

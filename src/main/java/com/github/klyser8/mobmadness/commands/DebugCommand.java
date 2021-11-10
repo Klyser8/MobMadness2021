@@ -2,8 +2,7 @@ package com.github.klyser8.mobmadness.commands;
 
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.GameManager;
-import com.github.klyser8.mobmadness.storage.GameData;
-import com.github.klyser8.mobmadness.util.MadMath;
+import com.github.klyser8.mobmadness.storage.Game;
 import com.github.klyser8.mobmadness.game.world.SpawnArea;
 import com.github.klyser8.mobmadness.util.MadUtils;
 import me.mattstudios.mf.annotations.*;
@@ -34,8 +33,8 @@ public class DebugCommand extends CommandBase {
 
         debugging = !debugging;                                                                //Switch debugging on/off
         if (!debugging) return;                          //If debugging is off, no point in running the rest of the code
-        for (GameData gameData: gameManager.getGames().values()) {
-            for (SpawnArea area : gameData.getGameMap().getSpawnAreas())
+        for (Game game : gameManager.getGames().values()) {
+            for (SpawnArea area : game.getGameMap().getSpawnAreas())
             {
                 Color color = Color.fromRGB(random.nextInt(254), random.nextInt(254), random.nextInt(254));
                 new BukkitRunnable() {

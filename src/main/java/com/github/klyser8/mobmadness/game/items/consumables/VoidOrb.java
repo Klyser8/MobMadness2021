@@ -3,7 +3,7 @@ package com.github.klyser8.mobmadness.game.items.consumables;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
-import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.storage.Game;
 import com.github.klyser8.mobmadness.util.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -29,8 +29,8 @@ public class VoidOrb extends MadItem {
     public static final int RADIUS = 2;
 
     private final Sound popSound;
-    public VoidOrb(MobMadness plugin, int amount, GameData gameData) {
-        super(ItemType.VOID_ORB, new ItemStack(ItemType.VOID_ORB.getMaterial(), amount), plugin, gameData, true);
+    public VoidOrb(MobMadness plugin, int amount, Game game) {
+        super(ItemType.VOID_ORB, new ItemStack(ItemType.VOID_ORB.getMaterial(), amount), plugin, game, true);
         popSound = new Sound("entity.enderman.teleport", 2.0f, 0.5f);
         setup();
     }

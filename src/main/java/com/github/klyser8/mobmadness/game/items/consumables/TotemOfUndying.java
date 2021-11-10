@@ -3,7 +3,7 @@ package com.github.klyser8.mobmadness.game.items.consumables;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
-import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.storage.Game;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -16,8 +16,8 @@ import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
 
 public class TotemOfUndying extends MadItem {
 
-    public TotemOfUndying(MobMadness plugin, GameData gameData) {
-        super(ItemType.TOTEM_OF_UNDYING, new ItemStack(ItemType.TOTEM_OF_UNDYING.getMaterial(), 1), plugin, gameData, true);
+    public TotemOfUndying(MobMadness plugin, Game game) {
+        super(ItemType.TOTEM_OF_UNDYING, new ItemStack(ItemType.TOTEM_OF_UNDYING.getMaterial(), 1), plugin, game, true);
         setup();
     }
 

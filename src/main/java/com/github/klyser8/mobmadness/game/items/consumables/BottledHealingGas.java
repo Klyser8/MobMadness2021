@@ -3,7 +3,7 @@ package com.github.klyser8.mobmadness.game.items.consumables;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
-import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.storage.Game;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Color;
@@ -21,8 +21,8 @@ import static me.mattstudios.mf.base.components.MfUtil.color;
 public class BottledHealingGas extends MadItem implements MadPotion {
 
     protected final int price;
-    public BottledHealingGas(MobMadness plugin, int price, GameData gameData) {
-        super(ItemType.BHG, new ItemStack(ItemType.BHG.getMaterial(), 1), plugin, gameData, true);
+    public BottledHealingGas(MobMadness plugin, int price, Game game) {
+        super(ItemType.BHG, new ItemStack(ItemType.BHG.getMaterial(), 1), plugin, game, true);
         this.price = price;
         setup();
     }

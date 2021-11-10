@@ -9,12 +9,12 @@ import com.github.klyser8.mobmadness.game.items.equipment.shield.Shield;
 import com.github.klyser8.mobmadness.game.items.misc.*;
 import com.github.klyser8.mobmadness.game.items.weapons.bow.Bow;
 import com.github.klyser8.mobmadness.game.items.weapons.crossbow.Crossbow;
-import com.github.klyser8.mobmadness.game.items.weapons.railgun.Railgun;
+import com.github.klyser8.mobmadness.game.items.weapons.rayler.Rayler;
 import com.github.klyser8.mobmadness.game.items.weapons.smudger.Smudger;
 import com.github.klyser8.mobmadness.game.items.weapons.scepter.Scepter;
 import com.github.klyser8.mobmadness.game.items.weapons.sword.Sword;
 import com.github.klyser8.mobmadness.game.items.weapons.trider.Trider;
-import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.storage.Game;
 import com.github.klyser8.mobmadness.util.ColorHelper;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -22,7 +22,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 public enum ItemType {
 
@@ -143,17 +142,17 @@ public enum ItemType {
     ARMAGEDDON_SCEPTER(Material.NETHERITE_HOE, Component.text("Armageddon Scepter")
             .decoration(TextDecoration.ITALIC, false), NamedTextColor.RED),
     //Railguns
-    SLOW_RAILGUN(Material.WOODEN_SHOVEL, Component.text("Slow Railgun")
+    SLOW_RAYLER(Material.WOODEN_SHOVEL, Component.text("Slow Rayler")
             .decoration(TextDecoration.ITALIC, false), NamedTextColor.GRAY),
-    IMPROVED_RAILGUN(Material.STONE_SHOVEL, Component.text("Improved Railgun")
+    IMPROVED_RAYLER(Material.STONE_SHOVEL, Component.text("Improved Rayler")
             .decoration(TextDecoration.ITALIC, false), ColorHelper.MID_GREEN),
-    TITANS_RAILGUN(Material.IRON_SHOVEL, Component.text("Titan's Railgun")
+    TITANS_RAYLER(Material.IRON_SHOVEL, Component.text("Titan's Rayler")
             .decoration(TextDecoration.ITALIC, false), NamedTextColor.BLUE),
-    VIRTUOUS_RAILGUN(Material.DIAMOND_SHOVEL, Component.text("Virtuous Railgun")
+    VIRTUOUS_RAYLER(Material.DIAMOND_SHOVEL, Component.text("Virtuous Rayler")
             .decoration(TextDecoration.ITALIC, false), NamedTextColor.LIGHT_PURPLE),
-    ERUPTING_RAILGUN(Material.GOLDEN_SHOVEL, Component.text("Erupting Railgun")
+    ERUPTING_RAYLER(Material.GOLDEN_SHOVEL, Component.text("Erupting Rayler")
             .decoration(TextDecoration.ITALIC, false), NamedTextColor.GOLD),
-    JUDGEMENT_RAILGUN(Material.NETHERITE_SHOVEL, Component.text("Judgement Railgun")
+    JUDGEMENT_RAYLER(Material.NETHERITE_SHOVEL, Component.text("Judgement Rayler")
             .decoration(TextDecoration.ITALIC, false), NamedTextColor.RED),
     //Smudger
     DEFECTIVE_SMUDGER(Material.WOODEN_AXE, Component.text("Defective Smudger")
@@ -245,57 +244,57 @@ public enum ItemType {
      * This item is likely to not work in a game, as is for testing purposes only.
      *
      * @param plugin instance of the main class
-     * @param gameData if applicable, data class of the game the item's for
+     * @param game if applicable, data class of the game the item's for
      * @param type the type of item to create
      * @param amount amount of items to create
      * @return the MadItem, or null if no valid ItemType is provided.
      */
-    public static MadItem createDummyItem(MobMadness plugin, GameData gameData, ItemType type, int amount) {
+    public static MadItem createDummyItem(MobMadness plugin, Game game, ItemType type, int amount) {
         switch (type) {
-            case IRON_NUGGET: return new IronNugget(plugin, amount, gameData);
-            case GOLD_NUGGET: return new GoldNugget(plugin, amount, gameData);
-            case CRYSTAL: return new Crystal(plugin, amount, gameData);
-            case COMPASS: return new Compass(plugin, gameData);
+            case IRON_NUGGET: return new IronNugget(plugin, amount, game);
+            case GOLD_NUGGET: return new GoldNugget(plugin, amount, game);
+            case CRYSTAL: return new Crystal(plugin, amount, game);
+            case COMPASS: return new Compass(plugin, game);
             case BLANK_ITEM:
                 break;
             case BLOCKED_ITEM:
                 break;
-            case LIFE_ELIXIR: return new LifeElixir(plugin, amount, gameData);
-            case AETHERS_BERRIES: return new AethersBerries(plugin, amount, gameData);
+            case LIFE_ELIXIR: return new LifeElixir(plugin, amount, game);
+            case AETHERS_BERRIES: return new AethersBerries(plugin, amount, game);
             case GREATER_HEALTH_POTION:
                 break;
-            case HEALTH_POTION: return new HealthPotion(plugin, gameData);
-            case ARROWS: return new Arrows(plugin, amount, gameData);
+            case HEALTH_POTION: return new HealthPotion(plugin, game);
+            case ARROWS: return new Arrows(plugin, amount, game);
             case RUNIC_ARROW:
                 break;
-            case COOKIE: return new Cookie(plugin, amount, gameData);
-            case TOTEM_OF_UNDYING: return new TotemOfUndying(plugin, gameData);
-            case THROWABLE_TNT: return new ThrowableTNT(plugin, amount, gameData);
-            case BHG: return new BottledHealingGas(plugin,0, gameData);
-            case CHORUS_FRUIT: return new ChorusFruit(plugin, amount, gameData);
+            case COOKIE: return new Cookie(plugin, amount, game);
+            case TOTEM_OF_UNDYING: return new TotemOfUndying(plugin, game);
+            case THROWABLE_TNT: return new ThrowableTNT(plugin, amount, game);
+            case BHG: return new BottledHealingGas(plugin,0, game);
+            case CHORUS_FRUIT: return new ChorusFruit(plugin, amount, game);
             case ENDER_AID:
                 break;
-            case VOID_ORB: return new VoidOrb(plugin, amount, gameData);
-            case VEILING_POTION: return new VeilingPotion(plugin, amount, gameData);
-            case BARRICADE: return new Barricade(plugin, amount, gameData);
+            case VOID_ORB: return new VoidOrb(plugin, amount, game);
+            case VEILING_POTION: return new VeilingPotion(plugin, amount, game);
+            case BARRICADE: return new Barricade(plugin, amount, game);
             case FROST_ORB:
                 break;
             case RUGGED_ORB:
                 break;
-            case DETONATION_ORB: return new DetonationOrb(plugin, amount, gameData);
+            case DETONATION_ORB: return new DetonationOrb(plugin, amount, game);
             //WEAPONS
-            case OLD_SWORD: return new Sword(type, new ItemStack(Material.WOODEN_SWORD),
-                    plugin, gameData);
-            case STONE_SWORD: return new Sword(type, new ItemStack(Material.STONE_SWORD),
-                    plugin, gameData);
-            case BROADSWORD: return new Sword(type, new ItemStack(Material.IRON_SWORD),
-                    plugin, gameData);
-            case BEAM_SWORD: return new Sword(type, new ItemStack(Material.DIAMOND_SWORD),
-                    plugin, gameData);
-            case GLEAMING_SWORD: return new Sword(type, new ItemStack(Material.GOLDEN_SWORD),
-                    plugin, gameData);
+            case OLD_SWORD: return new Sword(type,
+                    plugin, game);
+            case STONE_SWORD: return new Sword(type,
+                    plugin, game);
+            case BROADSWORD: return new Sword(type,
+                    plugin, game);
+            case BEAM_SWORD: return new Sword(type,
+                    plugin, game);
+            case GLEAMING_SWORD: return new Sword(type,
+                    plugin, game);
             case EXECUTIONERS_SWORD: return new Sword(type,
-                    new ItemStack(Material.NETHERITE_SWORD), plugin, gameData);
+                    plugin, game);
 
             case CROSS_SHIELD:
             case PINK_LOTUS_SHIELD:
@@ -303,7 +302,7 @@ public enum ItemType {
             case MOSSY_SHIELD:
             case GLORIOUS_SHIELD:
             case WITHERS_SHIELD:
-                return new Shield(type, plugin, gameData);
+                return new Shield(type, plugin, game);
 
             case FRAIL_BOW:
             case SOLID_BOW:
@@ -311,7 +310,7 @@ public enum ItemType {
             case PULSE_BOW:
             case BLAZING_BOW:
             case SHADOW_BOW:
-                return new Bow(type, new ItemStack(Material.BOW), plugin, gameData);
+                return new Bow(type, plugin, game);
 
             case FRAIL_CROSSBOW:
             case STEADY_CROSSBOW:
@@ -319,47 +318,47 @@ public enum ItemType {
             case BLASTING_CROSSBOW:
             case FIERY_CROSSBOW:
             case CERBERUS_CROSSBOW:
-                return new Crossbow(type, new ItemStack(Material.CROSSBOW),
-                    plugin, gameData);
+                return new Crossbow(type,
+                        plugin, game);
 
-            case WOODEN_SCEPTER: return new Scepter(type, new ItemStack(Material.WOODEN_HOE),
-                    plugin, gameData);
-            case ANCIENT_SCEPTER: return new Scepter(type, new ItemStack(Material.STONE_HOE),
-                    plugin, gameData);
-            case MANASTEEL_SCEPTER: return new Scepter(type, new ItemStack(Material.IRON_HOE),
-                    plugin, gameData);
-            case CRYSTALLINE_SCEPTER: return new Scepter(type, new ItemStack(Material.DIAMOND_HOE),
-                    plugin, gameData);
-            case INFERNAL_SCEPTER: return new Scepter(type, new ItemStack(Material.GOLDEN_HOE),
-                    plugin, gameData);
-            case ARMAGEDDON_SCEPTER: return new Scepter(type, new ItemStack(Material.NETHERITE_HOE),
-                    plugin, gameData);
+            case WOODEN_SCEPTER: return new Scepter(type,
+                    plugin, game);
+            case ANCIENT_SCEPTER: return new Scepter(type,
+                    plugin, game);
+            case MANASTEEL_SCEPTER: return new Scepter(type,
+                    plugin, game);
+            case CRYSTALLINE_SCEPTER: return new Scepter(type,
+                    plugin, game);
+            case INFERNAL_SCEPTER: return new Scepter(type,
+                    plugin, game);
+            case ARMAGEDDON_SCEPTER: return new Scepter(type,
+                    plugin, game);
 
-            case SLOW_RAILGUN: return new Railgun(type, new ItemStack(Material.WOODEN_SHOVEL),
-                    plugin, gameData);
-            case IMPROVED_RAILGUN: return new Railgun(type, new ItemStack(Material.STONE_SHOVEL),
-                    plugin, gameData);
-            case TITANS_RAILGUN: return new Railgun(type, new ItemStack(Material.IRON_SHOVEL),
-                    plugin, gameData);
-            case VIRTUOUS_RAILGUN: return new Railgun(type, new ItemStack(Material.DIAMOND_SHOVEL),
-                    plugin, gameData);
-            case ERUPTING_RAILGUN: return new Railgun(type, new ItemStack(Material.GOLDEN_SHOVEL),
-                    plugin, gameData);
-            case JUDGEMENT_RAILGUN: return new Railgun(type, new ItemStack(Material.NETHERITE_SHOVEL),
-                    plugin, gameData);
+            case SLOW_RAYLER: return new Rayler(type,
+                    plugin, game);
+            case IMPROVED_RAYLER: return new Rayler(type,
+                    plugin, game);
+            case TITANS_RAYLER: return new Rayler(type,
+                    plugin, game);
+            case VIRTUOUS_RAYLER: return new Rayler(type,
+                    plugin, game);
+            case ERUPTING_RAYLER: return new Rayler(type,
+                    plugin, game);
+            case JUDGEMENT_RAYLER: return new Rayler(type,
+                    plugin, game);
 
-            case DEFECTIVE_SMUDGER: return new Smudger(type, new ItemStack(Material.WOODEN_AXE),
-                    plugin, gameData);
-            case PLEASANT_SMUDGER: return new Smudger(type, new ItemStack(Material.STONE_AXE),
-                    plugin, gameData);
-            case SILVER_PLATED_SMUDGER: return new Smudger(type, new ItemStack(Material.IRON_AXE),
-                    plugin, gameData);
-            case LUSTROUS_SMUDGER: return new Smudger(type, new ItemStack(Material.DIAMOND_AXE),
-                    plugin, gameData);
-            case DRACONIC_SMUDGER: return new Smudger(type, new ItemStack(Material.GOLDEN_AXE),
-                    plugin, gameData);
-            case POSSESSED_SMUDGER: return new Smudger(type, new ItemStack(Material.NETHERITE_AXE),
-                    plugin, gameData);
+            case DEFECTIVE_SMUDGER: return new Smudger(type,
+                    plugin, game);
+            case PLEASANT_SMUDGER: return new Smudger(type,
+                    plugin, game);
+            case SILVER_PLATED_SMUDGER: return new Smudger(type,
+                    plugin, game);
+            case LUSTROUS_SMUDGER: return new Smudger(type,
+                    plugin, game);
+            case DRACONIC_SMUDGER: return new Smudger(type,
+                    plugin, game);
+            case POSSESSED_SMUDGER: return new Smudger(type,
+                    plugin, game);
 
             case IMPRUDENT_TRIDER:
             case LOYAL_TRIDER:
@@ -367,41 +366,41 @@ public enum ItemType {
             case ANGELIC_TRIDER:
             case HELLISH_TRIDER:
             case MANIC_TRIDER:
-                return new Trider(type, new ItemStack(Material.TRIDENT), plugin, gameData);
+                return new Trider(type, plugin, game);
 
-            case LEATHER_HELMET: return new Helmet(plugin, gameData, type, new ItemStack(Material.LEATHER_HELMET));
+            case LEATHER_HELMET: return new Helmet(plugin, game, type);
             case LEATHER_CHESTPLATE:
-                return new Chestplate(plugin, gameData, type, new ItemStack(Material.LEATHER_CHESTPLATE));
+                return new Chestplate(plugin, game, type);
             case LEATHER_LEGGINGS:
-                return new Leggings(plugin, gameData, type, new ItemStack(Material.LEATHER_LEGGINGS));
-            case LEATHER_BOOTS: return new Leggings(plugin, gameData, type, new ItemStack(Material.LEATHER_BOOTS));
+                return new Leggings(plugin, game, type);
+            case LEATHER_BOOTS: return new Leggings(plugin, game, type);
 
-            case CHAINMAIL_HELMET: return new Helmet(plugin, gameData, type, new ItemStack(Material.CHAINMAIL_HELMET));
+            case CHAINMAIL_HELMET: return new Helmet(plugin, game, type);
             case CHAINMAIL_CHESTPLATE:
-                return new Chestplate(plugin, gameData, type, new ItemStack(Material.CHAINMAIL_CHESTPLATE));
+                return new Chestplate(plugin, game, type);
             case CHAINMAIL_LEGGINGS:
-                return new Leggings(plugin, gameData, type, new ItemStack(Material.CHAINMAIL_LEGGINGS));
-            case CHAINMAIL_BOOTS: return new Leggings(plugin, gameData, type, new ItemStack(Material.CHAINMAIL_BOOTS));
+                return new Leggings(plugin, game, type);
+            case CHAINMAIL_BOOTS: return new Leggings(plugin, game, type);
 
-            case IRON_HELMET: return new Helmet(plugin, gameData, type, new ItemStack(Material.IRON_HELMET));
+            case IRON_HELMET: return new Helmet(plugin, game, type);
             case IRON_CHESTPLATE:
-                return new Chestplate(plugin, gameData, type, new ItemStack(Material.IRON_CHESTPLATE));
-            case IRON_LEGGINGS: return new Leggings(plugin, gameData, type, new ItemStack(Material.IRON_LEGGINGS));
-            case IRON_BOOTS: return new Leggings(plugin, gameData, type, new ItemStack(Material.IRON_BOOTS));
+                return new Chestplate(plugin, game, type);
+            case IRON_LEGGINGS: return new Leggings(plugin, game, type);
+            case IRON_BOOTS: return new Leggings(plugin, game, type);
 
-            case DIAMOND_HELMET: return new Helmet(plugin, gameData, type, new ItemStack(Material.DIAMOND_HELMET));
+            case DIAMOND_HELMET: return new Helmet(plugin, game, type);
             case DIAMOND_CHESTPLATE:
-                return new Chestplate(plugin, gameData, type, new ItemStack(Material.DIAMOND_CHESTPLATE));
+                return new Chestplate(plugin, game, type);
             case DIAMOND_LEGGINGS:
-                return new Leggings(plugin, gameData, type, new ItemStack(Material.DIAMOND_LEGGINGS));
-            case DIAMOND_BOOTS: return new Leggings(plugin, gameData, type, new ItemStack(Material.DIAMOND_BOOTS));
+                return new Leggings(plugin, game, type);
+            case DIAMOND_BOOTS: return new Leggings(plugin, game, type);
 
-            case NETHERITE_HELMET: return new Helmet(plugin, gameData, type, new ItemStack(Material.NETHERITE_HELMET));
+            case NETHERITE_HELMET: return new Helmet(plugin, game, type);
             case NETHERITE_CHESTPLATE:
-                return new Chestplate(plugin, gameData, type, new ItemStack(Material.NETHERITE_CHESTPLATE));
+                return new Chestplate(plugin, game, type);
             case NETHERITE_LEGGINGS:
-                return new Leggings(plugin, gameData, type, new ItemStack(Material.NETHERITE_LEGGINGS));
-            case NETHERITE_BOOTS: return new Leggings(plugin, gameData, type, new ItemStack(Material.NETHERITE_BOOTS));
+                return new Leggings(plugin, game, type);
+            case NETHERITE_BOOTS: return new Leggings(plugin, game, type);
         }
         return null;
     }

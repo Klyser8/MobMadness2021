@@ -2,14 +2,15 @@ package com.github.klyser8.mobmadness;
 
 import com.github.klyser8.mobmadness.commands.*;
 import com.github.klyser8.mobmadness.game.MiscListener;
+import com.github.klyser8.mobmadness.game.entity.EntityListener;
 import com.github.klyser8.mobmadness.game.items.ItemListener;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.WeaponListener;
-import com.github.klyser8.mobmadness.game.mob.BeastType;
+import com.github.klyser8.mobmadness.game.entity.beast.BeastType;
 import com.github.klyser8.mobmadness.game.GameManager;
-import com.github.klyser8.mobmadness.game.mob.BeastListener;
-import com.github.klyser8.mobmadness.game.mob.soulstates.SoulStateListener;
-import com.github.klyser8.mobmadness.game.player.PlayerListener;
+import com.github.klyser8.mobmadness.game.entity.beast.BeastListener;
+import com.github.klyser8.mobmadness.game.entity.soulstates.SoulStateListener;
+import com.github.klyser8.mobmadness.game.entity.player.PlayerListener;
 import com.github.klyser8.mobmadness.game.shop.ShopListener;
 import com.github.klyser8.mobmadness.ui.UIEvents;
 import com.github.klyser8.mobmadness.game.world.MapType;
@@ -53,6 +54,7 @@ public final class MobMadness extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BeastListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         getServer().getPluginManager().registerEvents(new SoulStateListener(this), this);
+        getServer().getPluginManager().registerEvents(new EntityListener(this), this);
 
         //TODO fix invisibility trider
         /*ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL,

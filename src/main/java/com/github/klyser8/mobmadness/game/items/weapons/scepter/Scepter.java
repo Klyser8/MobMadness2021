@@ -4,9 +4,8 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
 import com.github.klyser8.mobmadness.game.items.weapons.MadWeapon;
-import com.github.klyser8.mobmadness.game.mob.Beast;
-import com.github.klyser8.mobmadness.storage.GameData;
-import com.github.klyser8.mobmadness.game.player.Profile;
+import com.github.klyser8.mobmadness.storage.Game;
+import com.github.klyser8.mobmadness.game.entity.player.Profile;
 import com.github.klyser8.mobmadness.util.MadMath;
 import com.github.klyser8.mobmadness.util.Sound;
 import org.bukkit.Location;
@@ -33,6 +32,7 @@ public class Scepter extends MadItem implements MadWeapon {
     public static final String RADIUS_TAG = "mm.radius";
     public static final String PROJECTILE_SPEED_TAG = "mm.proj_speed";
     public static final String MANA_COST_TAG = "mm.mana_cost";
+    public static final String DAMAGE_TAG = "mm.damage";
     public static final String COOLDOWN_TAG = "mm.cooldown";
     public static final String ULT_DAMAGE_TAG = "mm.ult.damage";
     public static final String ULT_RADIUS_TAG = "mm.ult.radius";
@@ -42,8 +42,8 @@ public class Scepter extends MadItem implements MadWeapon {
     private final Sound shootSound;
     private final Sound ultSound;
 
-    public Scepter(ItemType type, ItemStack item, MobMadness plugin, GameData gameData) {
-        super(type, item, plugin, gameData, true);
+    public Scepter(ItemType type, MobMadness plugin, Game game) {
+        super(type, new ItemStack(type.getMaterial()), plugin, game, true);
         setup();
         shootSound = new Sound("entity.blaze.shoot", 1, 1.0f + data.getCooldown() / 20f);
         ultSound = new Sound("entity.blaze.shoot", 1, 1.0f + (data.getCooldown() / 20f) - 0.5f);
@@ -100,7 +100,7 @@ public class Scepter extends MadItem implements MadWeapon {
         shootSound.play(eyeLoc, SoundCategory.PLAYERS);
         fireball.setShooter(shooter);
         fireball.setIsIncendiary(false);
-        fireball.setMetadata(Beast.DAMAGE_TAG, new FixedMetadataValue(plugin, data.getDamage()));
+        fireball.setMetadata(DAMAGE_TAG, new FixedMetadataValue(plugin, data.getDamage()));
         fireball.setMetadata(RADIUS_TAG, new FixedMetadataValue(plugin, data.getRadius()));
         setMana(profile, data.getManaCost());
     }
@@ -121,7 +121,7 @@ public class Scepter extends MadItem implements MadWeapon {
         ultSound.play(eyeLoc, SoundCategory.PLAYERS);
         fireball.setShooter(shooter);
         fireball.setIsIncendiary(false);
-        fireball.setMetadata(Beast.DAMAGE_TAG, new FixedMetadataValue(plugin, data.getUltDamage()));
+        fireball.setMetadata(DAMAGE_TAG, new FixedMetadataValue(plugin, data.getUltDamage()));
         fireball.setMetadata(RADIUS_TAG, new FixedMetadataValue(plugin, data.getUltRadius()));
         new BukkitRunnable() {
             @Override

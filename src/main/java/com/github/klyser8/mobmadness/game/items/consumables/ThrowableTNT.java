@@ -3,7 +3,7 @@ package com.github.klyser8.mobmadness.game.items.consumables;
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.items.ItemType;
 import com.github.klyser8.mobmadness.game.items.MadItem;
-import com.github.klyser8.mobmadness.storage.GameData;
+import com.github.klyser8.mobmadness.storage.Game;
 import com.github.klyser8.mobmadness.util.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -26,8 +26,8 @@ public class ThrowableTNT extends MadItem {
     public static final int FUSE_TICKS = 60;
 
     private final Sound throwSound;
-    public ThrowableTNT(MobMadness plugin, int amount, GameData gameData) {
-        super(ItemType.THROWABLE_TNT, new ItemStack(ItemType.THROWABLE_TNT.getMaterial(), amount), plugin, gameData, true);
+    public ThrowableTNT(MobMadness plugin, int amount, Game game) {
+        super(ItemType.THROWABLE_TNT, new ItemStack(ItemType.THROWABLE_TNT.getMaterial(), amount), plugin, game, true);
         throwSound = new Sound("entity.witch.throw", 1.0f, 0.75f);
         setup();
     }
