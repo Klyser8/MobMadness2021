@@ -17,7 +17,6 @@ import com.github.klyser8.mobmadness.util.Sound;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.*;
 import org.bukkit.block.data.type.RespawnAnchor;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 
@@ -130,10 +129,9 @@ public class GameRunnable implements Runnable {
     private void spawnBoss(Tier calcTier) {
         switch (calcTier) {
             case I, II, III, IV, V, VI -> game.setCurrentBoss(
-                    new Jockey(plugin, game.getMapSpawnPoint().getWorld(), game));
+                    new Jockey(plugin, game.getMapSpawnPoint().getWorld(), game, game.getMapSpawnPoint()));
         }
         bossSummonedSound.play(game.getMapSpawnPoint(), SoundCategory.HOSTILE);
-        game.getCurrentBoss().spawn(game.getMapSpawnPoint());
     }
 
     private void tierUp(Tier calcTier) {
@@ -148,34 +146,39 @@ public class GameRunnable implements Runnable {
     }
 
     private void attemptMobSpawn() {
-        if (game.getCurrentWeight() >= game.getMaxWeight()) {
+        if (game.getCurrentWeight() > game.getMaxWeight()) {
             for (Mob mob : game.getBeastMap().keySet()) {
                 if (mob.getTicksLived() > MOB_AGE_CAP && mob.getKiller() == null) {
                     game.getBeastMap().get(mob).remove();
+                    return;
                 }
             }
         }
         calculateBound();
         World world = game.getGameMap().getMapType().getSpawn().getWorld();
         int bound = random.nextInt(game.getBound());
-        Beast beast = null;
-        if (bound > 2000) return;
+        Beast<?> beast = null;
+        if (bound > 200) return;
+        SpawnArea area = pickSpawnArea(game);
+        if (area == null) return;
+        Location spawnLoc = MadUtils.pickRandomSpawnLocation(area.getCorner1(), area.getCorner2());
+        if (spawnLoc == null) return;
         switch (game.getTier()) {
             case I:
-                if (bound > 1500) {
-                    beast = new Zomby(plugin, world, game);
-                } else if (bound > 1000) {
-                    beast = new Spyder(plugin, world, game);
-                } else if (bound > 500) {
-                    beast = new Kreeper(plugin, world, game);
+                if (bound > 150) {
+                    beast = new Zomby(plugin, world, game, spawnLoc);
+                } else if (bound > 100) {
+                    beast = new Spyder(plugin, world, game, spawnLoc);
+                } else if (bound > 50) {
+                    beast = new Kreeper(plugin, world, game, spawnLoc);
                 } else if (bound > 0) {
-                    beast = new Scheleton(plugin, world, game);
+                    beast = new Scheleton(plugin, world, game, spawnLoc);
                 }
                 //When the boss is alive, mobs may be replaced with spiders.
                 if (game.getCurrentBoss() != null
                         && !(beast instanceof Spyder)
                         && random.nextBoolean()) {
-                    beast = new Spyder(plugin, world, game);
+                    beast = new Spyder(plugin, world, game, spawnLoc);
                 }
                 break;
             case IV:
@@ -185,21 +188,15 @@ public class GameRunnable implements Runnable {
             case VI:
                 break;
         }
-        SpawnArea area = pickSpawnArea(game);
-        if (area == null || beast == null) return;
-        Location spawnLoc = MadUtils.pickRandomSpawnLocation(area.getCorner1(), area.getCorner2());
-        if (spawnLoc == null) return;
-        beast.spawn(spawnLoc);
         mobSpawnSound.play(spawnLoc, SoundCategory.HOSTILE);
     }
 
     private void calculateBound() {
-        int bound = 0;
-        switch (game.getGameMap().getMapType()) {
-            case CRYPTIC_CAVE:
-                bound = 12000;
-        }
-        bound -= game.calculateAvgScore();
+        int bound = switch (game.getGameMap().getMapType()) {
+            case CRYPTIC_CAVE -> 1200;
+            default -> 0;
+        };
+        bound -= game.calculateAvgScore() / 10;
         bound *= (1.1 - (game.getPlayers().size() / 10));
         game.setBound(bound);
     }

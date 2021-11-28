@@ -49,7 +49,7 @@ public class JockeyRunnable extends BeastRunnable<Jockey> {
     @Override
     public void run() {
         super.run();
-        Mob mob = entity.getMob();
+        Mob mob = beast.getMob();
         if ((ride == null || mob.getPathfinder().getCurrentPath() == null) &&
                 random.nextFloat() < 0.05 && mob.getVehicle() == null) {
             lookForSpider();
@@ -64,7 +64,7 @@ public class JockeyRunnable extends BeastRunnable<Jockey> {
                     //End hasted soul state if it is present
                     Spyder spyder = (Spyder) game.getBeastMap().get(ride);
                     if (!spyder.hasSoulState(SoulStateType.HASTED)) {
-                        new Hasted(plugin, game, spyder, 1, 2400);
+                        new Hasted(plugin, game, spyder, 3, 2400);
                     }
                     ride.addPotionEffect(
                             new PotionEffect(PotionEffectType.REGENERATION, 2400, 1,
@@ -77,7 +77,7 @@ public class JockeyRunnable extends BeastRunnable<Jockey> {
         }
 
         if (clock % 5 == 0) {
-            entity.updateBossBar();
+            beast.updateBossBar();
         }
         clock++;
     }
@@ -85,34 +85,34 @@ public class JockeyRunnable extends BeastRunnable<Jockey> {
     //Looks for a spider by deselecting any entity. If it finds one, gets a hasted effect to run towards the spider
     private void lookForSpider() {
         //Skeleton will fail to find a spider if it is dazzled
-        if (entity.hasSoulState(SoulStateType.DAZZLED)) return;
-        Mob mob = entity.getMob();
+        if (beast.hasSoulState(SoulStateType.DAZZLED)) return;
+        Mob mob = beast.getMob();
         ride = (Spider) mob.getNearbyEntities(30, 10, 30).stream()
                 .filter(spider -> spider instanceof Spider && mob.hasLineOfSight(spider))
                 .findFirst().orElse(null);
         if (ride == null || !ride.getPassengers().isEmpty()) return;
-        if (!entity.hasSoulState(SoulStateType.HASTED)) {
-            new Hasted(plugin, game, entity, 3, 200);
+        if (!beast.hasSoulState(SoulStateType.HASTED)) {
+            new Hasted(plugin, game, beast, 3, 200);
         }
         mob.setMetadata(Beast.IGNORE_PLAYERS_TAG, new FixedMetadataValue(plugin, true));
     }
 
     private void moveTowardsSpider() {
-        Mob mob = entity.getMob();
+        Mob mob = beast.getMob();
         mob.setTarget(null);
         mob.lookAt(ride);
         mob.getPathfinder().moveTo(ride);
         if (Math.abs(ride.getLocation().getY() - mob.getLocation().getY()) > 3
                 && ride.getLocation().distance(mob.getLocation()) < 10
                 && mob.isOnGround()) {
-            if (entity.getGeneralCooldown() == 0) {
+            if (beast.getGeneralCooldown() == 0) {
                 jump();
             }
         }
     }
 
     private void mountSpider() {
-        Mob mob = entity.getMob();
+        Mob mob = beast.getMob();
         Vector dir = MadUtils.getDirectionBetweenLocations(mob.getLocation(), ride.getLocation());
         for (double d = 0.1; d < mob.getLocation().distance(ride.getEyeLocation()); d += 0.1) {
             Location loc = mob.getLocation().clone();
@@ -132,7 +132,7 @@ public class JockeyRunnable extends BeastRunnable<Jockey> {
     }
 
     private void jump() {
-        Mob mob = entity.getMob();
+        Mob mob = beast.getMob();
         Vector dir = MadUtils.getDirectionBetweenLocations(mob.getLocation(), ride.getLocation());
         mob.setVelocity(mob.getVelocity().add(dir.normalize().add(new Vector(0, 0.3, 0)).multiply(
                 ride.getLocation().distance(mob.getLocation()) / 7)));
@@ -141,6 +141,6 @@ public class JockeyRunnable extends BeastRunnable<Jockey> {
         jumpSound.play(mob.getLocation(), SoundCategory.HOSTILE);
         Bukkit.getScheduler().runTaskLater(plugin,
                 () -> jumpBoneSound.play(mob.getLocation(), SoundCategory.HOSTILE), 3);
-        entity.setGeneralCooldown(60);
+        beast.setGeneralCooldown(60);
     }
 }

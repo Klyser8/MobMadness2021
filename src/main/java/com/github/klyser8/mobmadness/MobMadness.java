@@ -115,7 +115,6 @@ public final class MobMadness extends JavaPlugin {
         commandManager.register(new LeaveGameCommand(this));
         commandManager.register(new GiveItemCommand(this));
         commandManager.register(new DebugCommand(this));
-        commandManager.register(new SummonMobCommand(this));
     }
 
     /**

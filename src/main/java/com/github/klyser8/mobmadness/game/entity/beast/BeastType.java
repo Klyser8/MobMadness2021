@@ -12,6 +12,7 @@ import com.github.klyser8.mobmadness.util.ColorHelper;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -25,7 +26,7 @@ public enum BeastType {
     CREEPER(EntityType.CREEPER, Component.text("Creeper"), Tier.I.getTierColor(),
             8, 10, 0.22, 2),
     SKELETON(EntityType.SKELETON, Component.text("Skeleton"), Tier.I.getTierColor(),
-            6, 1, 0.2, 3),
+            6, 3, 0.2, 3),
     JOCKEY_SKELETON(EntityType.SKELETON, Component.text("Jockey Skeleton"), ColorHelper.LIGHT_GRAY,
             50, 3, 0.26, 15);
 
@@ -48,13 +49,13 @@ public enum BeastType {
         this.weight = weight;
     }
 
-    public static Beast createMob(BeastType type, World world, Game game) {
+    public static Beast createMob(BeastType type, World world, Game game, Location spawnLoc) {
         return switch (type) {
-            case ZOMBIE -> new Zomby(JavaPlugin.getPlugin(MobMadness.class), world, game);
-            case SPIDER -> new Spyder(JavaPlugin.getPlugin(MobMadness.class), world, game);
-            case CREEPER -> new Kreeper(JavaPlugin.getPlugin(MobMadness.class), world, game);
-            case SKELETON -> new Scheleton(JavaPlugin.getPlugin(MobMadness.class), world, game);
-            case JOCKEY_SKELETON -> new Jockey(JavaPlugin.getPlugin(MobMadness.class), world, game);
+            case ZOMBIE -> new Zomby(JavaPlugin.getPlugin(MobMadness.class), world, game, spawnLoc);
+            case SPIDER -> new Spyder(JavaPlugin.getPlugin(MobMadness.class), world, game, spawnLoc);
+            case CREEPER -> new Kreeper(JavaPlugin.getPlugin(MobMadness.class), world, game, spawnLoc);
+            case SKELETON -> new Scheleton(JavaPlugin.getPlugin(MobMadness.class), world, game, spawnLoc);
+            case JOCKEY_SKELETON -> new Jockey(JavaPlugin.getPlugin(MobMadness.class), world, game, spawnLoc);
         };
     }
 

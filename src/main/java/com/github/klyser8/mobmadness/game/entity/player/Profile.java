@@ -9,6 +9,7 @@ import com.github.klyser8.mobmadness.game.entity.soulstates.SoulStateType;
 import com.github.klyser8.mobmadness.lang.English;
 import com.github.klyser8.mobmadness.storage.Game;
 import com.github.klyser8.mobmadness.util.Sound;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.SoundCategory;
 import org.bukkit.attribute.Attribute;
@@ -16,6 +17,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +57,7 @@ public class Profile implements Soul {
     private final Map<SoulStateType, SoulState> currentSoulStates;
 
     private ShopInventory playerShop;
+    private ScoreboardRunnable boardRunnable;
 
     //Profile loop.
     private final BukkitTask profileTask;
@@ -72,6 +76,8 @@ public class Profile implements Soul {
         player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(STARTING_HP);
         player.setHealth(Profile.STARTING_HP);
         playerShop = new ShopInventory(plugin, currentGame, this);
+        boardRunnable = new ScoreboardRunnable(plugin, this);
+        Bukkit.getScheduler().runTaskTimer(plugin, boardRunnable, 0, 5);
     }
 
     /**
@@ -156,7 +162,8 @@ public class Profile implements Soul {
     }
 
     /**
-     * Starts an XP bar cooldown. The cooldown will be displayed on the XP bar, updated twice a second.
+     * Sets the player on cooldown for the provided duration.
+     * The duration is shown in their XP bar.
      *
      * @param ticks how long the cooldown should be in ticks
      */
@@ -219,14 +226,26 @@ public class Profile implements Soul {
         playerShop = new ShopInventory(plugin, currentGame, this);
     }
 
+    /**
+     * Returns the player's personal shop
+     * @return the player's current shop
+     */
     public ShopInventory getPlayerShop() {
         return playerShop;
     }
 
+    /**
+     * Returns how many health-ups the player has purchased thus far.
+     * @return the amount of health-ups purchased
+     */
     public int getHealthUpAmount() {
         return healthUpAmount;
     }
 
+    /**
+     * Sets the amount of health-ups purchased by the player to the specified amount.
+     * @param healthUpAmount the new number of health-ups the player purchased
+     */
     public void setHealthUpAmount(int healthUpAmount) {
         this.healthUpAmount = healthUpAmount;
     }

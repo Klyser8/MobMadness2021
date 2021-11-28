@@ -65,7 +65,7 @@ public class Game {
     private final GameMap map;
     public Game(MobMadness plugin, GameMap map) {
         playerMap = new HashMap<>();
-        mobMap = new LinkedHashMap<org.bukkit.entity.Mob, Beast>();
+        mobMap = new LinkedHashMap<>();
         this.map = map;
         this.gameTask = Bukkit.getScheduler().runTaskTimer(plugin,
                 new GameRunnable(plugin, this), 0, GameRunnable.TICK_INTERVAL);

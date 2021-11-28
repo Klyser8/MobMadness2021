@@ -23,10 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class Jockey extends BossBeast {
+public class Jockey extends BossBeast<Skeleton> {
 
-    public Jockey(MobMadness plugin, World world, Game game) {
-        super(plugin, BeastType.JOCKEY_SKELETON, world, game, Map.of(
+    public Jockey(MobMadness plugin, World world, Game game, Location spawnLoc) {
+        super(plugin, BeastType.JOCKEY_SKELETON, world, game, spawnLoc, Map.of(
                         EntityDamageEvent.DamageCause.FIRE, 0.1, EntityDamageEvent.DamageCause.FIRE_TICK, 0.1,
                         EntityDamageEvent.DamageCause.LAVA, 0.1, EntityDamageEvent.DamageCause.FALL, 0.0,
                         EntityDamageEvent.DamageCause.SUFFOCATION, 0.0),
@@ -54,27 +54,32 @@ public class Jockey extends BossBeast {
                 0.0f, BossBar.Color.WHITE, BossBar.Overlay.PROGRESS,
                 Set.of(BossBar.Flag.CREATE_WORLD_FOG, BossBar.Flag.DARKEN_SCREEN));
     }
-
-    public void spawn(Location spawnLoc) {
-        super.spawn(spawnLoc);
-        Skeleton skeleton = (Skeleton) spawnEntity(spawnLoc, type.getHP() + ((playerCount - 1) * 25));
-        skeleton.setShouldBurnInDay(false);
-        if (skeleton.getEquipment().getItemInMainHand().getEnchantments().size() > 0) {
-            ItemStack bow = skeleton.getEquipment().getItemInMainHand();
-            for (Enchantment ench : skeleton.getEquipment().getItemInMainHand().getEnchantments().keySet()) {
+    @Override
+    public void setup() {
+        super.setup();
+        mob.setShouldBurnInDay(false);
+        if (mob.getEquipment().getItemInMainHand().getEnchantments().size() > 0) {
+            ItemStack bow = mob.getEquipment().getItemInMainHand();
+            for (Enchantment ench : mob.getEquipment().getItemInMainHand().getEnchantments().keySet()) {
                 bow.removeEnchantment(ench);
             }
             bow.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);
-            skeleton.getEquipment().setItemInMainHand(bow);
+            mob.getEquipment().setItemInMainHand(bow);
         }
-        if (skeleton.getEquipment().getArmorContents() == null) return;
-        ItemStack[] items = {};
-        skeleton.getEquipment().setArmorContents(items);
-        skeleton.getEquipment().setHelmet(new ItemStack(Material.GOLDEN_HELMET));
+        if (mob.getEquipment().getArmorContents() != null) {
+            ItemStack[] items = {};
+            mob.getEquipment().setArmorContents(items);
+        }
+        mob.getEquipment().setHelmet(new ItemStack(Material.GOLDEN_HELMET));
     }
 
+
+    /**
+     * Updates the boss bar if the mob is not null.
+     */
     @Override
     public void updateBossBar() {
+        if (mob == null) return;
         bossBar.progress((float) (mob.getHealth() / mob.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
     }
 

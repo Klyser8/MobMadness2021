@@ -30,8 +30,7 @@ public class SpawnMobCommand extends CommandBase {
         if (game == null) return;
         if (amount == null) amount = 1;
         for (int i = 0; i < amount; i++) {
-            Beast mob = BeastType.createMob(type, player.getWorld(), game);
-            mob.spawn(player.getLocation());
+            BeastType.createMob(type, player.getWorld(), game, ((Player) sender).getLocation());
         }
     }
 }

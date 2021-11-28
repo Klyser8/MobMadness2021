@@ -10,6 +10,14 @@ import org.bukkit.entity.Player;
 
 import static com.github.klyser8.mobmadness.util.MadUtils.getClosestBeast;
 
+/**
+ * Runnable class which runs every {@link #TICK_INTERVAL} ticks.
+ * Used to handle:
+ *  - Player cooldowns
+ *  - Player's score
+ *  - Player's compass
+ *  - Player's Mana regeneration (When appropriate)
+ */
 public class ProfileRunnable implements Runnable {
 
     //How often the loop should run (In ticks)

@@ -30,7 +30,7 @@ public class SoulStateListener implements Listener {
         if (event.getTarget() instanceof Player victim) {
             Game game = getEntityGame(plugin, victim);
             if (game == null) return;
-            Beast madMob = game.getBeastMap().get(targeter);
+            Beast<?> madMob = game.getBeastMap().get(targeter);
             if (madMob != null) {
                 if (madMob.getCurrentSoulStates().containsKey(SoulStateType.DAZZLED)) {
                     event.setTarget(null);

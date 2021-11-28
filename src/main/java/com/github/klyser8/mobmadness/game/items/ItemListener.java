@@ -151,7 +151,6 @@ public class ItemListener implements Listener {
         if (type == ItemType.VEILING_POTION) {
             VeilingPotion potion = new VeilingPotion(plugin, item.getAmount(), game);
             potion.drink(profile, item);
-            if (event.getReplacement() == null) return;
             event.setReplacement(new ItemStack(Material.AIR));
         }
     }

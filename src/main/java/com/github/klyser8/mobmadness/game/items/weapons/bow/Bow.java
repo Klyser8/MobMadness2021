@@ -20,7 +20,6 @@ import static me.mattstudios.mf.base.components.MfUtil.color;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 
-//TODO Change bow ultimate to use a "Marked" soul state
 public class Bow extends MadItem implements MadWeapon {
 
     private BowData data;

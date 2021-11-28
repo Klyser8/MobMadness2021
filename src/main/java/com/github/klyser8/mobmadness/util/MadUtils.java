@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -36,11 +37,11 @@ public class MadUtils {
      * @param max a corner which is opposite to the min corner
      * @return a random location.
      */
-    //TODO fix mobs spawning near players and in walls
+    //TODO add alternative for bigger mobs!
     public static Location pickRandomSpawnLocation(Location min, Location max) {
         World world = min.getWorld();
         int attempts = 0;
-        while (attempts < 25) {
+        while (attempts < 100) {
             //Gets a new absolute location, not allowing negative numbers. Used to pick a random number for x, y and z.
             Location range = new Location(world, Math.abs(max.getX() - min.getX()),
                     Math.abs(max.getY() - min.getY()), Math.abs(max.getZ() - min.getZ()));
@@ -49,21 +50,18 @@ public class MadUtils {
                     (Math.random() * range.getX()) + (Math.min(min.getX(), max.getX())),
                     (Math.random() * range.getY()) + (Math.min(min.getY(), max.getY())),
                     (Math.random() * range.getZ()) + (Math.min(min.getZ(), max.getZ())));
-            int y = spawnLoc.getBlockY();
+            //If there is a player within 5 blocks, the location is invalid.
+            if (getClosestPlayer(spawnLoc, 5) != null) continue;
+
             //Checks if there is an empty block 5 blocks above and 5 blocks under the picked location for a mob to spawn in.
             //Avoids selecting an area above a "dangerous" block.
-            int yOffset = -5;
-            while (yOffset < 5) {
-                Block beneath = world.getBlockAt(spawnLoc.clone().add(0, yOffset - 1, 0));
-                Block above = world.getBlockAt(spawnLoc.clone().add(0, yOffset + 1, 0));
-                if (world.getBlockAt(spawnLoc.clone().add(0, yOffset, 0)).isPassable() &&
-                        (above.isPassable() && beneath.isSolid()) &&
-                        (beneath.getType() != Material.MAGMA_BLOCK && beneath.getType() != Material.CACTUS
-                        && beneath.getType() != Material.POINTED_DRIPSTONE)) {
-                    spawnLoc.setY(y + yOffset);
-                    return spawnLoc.add(0.5, 0.5, 0.5);
-                }
-                yOffset++;
+            Block beneath = world.getBlockAt(spawnLoc).getRelative(BlockFace.DOWN);
+            Block above = world.getBlockAt(spawnLoc).getRelative(BlockFace.UP);
+            if (world.getBlockAt(spawnLoc.clone()).isPassable() &&
+                    (above.isPassable() && beneath.isSolid()) &&
+                    (beneath.getType() != Material.MAGMA_BLOCK && beneath.getType() != Material.CACTUS
+                    && beneath.getType() != Material.POINTED_DRIPSTONE)) {
+                return spawnLoc.add(0.5, 0.5, 0.5);
             }
             attempts++;
         }
@@ -82,6 +80,13 @@ public class MadUtils {
         nearbyEntities.removeIf(livingEntity -> livingEntity instanceof Player);
         nearbyEntities.sort(Comparator.comparingDouble(o -> o.getLocation().distanceSquared(loc)));
         return nearbyEntities.size() == 0 ? null : nearbyEntities.get(0);
+    }
+
+    public static Player getClosestPlayer(Location loc, int radius) {
+        List<LivingEntity> nearbyEntities = (List<LivingEntity>) loc.getNearbyLivingEntities(radius, radius, radius);
+        nearbyEntities.removeIf(livingEntity -> !(livingEntity instanceof Player));
+        nearbyEntities.sort(Comparator.comparingDouble(o -> o.getLocation().distanceSquared(loc)));
+        return nearbyEntities.size() == 0 ? null : (Player) nearbyEntities.get(0);
     }
 
     /**
@@ -382,7 +387,7 @@ public class MadUtils {
     }
 
     /**
-     * Picks a spawn area for a mob to spawn in, based on the current game.
+     * Picks a spawn area for a beast to spawn in, based on the current game.
      * The bigger a spawn area is, the more likely for it to be picked will be.
      *
      * @param game instance of the game p
