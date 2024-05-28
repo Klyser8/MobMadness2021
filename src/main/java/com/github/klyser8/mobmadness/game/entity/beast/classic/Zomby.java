@@ -9,13 +9,12 @@ import com.github.klyser8.mobmadness.game.entity.beast.loot.LootTable;
 import com.github.klyser8.mobmadness.storage.Game;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Zombie;
 
-public class Zomby extends Beast {
+public class Zomby extends Beast<Zombie> {
 
-    public Zomby(MobMadness plugin, World world, Game game) {
-        super(plugin, BeastType.ZOMBIE, world, game);
+    public Zomby(MobMadness plugin, World world, Game game, Location spawnLoc) {
+        super(plugin, BeastType.ZOMBIE, world, game, spawnLoc);
         createLootTable();
     }
 
@@ -29,15 +28,13 @@ public class Zomby extends Beast {
         lootTable = builder.build();
     }
 
-    public void spawn(Location spawnLoc) {
-        Zombie zombie = (Zombie) spawnEntity(spawnLoc, type.getHP());
-        zombie.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(type.getDmg());
-        zombie.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(type.getHP());
-        zombie.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(type.getSpeed());
-        zombie.setShouldBurnInDay(false);
-        zombie.setAdult();
-        zombie.stopDrowning();
-        zombie.getEquipment().clear();
+    @Override
+    public void setup() {
+        super.setup();
+        mob.setShouldBurnInDay(false);
+        mob.setAdult();
+        mob.stopDrowning();
+        mob.getEquipment().clear();
     }
 
 }

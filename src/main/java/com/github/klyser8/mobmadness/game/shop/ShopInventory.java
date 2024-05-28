@@ -38,6 +38,10 @@ import java.util.*;
 
 import static me.mattstudios.mf.base.components.MfUtil.color;
 
+/**
+ * Represents the inventory containing a list of purchasable items.
+ * The shop may change based on the player's current profile.
+ */
 public class ShopInventory {
 
     //Item prices (in iron nuggets)

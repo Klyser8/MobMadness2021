@@ -9,6 +9,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
 
+/**
+ * Listener used to handle beasts behavior.
+ */
 public class BeastListener implements Listener {
 
     private final MobMadness plugin;
@@ -23,9 +26,8 @@ public class BeastListener implements Listener {
         Player killer = event.getEntity().getKiller();
         Game game = MadUtils.getEntityGame(plugin, killer);
         if (game == null) return;
-        Profile profile = game.getPlayers().get(killer);
         if (!event.getEntity().hasMetadata(Beast.BEAST_TYPE_TAG)) return;
-        Beast beast = game.getBeastMap().get(victim);
+        Beast<?> beast = game.getBeastMap().get(victim);
         beast.handleDeath();
     }
 

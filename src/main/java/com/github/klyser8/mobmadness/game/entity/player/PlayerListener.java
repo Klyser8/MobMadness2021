@@ -13,10 +13,7 @@ import com.github.klyser8.mobmadness.util.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.SoundCategory;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
@@ -29,12 +26,14 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static com.github.klyser8.mobmadness.ui.UIHelper.displayMobHpBar;
+import static com.github.klyser8.mobmadness.ui.UIHelper.createHpBar;
 import static com.github.klyser8.mobmadness.util.MadUtils.*;
 import static me.mattstudios.mf.base.components.MfUtil.color;
 
+/**
+ * Listener which handles player behavior and player related events.
+ */
 public class PlayerListener implements Listener {
-
 
     private final Sound gameOverSound;
     private final Sound deathSound;
@@ -109,7 +108,7 @@ public class PlayerListener implements Listener {
         Game game = getEntityGame(plugin, killer);
         if (game == null) return;
         if (game.getBeastMap().containsKey(mob)) {
-            displayMobHpBar(plugin, game.getBeastMap().get(mob), killer, (int) Math.ceil(event.getFinalDamage()));
+            displayActionBarHP(game, mob, event.getFinalDamage(), killer);
         }
     }
 
@@ -127,20 +126,21 @@ public class PlayerListener implements Listener {
         Game game = getEntityGame(plugin, damager);
         if (game == null) return;
         if (game.getBeastMap().containsKey(mob)) {
-            displayMobHpBar(plugin, game.getBeastMap().get(mob), damager, (int) Math.ceil(event.getFinalDamage()));
+            displayActionBarHP(game, mob, event.getFinalDamage(), damager);
         }
     }
-
-/*    @EventHandler                                             //Sets a mob's killer whenever it gets hit by a player
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (!(event.getDamager() instanceof Player) || !(event.getEntity() instanceof Mob)) return;
-        ((Mob) event.getEntity()).setKiller((Player) event.getDamager());
-    }*/
 
     private void handleRespawnCharges(Game game) {
         game.setAnchorCharges(game.getAnchorCharges() - 1);
         game.getRespawnAnchor().getWorld().spawnParticle(Particle.SPELL_INSTANT,
                 game.getRespawnAnchor().getLocation().add(0.5, 0.75, 0.5), 25,
                 0.25, 0, 0.25, 0);
+    }
+
+    private void displayActionBarHP(Game game, Mob mob, double finalDmg, Player player) {
+        Component[] bars = createHpBar(game.getBeastMap().get(mob), (int) Math.ceil(finalDmg), false);
+        if (bars == null) return;
+        player.sendActionBar(bars[0]);
+        Bukkit.getScheduler().runTaskLater(plugin, () -> player.sendActionBar(bars[1]), 10);
     }
 }

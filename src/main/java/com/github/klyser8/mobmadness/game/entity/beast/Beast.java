@@ -22,8 +22,10 @@ import java.util.*;
 /**
  * Represents a beast in a Mob Madness game.
  * Works as an 'extension' to the {@link Mob} class, with extra data.
+ *
+ * @param <T> what mob the beast will be.
  */
-public abstract class Beast implements Soul {
+public abstract class Beast<T extends Mob> implements Soul {
 
     /**
      * Tag used to store the beast's type {@link BeastType} as a string.
@@ -80,43 +82,59 @@ public abstract class Beast implements Soul {
     protected LootTable lootTable;
     protected Random random;
 
-    protected Mob mob;
+    protected T mob;
 
-    public Beast(MobMadness plugin, BeastType type, World world, Game game) {
+    /**
+     * Creates a new instance of a Beast.
+     * Once it is created, it is spawned right away.
+     *
+     * @param plugin instance of {@link MobMadness}
+     * @param type the beast type to create
+     * @param world the world which the beast will be in
+     * @param game the game the beast is bound to
+     * @param spawnLoc the spawning location of the beast
+     */
+    public Beast(MobMadness plugin, BeastType type, World world, Game game, Location spawnLoc) {
         this.plugin = plugin;
         this.type = type;
         this.world = world;
         this.game = game;
-        random = new Random();
-
-        currentSoulStates = new HashMap<>();
-    }
-
-    protected void createLootTable() {
-
-    }
-
-    protected Mob spawnEntity(Location spawnLoc, double maxHP) {
         this.spawnLoc = spawnLoc;
-        mob = (Mob) world.spawnEntity(spawnLoc, type.getEntityType(), CreatureSpawnEvent.SpawnReason.REINFORCEMENTS);
-        mob.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHP);
+        random = new Random();
+        currentSoulStates = new HashMap<>();
+        //noinspection unchecked                                                              //Generic casting is okay!
+        mob = (T) world.spawnEntity(spawnLoc, type.getEntityType(), CreatureSpawnEvent.SpawnReason.REINFORCEMENTS);
+        setup();
+    }
+
+    protected abstract void createLootTable();
+
+    /**
+     * The standard set up for a beast is written in this method.
+     * Mob Madness beasts are mobs which have specific behaviors, those being listed below
+     * - Have a custom name, visible to players
+     * - Will not despawn when far away
+     * - Possess metadata indicating which tier they belong to and their {@link BeastType}
+     */
+    @SuppressWarnings("ConstantConditions")
+    protected void setup() {
+        mob.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(type.getHP());
         mob.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(type.getDmg());
         mob.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(type.getSpeed());
-        mob.setHealth(maxHP);
+        mob.setHealth(type.getHP());
         mob.customName(type.getNameComp().color(type.getNameColor()));
         mob.setCustomNameVisible(true);
         mob.setRemoveWhenFarAway(false);
         mob.setMetadata(BEAST_TYPE_TAG, new FixedMetadataValue(plugin, type));
         mob.setMetadata(TIER_TAG, new FixedMetadataValue(plugin, game.getTier().getNumericTier()));
-        mob.setRemoveWhenFarAway(false);
 
         game.getBeastMap().put(mob, this);
         game.setCurrentWeight(game.getCurrentWeight() + type.getWeight());
-        return mob;
     }
 
-    public abstract void spawn(Location spawnLoc);
-
+    /**
+     * Handles death logic for the mob.
+     */
     public void handleDeath() {
         game.getBeastMap().remove(mob);
         game.setCurrentWeight(game.getCurrentWeight() - type.getWeight());
@@ -127,15 +145,27 @@ public abstract class Beast implements Soul {
         }
     }
 
+    /**
+     * Removes the mob without handling its death as regular.
+     *
+     */
     public void remove() {
         game.setCurrentWeight(game.getCurrentWeight() - type.getWeight());
         mob.remove();
     }
 
-    public Mob getMob() {
+    /**
+     * The instance of the beast's mob class.
+     *
+     * @return the instance of the beast's mob class.
+     */
+    public T getMob() {
         return mob;
     }
 
+    /**
+     * See {@link Soul}
+     */
     @Override
     public Map<SoulStateType, SoulState> getCurrentSoulStates() {
         return currentSoulStates;
@@ -143,7 +173,7 @@ public abstract class Beast implements Soul {
 
     /**
      * Returns the location the mob spawned in
-     * @return
+     * @return the mob's spawn location, or null if the mob hasn't spawned yet.
      */
     public Location getSpawnLoc() {
         return spawnLoc;
@@ -153,7 +183,7 @@ public abstract class Beast implements Soul {
      * Util method to check if the entity currently has a specific soul state.
      *
      * @param type the soul state to check for
-     * @return
+     * @return whether the entity has the specified soul state.
      */
     public boolean hasSoulState(SoulStateType type) {
         return currentSoulStates.containsKey(type);
@@ -161,7 +191,7 @@ public abstract class Beast implements Soul {
 
     /**
      * Returns the general cooldown of this entity. Used for abilities.
-     * @return
+     * @return the entity's cooldown
      */
     public int getGeneralCooldown() {
         return generalCooldown;
@@ -169,12 +199,15 @@ public abstract class Beast implements Soul {
 
     /**
      * Sets the general cooldown of this entity. Used for abilities
-     * @param generalCooldown
+     * @param generalCooldown the cooldown time in ticks
      */
     public void setGeneralCooldown(int generalCooldown) {
         this.generalCooldown = generalCooldown;
     }
 
+    /**
+     * See {@link Soul}
+     */
     @Override
     public LivingEntity getLivingEntity() {
         return mob;

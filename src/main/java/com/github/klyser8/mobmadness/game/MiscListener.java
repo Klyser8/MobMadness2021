@@ -251,7 +251,6 @@ public class MiscListener implements Listener {
     public void onArrowPickup(PlayerPickupArrowEvent event) {
         Player player = event.getPlayer();
         Game game = MadUtils.getEntityGame(plugin, player);
-        System.out.println(event.getItem().getType());
         if (game == null) return;
         if (event.getItem().getItemStack().getType() == Material.ARROW) {
             Arrows arrows = new Arrows(plugin, event.getItem().getItemStack().getAmount(), game);

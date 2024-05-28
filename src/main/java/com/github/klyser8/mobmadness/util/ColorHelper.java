@@ -20,6 +20,7 @@ public class ColorHelper implements TextColor {
     private static final int EGGPLANT_VALUE = 0x91438a;
     private static final int METALLIC_BLUE_VALUE = 0x4f70a8;
     private static final int MINERAL_GREEN_VALUE = 0x316649;
+    private static final int CRIMSON_VALUE = 0xdc143C;
 
     public static final ColorHelper MID_GREEN = new ColorHelper("mid_green", MID_GREEN_VALUE);
     public static final ColorHelper INDIGO = new ColorHelper("indigo", INDIGO_VALUE);
@@ -33,6 +34,7 @@ public class ColorHelper implements TextColor {
     public static final ColorHelper EGGPLANT = new ColorHelper("eggplant", EGGPLANT_VALUE);
     public static final ColorHelper METALLIC_BLUE = new ColorHelper("metallic_blue", METALLIC_BLUE_VALUE);
     public static final ColorHelper MINERAL_GREEN = new ColorHelper("mineral_green", MINERAL_GREEN_VALUE);
+    public static final ColorHelper CRIMSON = new ColorHelper("crimson", CRIMSON_VALUE);
 
     private static final String RAW_GRADIENT_HEX_REGEX = "<\\$#[A-Fa-f0-9]{6}>";
 
@@ -59,7 +61,7 @@ public class ColorHelper implements TextColor {
      * @param msg the string to parse
      * @return the parsed string
      */
-    public static Component gradient(String msg, TextColor fromColor, TextColor toColor) {
+    public static TextComponent gradient(String msg, TextColor fromColor, TextColor toColor) {
         //Puts a $ sign between each character, removes the last $ sign and inserts one at the beginning.
 /*        msg = msg.replaceAll(".", "$0\\$");
         msg = "$" + msg;

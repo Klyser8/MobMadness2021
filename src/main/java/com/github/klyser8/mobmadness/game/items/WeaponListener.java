@@ -311,8 +311,7 @@ public class WeaponListener implements Listener {
         if (meta == null || nbt.getBoolean(MadItem.UNBREAKING_TAG)) return;
         handleDurabilityLore(meta, nbt);
         if (enumStr.contains("SHIELD")) {
-            if (nbt.getItem().getItemMeta() instanceof Damageable) {
-                Damageable damageable = (Damageable) nbt.getItem().getItemMeta();
+            if (nbt.getItem().getItemMeta() instanceof Damageable damageable) {
                 int durabilityStep = Shield.BASE_MAX_DURABILITY / nbt.getInteger(Shield.MAX_DURABILITY_TAG);
                 damageable.setDamage(durabilityStep *
                         (nbt.getInteger(Shield.MAX_DURABILITY_TAG) - nbt.getInteger(Shield.CURRENT_DURABILITY_TAG)));
