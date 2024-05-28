@@ -4,8 +4,11 @@ import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.lang.English;
 import com.github.klyser8.mobmadness.storage.Game;
 import com.github.klyser8.mobmadness.game.world.MapType;
-import me.mattstudios.mf.annotations.*;
-import me.mattstudios.mf.base.CommandBase;
+import dev.triumphteam.cmd.bukkit.annotation.Permission;
+import dev.triumphteam.cmd.core.BaseCommand;
+import dev.triumphteam.cmd.core.annotation.Command;
+import dev.triumphteam.cmd.core.annotation.Optional;
+import dev.triumphteam.cmd.core.annotation.SubCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -15,9 +18,8 @@ import java.util.Random;
 
 import static me.mattstudios.mf.base.components.MfUtil.color;
 
-@Command("mobmadness")
-@Alias("mm")
-public class StartGameCommand extends CommandBase {
+@Command(value = "mobmadness", alias = "mm")
+public class StartGameCommand extends BaseCommand {
 
     private Random random = new Random();
     private final MobMadness plugin;
@@ -41,8 +43,7 @@ public class StartGameCommand extends CommandBase {
         ((Player) sender).teleport(type.getSpawn());
     }
 
-    @CompleteFor("start")
-    public List<String> commandCompletion(List<String> list) {
+    public List<String> commandCompletion(List<String> list) { //TODO implement command completion
         List<String> freeMaps = new ArrayList<>();
         for (MapType mapType : MapType.values()) {
             if (plugin.getGameManager().getGames().containsKey(mapType)) continue;

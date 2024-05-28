@@ -14,13 +14,14 @@ repositories {
     maven("https://repo.codemc.org/repository/maven-public/")
     maven("https://jitpack.io")
     maven("https://repo.maven.apache.org/maven2/")
+    maven("https://repo.triumphteam.dev/snapshots/")
 }
 
 dependencies {
-    implementation("me.mattstudios.utils:matt-framework:1.4")
-    implementation("de.tr7zw:item-nbt-api-plugin:2.8.0")
-    compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
-    compileOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
+    implementation("de.tr7zw:item-nbt-api-plugin:2.12.2")
+    implementation("dev.triumphteam:triumph-cmd-bukkit:2.0.0-SNAPSHOT")
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
+    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
 }
 
 group = "com.github.klyser8"

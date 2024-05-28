@@ -2,8 +2,12 @@ package com.github.klyser8.mobmadness.commands;
 
 import com.github.klyser8.mobmadness.MobMadness;
 import com.github.klyser8.mobmadness.game.world.MapType;
-import me.mattstudios.mf.annotations.*;
-import me.mattstudios.mf.base.CommandBase;
+import dev.triumphteam.cmd.bukkit.annotation.Permission;
+import dev.triumphteam.cmd.core.BaseCommand;
+import dev.triumphteam.cmd.core.annotation.Command;
+import dev.triumphteam.cmd.core.annotation.Optional;
+import dev.triumphteam.cmd.core.annotation.SubCommand;
+import dev.triumphteam.cmd.core.annotation.Suggestion;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -11,9 +15,8 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-@Command("mobmadness")
-@Alias("mm")
-public class JoinGameCommand extends CommandBase {
+@Command(value = "mobmadness", alias = "mm")
+public class JoinGameCommand extends BaseCommand {
 
     private final MobMadness plugin;
     public JoinGameCommand(MobMadness plugin) {
@@ -22,14 +25,12 @@ public class JoinGameCommand extends CommandBase {
 
     @SubCommand("join")
     @Permission("mm.command.join")
-    @Completion("#maptypes")
-    public void joinCommand(CommandSender sender, @Optional MapType type) {
+    public void joinCommand(CommandSender sender, @Suggestion("maptype") @Optional MapType type) {
         if (sender instanceof ConsoleCommandSender) return;
         Player player = (Player) sender;
-
     }
 
-    @CompleteFor("join")
+    @CompleteFor("join") //todo implement command completion
     public List<String> commandCompletion(List<String> list) {
         List<String> freeMaps = new ArrayList<>();
         for (MapType mapType : MapType.values()) {

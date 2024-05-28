@@ -5,15 +5,15 @@ import com.github.klyser8.mobmadness.game.entity.beast.Beast;
 import com.github.klyser8.mobmadness.game.entity.beast.BeastType;
 import com.github.klyser8.mobmadness.storage.Game;
 import com.github.klyser8.mobmadness.util.MadUtils;
-import me.mattstudios.mf.annotations.*;
-import me.mattstudios.mf.base.CommandBase;
+import dev.triumphteam.cmd.bukkit.annotation.Permission;
+import dev.triumphteam.cmd.core.BaseCommand;
+import dev.triumphteam.cmd.core.annotation.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-@Command("mobmadness")
-@Alias("mm")
-public class SpawnMobCommand extends CommandBase {
+@Command(value = "mobmadness", alias = "mm")
+public class SpawnMobCommand extends BaseCommand {
 
     private final MobMadness plugin;
     public SpawnMobCommand(MobMadness plugin) {
@@ -22,8 +22,7 @@ public class SpawnMobCommand extends CommandBase {
 
     @SubCommand("spawn")
     @Permission("mm.command.spawn")
-    @Completion({"#madmobs", "#range"})
-    public void spawnCommand(CommandSender sender, BeastType type, @Optional Integer amount) {
+    public void spawnCommand(CommandSender sender, @Suggestion("madmobs") BeastType type, @Suggestion("range")  @Optional Integer amount) {
         if (sender instanceof ConsoleCommandSender) return;
         Player player = (Player) sender;
         Game game = MadUtils.getEntityGame(plugin, player);

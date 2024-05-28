@@ -37,10 +37,10 @@ public class MadMath {
      * @param string any string
      * @return whether the string is an integer.
      */
-    public static boolean isInteger(String string) {
+    public boolean isInteger(String str) {
         try
         {
-            Integer.parseInt(string);
+            Integer.parseInt(str);
             return true;
         } catch (NumberFormatException ex)
         {
@@ -95,8 +95,19 @@ public class MadMath {
      * @param precision the amount of decimal places to round to
      * @return the rounded number
      */
-    public static double round (double value, int precision) {
+    public double round (double value, int precision) {
         int scale = (int) Math.pow(10, precision);
         return (double) Math.round(value * scale) / scale;
     }
+
+    /**
+     * Says hello to the chosen person
+     *
+     * @param toWho the name of the person
+     */
+    public void sayHello(String toWho) {
+        System.out.println("Hello, " + toWho + "!");
+    }
+
+    
 }

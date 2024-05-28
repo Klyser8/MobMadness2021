@@ -37,7 +37,7 @@ public class MadUtils {
      * @return a random location.
      */
     //TODO fix mobs spawning near players and in walls
-    public static Location pickRandomSpawnLocation(Location min, Location max) {
+    public Location pickRandomSpawnLocation(Location min, Location max) {
         World world = min.getWorld();
         int attempts = 0;
         while (attempts < 25) {

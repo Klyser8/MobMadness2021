@@ -16,10 +16,11 @@ import com.github.klyser8.mobmadness.ui.UIEvents;
 import com.github.klyser8.mobmadness.game.world.MapType;
 import com.github.klyser8.mobmadness.util.ItemGlow;
 import com.google.common.base.Enums;
-import me.mattstudios.mf.base.CommandManager;
-import me.mattstudios.mf.base.components.TypeResult;
+import dev.triumphteam.cmd.bukkit.BukkitCommandManager;
+import dev.triumphteam.cmd.core.CommandManager;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -87,7 +88,7 @@ public final class MobMadness extends JavaPlugin {
      * Registers all commands through the {@link CommandManager}, alongside custom fields and tab completions.
      */
     private void registerCommands() {
-        CommandManager commandManager = new CommandManager(this, true);
+        BukkitCommandManager<CommandSender> commandManager = BukkitCommandManager.create(this);
         commandManager.getCompletionHandler().register("#madmobs", input ->
                 Arrays.stream(BeastType.values()).map(BeastType::toString).collect(Collectors.toList()));
         commandManager.getParameterHandler().register(BeastType.class, argument ->
@@ -106,16 +107,16 @@ public final class MobMadness extends JavaPlugin {
                 new TypeResult(Enums.getIfPresent(
                         ItemType.class, String.valueOf(argument).toUpperCase()).orNull(), argument));
 
-        commandManager.register(new SpawnMobCommand(this));
-        commandManager.register(new StartGameCommand(this));
-        commandManager.register(new StopGameCommand(this));
-        commandManager.register(new PauseGameCommand(this));
-        commandManager.register(new TeleportMapCommand(this));
-        commandManager.register(new JoinGameCommand(this));
-        commandManager.register(new LeaveGameCommand(this));
-        commandManager.register(new GiveItemCommand(this));
-        commandManager.register(new DebugCommand(this));
-        commandManager.register(new SummonMobCommand(this));
+        commandManager.registerCommand(new SpawnMobCommand(this));
+        commandManager.registerCommand(new StartGameCommand(this));
+        commandManager.registerCommand(new StopGameCommand(this));
+        commandManager.registerCommand(new PauseGameCommand(this));
+        commandManager.registerCommand(new TeleportMapCommand(this));
+        commandManager.registerCommand(new JoinGameCommand(this));
+        commandManager.registerCommand(new LeaveGameCommand(this));
+        commandManager.registerCommand(new GiveItemCommand(this));
+        commandManager.registerCommand(new DebugCommand(this));
+        commandManager.registerCommand(new SummonMobCommand(this));
     }
 
     /**
